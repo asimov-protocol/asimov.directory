@@ -4,7 +4,7 @@
   import API from "./lib/api";
 
   let content: DatasetList = $state({
-    pagination: { page: 0, per_page: 3, total: 0 },
+    pagination: { page: 0, per_page: 24, total: 0 },
     datasets: [],
   });
   let page = $derived(content.pagination.page);
@@ -31,19 +31,24 @@
 <main>
   <div class="flex flex-col gap-y-8">
     <h1>Datasets</h1>
-    {#each content.datasets as dataset}
-      <div class="flex flex-row flex-nowrap gap-x-8 whitespace-nowrap">
-        <div class="flex flex-col items-start">
-          <span class="font-bold">{dataset.name}</span>
-          {#if dataset.creator}
-            <span class=""> by {dataset.creator}</span>
-          {/if}
-        </div>
-        <span
-          >{dataset.short_description || dataset.long_description || ""}</span
+    <div class="grid grid-cols-4 gap-6 text-left">
+      {#each content.datasets as dataset}
+        <div
+          class="hover:bg-slate-100 dark:hover:bg-slate-800 shadow shadow-gray-400 dark:shadow-white p-4 flex flex-col justify-between gap-y-6"
         >
-      </div>
-    {/each}
+          <div>
+            <div class="flex flex-col h-12 mb-8">
+              <span class="font-bold">{dataset.name}</span>
+              {#if dataset.creator}
+                <span>by {dataset.creator}</span>
+              {/if}
+            </div>
+            {dataset.short_description || dataset.long_description || ""}
+          </div>
+          {new Date(dataset.created_at * 1000).toISOString()}
+        </div>
+      {/each}
+    </div>
     {#if max_page > 1}
       <div
         class="w-min mx-auto flex flex-row flex-nowrap items-center gap-x-10"
