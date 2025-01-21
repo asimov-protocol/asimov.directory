@@ -10,11 +10,11 @@
 export interface Dataset {
   id: number;
   name: string;
-  shortDescription: string;
-  longDescription: string | null;
+  short_description: string;
+  long_description: string | null;
   creator: string | null;
-  updatedAt: number;
-  createdAt: number;
+  updated_at: number;
+  created_at: number;
 }
 
 //pub struct Pagination {
@@ -37,34 +37,44 @@ export interface DatasetList {
   datasets: Dataset[];
 }
 
-export async function getDataset(id: number): Promise<Dataset> {
-  const params = new URLSearchParams({ id: id.toString() });
+export class DatasetsAPI {
+  private baseUrl: string;
 
-  const response = await fetch(`/datasets?${params}`);
-  if (!response.ok) {
-    throw new Error(
-      `HTTP error (status: ${response.status}): ${response.text()}`,
-    );
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl;
   }
 
-  return response.json();
-}
+  async getDataset(id: number): Promise<Dataset> {
+    const response = await fetch(`${this.baseUrl}/datasets/${id}`);
 
-export async function getDatasets(
-  page: number = 0,
-  per_page: number = 25,
-): Promise<DatasetList> {
-  const params = new URLSearchParams({
-    page: page.toString(),
-    per_page: per_page.toString(),
-  });
+    if (!response.ok) {
+      throw new Error(
+        `HTTP error (status: ${response.status}): ${await response.text()}`,
+      );
+    }
 
-  const response = await fetch(`/datasets?${params}`);
-  if (!response.ok) {
-    throw new Error(
-      `HTTP error (status: ${response.status}): ${response.text()}`,
-    );
+    return response.json();
   }
 
-  return response.json();
+  async getDatasets(
+    page: number = 0,
+    per_page: number = 25,
+  ): Promise<DatasetList> {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      per_page: per_page.toString(),
+    });
+
+    const response = await fetch(`${this.baseUrl}/datasets?${params}`);
+
+    if (!response.ok) {
+      throw new Error(
+        `HTTP error (status: ${response.status}): ${await response.text()}`,
+      );
+    }
+
+    return response.json();
+  }
 }
+
+export default new DatasetsAPI("http://localhost:8000");
