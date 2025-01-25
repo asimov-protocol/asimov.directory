@@ -1,10 +1,16 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { Router, Route } from "svelte-routing";
   import Nav from "./components/Nav.svelte";
   import Home from "./routes/Home.svelte";
   import Dataset from "./routes/Dataset.svelte";
+  import { walletStore } from "./stores/walletStore";
 
   export let url = "";
+
+  onMount(async () => {
+    await walletStore.init("testnet", "test.testnet");
+  });
 </script>
 
 <Router url={url}>
