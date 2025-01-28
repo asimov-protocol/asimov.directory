@@ -4,13 +4,19 @@ import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [svelte(), nodePolyfills()],
-  resolve: {
-    alias: {
-      buffer: "buffer",
+  plugins: [
+    svelte(),
+    // nodePolyfills(),
+  ],
+  build: {
+    rollupOptions: {
+      plugins: [
+        nodePolyfills(),
+      ],
     },
   },
   define: {
-    global: "globalThis",
+    global: "window",
+    'process.env': {},
   },
 })

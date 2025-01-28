@@ -49,6 +49,10 @@
     "@near-wallet-selector/wallet-connect": "^8.9.15",
     "@near-wallet-selector/welldone-wallet": "^8.9.15",
     "@near-wallet-selector/xdefi": "^8.9.15",
-    "near-api-js": "^5.0.1"
+    "@wagmi/connectors": "^5.7.5",
+    "@wagmi/core": "^2.16.3",
+    "@web3modal/wagmi": "^5.1.11",
+    "near-api-js": "^5.0.1",
+    "viem": "^2.22.15"
   }
 }

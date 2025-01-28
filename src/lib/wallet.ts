@@ -21,18 +21,70 @@ import { setupXDEFI } from "@near-wallet-selector/xdefi";
 // import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 // import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 // import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
-// import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
+import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
+import type { Chain } from "@wagmi/core/chains";
+import { createConfig, http, injected, reconnect, type Config } from "@wagmi/core";
+import { walletConnect } from "@wagmi/connectors";
+import { createWeb3Modal } from "@web3modal/wagmi";
 
 export class WalletAPI {
   private selector!: WalletSelector;
   private modal!: WalletSelectorModal;
   private network: NetworkId;
   private contractId: string;
+  private projectId: string;
+
+  private wagmiConfig: Config;
 
   constructor(network: NetworkId, contractId: string) {
     this.network = network;
     this.contractId = contractId;
+    this.projectId = "bb2c61e93702226d19bf9958defd5783";
+
+    const near: Chain = {
+      id: 398,
+      name: "NEAR Protocol Testnet",
+      nativeCurrency: {
+        decimals: 18,
+        name: "NEAR",
+        symbol: "NEAR",
+      },
+      rpcUrls: {
+        default: { http: ["https://eth-rpc.testnet.near.org"] },
+        public: { http: ["https://eth-rpc.testnet.near.org"] },
+      },
+      blockExplorers: {
+        default: {
+          name: "NEAR Explorer",
+          url: "https://eth-explorer-testnet.near.org",
+        },
+      },
+      testnet: true,
+    };
+
+    this.wagmiConfig = createConfig({
+      chains: [near],
+      connectors: [
+        walletConnect({
+          projectId: this.projectId,
+          metadata: {
+            name: "NEAR Wallet Selector",
+            description: "Example dApp for NEAR Wallet Selector",
+            url: "https://github.com/near/wallet-selector",
+            icons: ["https://avatars.githubusercontent.com/u/37784886"],
+          },
+          showQrModal: false,
+        }),
+        injected({ shimDisconnect: true }),
+      ],
+      transports: {
+        [near.id]: http(),
+      },
+    });
+
+    reconnect(this.wagmiConfig);
   }
+
 
   /**
    * Initializes the Wallet Selector and Modal
@@ -57,15 +109,15 @@ export class WalletAPI {
         setupCoin98Wallet(),
         setupNeth(),
         setupXDEFI(),
-        setupWalletConnect({
-          projectId: "c4f79cc...",
-          metadata: {
-            name: "NEAR Wallet Selector",
-            description: "Example dApp used by NEAR Wallet Selector",
-            url: "https://github.com/near/wallet-selector",
-            icons: ["https://avatars.githubusercontent.com/u/37784886"],
-          },
-        }),
+        // setupWalletConnect({
+        //   projectId: this.projectId,
+        //   metadata: {
+        //     name: "NEAR Wallet Selector",
+        //     description: "Example dApp used by NEAR Wallet Selector",
+        //     url: "https://github.com/near/wallet-selector",
+        //     icons: ["https://avatars.githubusercontent.com/u/37784886"],
+        //   },
+        // }),
         // setupNearMobileWallet(),
         // setupMintbaseWallet({
         //       networkId: 'mainnet',
@@ -79,7 +131,15 @@ export class WalletAPI {
         //     callbackUrl: "https://www.mywebsite.com",
         //     deprecated: false,
         // }),
-        // setupEthereumWallets({ wagmiConfig, web3Modal }),
+        setupEthereumWallets({
+          wagmiConfig: this.wagmiConfig,
+          web3Modal: createWeb3Modal({
+            wagmiConfig: this.wagmiConfig,
+            projectId: this.projectId,
+            enableOnramp: false,
+            allWallets: "SHOW",
+          }),
+        }),
       ],
     });
 
