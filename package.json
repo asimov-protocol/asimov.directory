@@ -1,0 +1,45 @@
+{
+  "name": "asimov.directory",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@near-wallet-selector/bitte-wallet": "^8.9.16",
+    "@near-wallet-selector/core": "^8.9.16",
+    "@near-wallet-selector/ethereum-wallets": "^8.9.16",
+    "@near-wallet-selector/here-wallet": "^8.9.16",
+    "@near-wallet-selector/ledger": "^8.9.16",
+    "@near-wallet-selector/meteor-wallet": "^8.9.16",
+    "@near-wallet-selector/modal-ui": "^8.9.16",
+    "@near-wallet-selector/my-near-wallet": "^8.9.16",
+    "@near-wallet-selector/near-mobile-wallet": "^8.9.16",
+    "@near-wallet-selector/nightly": "^8.9.16",
+    "@near-wallet-selector/sender": "^8.9.16",
+    "@near-wallet-selector/welldone-wallet": "^8.9.16",
+    "@wagmi/core": "^2.16.3",
+    "@web3modal/wagmi": "^5.1.11",
+    "browserify-fs": "^1.0.0",
+    "near-api-js": "^5.0.1",
+    "next": "15.1.6",
+    "react": "^19",
+    "react-dom": "^19",
+    "rxjs": "^7.8.1",
+    "wagmi": "^2.14.9"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.6",
+    "@eslint/eslintrc": "^3"
+  }
+}
