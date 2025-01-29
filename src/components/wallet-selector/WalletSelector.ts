@@ -14,7 +14,7 @@ import { setupBitteWallet } from '@near-wallet-selector/bitte-wallet';
 import { providers, utils } from 'near-api-js';
 import { createContext, type Context } from 'react';
 
-import { networkId as defaultNetwork, contractId } from '@/config';
+import { networkId as defaultNetwork } from '@/config';
 
 import { wagmiConfig, web3Modal } from './web3Modal';
 
@@ -41,9 +41,13 @@ export class Wallet {
     this.selector = setupWalletSelector({
       network: this.networkId,
       modules: [
-        setupEthereumWallets({ wagmiConfig, web3Modal: web3Modal as any, alwaysOnboardDuringSignIn: true }),
+        setupEthereumWallets({ wagmiConfig: wagmiConfig as any, web3Modal: web3Modal as any, alwaysOnboardDuringSignIn: true }),
         setupMeteorWallet(),
-        setupBitteWallet({ contractId }),
+        setupBitteWallet({
+          walletUrl: "https://wallet.bitte.ai",
+          callbackUrl: "https://www.mywebsite.com",
+          deprecated: false,
+        }) as any,
         setupHereWallet(),
         setupMyNearWallet(),
         setupNearMobileWallet(),

@@ -54,26 +54,30 @@ const Nav = () => {
                       <span className="sr-only">Open user menu</span>
                       <Image
                         className="size-8 rounded-full"
-                        src="favicon.png"
+                        src="/logo.png"
                         alt="Profile"
+                        width={32}
+                        height={32}
                       />
                     </button>
 
-                    <div
-                      className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-2 ring-1 ring-black/5 focus:outline-hidden shadow-lg"
-                      role="menu"
-                      aria-orientation="vertical"
-                      aria-labelledby="user-menu-button"
-                    >
-                      <p className="block px-4 py-2 text-sm text-gray-700">{accountId}</p>
-                      <button
-                        onClick={handleSignOut}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 bg-transparent border-none rounded-none transition-colors"
-                        role="menuitem"
+                    {dropdownToggle && (
+                      <div
+                        className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-2 ring-1 ring-black/5 focus:outline-hidden shadow-lg"
+                        role="menu"
+                        aria-orientation="vertical"
+                        aria-labelledby="user-menu-button"
                       >
-                        Sign Out
-                      </button>
-                    </div>
+                        <p className="block px-4 py-2 text-sm text-gray-700">{accountId}</p>
+                        <button
+                          onClick={handleSignOut}
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 bg-transparent border-none rounded-none transition-colors"
+                          role="menuitem"
+                        >
+                          Sign Out
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <button
