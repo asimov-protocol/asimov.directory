@@ -1,3 +1,5 @@
+import { datasetTabs } from "@/utils";
+
 export interface Dataset {
   id: number;
   name: string;
@@ -18,3 +20,5 @@ export interface DatasetList {
   pagination: Pagination;
   datasets: Dataset[];
 }
+
+export type DatasetTabValue = (typeof datasetTabs)[number]["value"];

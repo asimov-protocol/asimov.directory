@@ -3,6 +3,11 @@
 import { useDataset } from "@/hooks/useDataset";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import DatasetHeroSection from "@/components/Dataset/HeroSection";
+import NavigationBar from "@/components/Dataset/NavigationBar";
+import { TabProvider } from "@/context/TabsContext";
+import OverviewSection from "@/components/Dataset/OverviewSection";
+import AsideSection from "@/components/Dataset/AsideSection";
 
 const Dataset = ({ id }: { id: string }) => {
   const { dataset, loading, error } = useDataset(Number(id));
@@ -27,24 +32,23 @@ const Dataset = ({ id }: { id: string }) => {
   }
 
   return (
-    <div className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-md">
-      <h1 className="text-3xl font-semibold text-gray-900 dark:text-white mb-4">
-        {dataset.name}
-      </h1>
-      <p className="text-lg text-gray-600 dark:text-gray-200">
-        {dataset.long_description || "No description available."}
-      </p>
+    <div className="space-y-6 md:space-y-12">
+      <DatasetHeroSection
+        name={dataset.name}
+        description={dataset.long_description}
+      />
 
-      <div className="mt-6">
-        <p className="text-sm text-gray-500">
-          <strong>Creator:</strong> {dataset.creator || "N/A"}
-        </p>
-        <p className="text-sm text-gray-500">
-          <strong>Created At:</strong> {new Date(dataset.created_at).toLocaleString()}
-        </p>
-        <p className="text-sm text-gray-500">
-          <strong>Last Updated:</strong> {new Date(dataset.updated_at).toLocaleString()}
-        </p>
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-12">
+        <div className="sm:col-span-3 space-y-10">
+          <TabProvider>
+            <NavigationBar />
+
+            <OverviewSection />
+          </TabProvider>
+        </div>
+        <div>
+          <AsideSection dataset={dataset} />
+        </div>
       </div>
     </div>
   );
