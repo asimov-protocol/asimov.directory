@@ -8,6 +8,7 @@ import NavigationBar from "@/components/Dataset/NavigationBar";
 import { TabProvider } from "@/context/TabsContext";
 import OverviewSection from "@/components/Dataset/OverviewSection";
 import AsideSection from "@/components/Dataset/AsideSection";
+import DataViewSection from "@/components/Dataset/DataViewSection";
 
 const Dataset = ({ id }: { id: string }) => {
   const { dataset, loading, error } = useDataset(Number(id));
@@ -44,9 +45,11 @@ const Dataset = ({ id }: { id: string }) => {
             <NavigationBar />
 
             <OverviewSection />
+
+            <DataViewSection />
           </TabProvider>
         </div>
-        <div>
+        <div className="relative">
           <AsideSection dataset={dataset} />
         </div>
       </div>

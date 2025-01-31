@@ -8,7 +8,7 @@ type Props = {
 
 const AsideSection = ({ dataset }: Props) => {
   return (
-    <div className="text-white pt-0 py-6 divide-y divide-gray-700">
+    <div className="text-white pt-0 py-6 divide-y divide-gray-700 sticky top-4">
 
       <div className="pb-3">
         <h3 className="text-lg font-semibold mb-4">Stats</h3>
