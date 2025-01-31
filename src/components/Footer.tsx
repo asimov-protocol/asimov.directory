@@ -4,11 +4,9 @@ import Link from 'next/link';
 import { XLogo, LinkedinLogo, GithubLogo, DiscordLogo } from "@phosphor-icons/react"
 import Logo from "@/components/Logo";
 
-// bg-gradient-to-tr from-oOrange-500 to-transparent to-40%
 const Footer = () => (
-  <footer className="py-16 relative">
-    <div className="bg-gradient-to-tr from-oOrange-500 to-transparent to-40% w-full h-full absolute inset-0 pointer-events-none -z-1" />
-    <div className="max-w-7xl mx-auto space-y-8 px-4 sm:px-6 lg:px-8">
+  <footer className="py-16 relative bg-gradient-to-tr from-oOrange-500/45 to-transparent to-40%">
+    <div className="container-base">
       <Logo />
       <p className="text-gGray-300 max-w-sm">
         Eliminate bias in AI with LLM-agnostic, tamper-proof datasets secured by blockchain

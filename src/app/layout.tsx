@@ -21,11 +21,11 @@ export const metadata: Metadata = {
   description: "",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+type Props = {
+  children: Readonly<React.ReactNode>;
+};
+
+export default function RootLayout({ children }: Props) {
   return (
     <html lang="en">
       <body
@@ -33,7 +33,7 @@ export default function RootLayout({
       >
         <WalletSelectorProvider>
           <Nav />
-          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+          <main>
             {children}
           </main>
           <Footer />

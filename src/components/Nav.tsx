@@ -31,8 +31,8 @@ const Nav = () => {
   };
 
   return (
-    <nav className="bg-background text-sStone-200 shadow w-full mx-auto">
-      <div className="mx-auto max-w-7xl px-2 py-2 sm:px-6 lg:px-8">
+    <header className="bg-background text-sStone-200 shadow w-full mx-auto">
+      <nav className="container-base py-2">
         <div className="relative flex h-16 items-center justify-between">
           <div className="flex shrink-0 items-center w-full">
             <Link className="" href="/">
@@ -91,8 +91,8 @@ const Nav = () => {
             )}
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 };
 
