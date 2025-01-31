@@ -9,16 +9,25 @@ import { TabProvider } from "@/context/TabsContext";
 import OverviewSection from "@/components/Dataset/OverviewSection";
 import AsideSection from "@/components/Dataset/AsideSection";
 import DataViewSection from "@/components/Dataset/DataViewSection";
+import Breadcrumbs from "./Breadcrumbs";
+import { useBreadcrumbContext } from "@/context/BreadcrumbContext";
 
 const Dataset = ({ id }: { id: string }) => {
   const { dataset, loading, error } = useDataset(Number(id));
   const router = useRouter();
+  const { setCurrentDataset } = useBreadcrumbContext();
 
   useEffect(() => {
-    if (isNaN(Number(id))) {
-      router.push("/");
+    if (!id || isNaN(Number(id))) {
+      router.replace("/");
     }
   }, [id, router]);
+
+  useEffect(() => {
+    if (dataset?.name) {
+      setCurrentDataset(dataset.name);
+    }
+  }, [dataset?.name, setCurrentDataset]);
 
   if (loading) {
     return <p>Loading dataset...</p>;
@@ -34,6 +43,7 @@ const Dataset = ({ id }: { id: string }) => {
 
   return (
     <div className="space-y-6 md:space-y-12">
+      <Breadcrumbs />
       <DatasetHeroSection
         name={dataset.name}
         description={dataset.long_description}
@@ -55,6 +65,6 @@ const Dataset = ({ id }: { id: string }) => {
       </div>
     </div>
   );
-}
+};
 
 export default Dataset;
