@@ -1,7 +1,7 @@
-import Home from "@/components/Home/Page";
+import Datasets from "@/components/Datasets";
 
 export default function HomePage() {
   return (
-    <Home />
+    <Datasets />
   );
 }

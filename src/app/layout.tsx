@@ -4,6 +4,7 @@ import "./globals.css";
 import '@near-wallet-selector/modal-ui/styles.css';
 import Nav from "@/components/Nav";
 import { WalletSelectorProvider } from "@/context/WalletSelectorContext";
+import { BreadcrumbProvider } from "@/context/BreadcrumbContext";
 import Footer from "@/components/Footer";
 
 const geistSans = Geist({
@@ -33,8 +34,13 @@ export default function RootLayout({ children }: Props) {
       >
         <WalletSelectorProvider>
           <Nav />
-          <main>
-            {children}
+          <main className="relative">
+            <div className="absolute inset-0 bg-linear-170 from-oOrange-500/45 to-transparent to-50% -z-1 w-full h-80 pointer-events-none" />
+            <BreadcrumbProvider>
+              <div className="container-default">
+                {children}
+              </div>
+            </BreadcrumbProvider>
           </main>
           <Footer />
         </WalletSelectorProvider>
