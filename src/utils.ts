@@ -29,6 +29,7 @@ export const labels = ["History", "Timeline", "Science", "Tech", "Fact-checking"
 export const datasetTabs = [
   { label: "Overview", value: "overview" },
   { label: "Data viewer", value: "viewer" },
+  { label: "Query", value: "query" },
   { label: "Annotation", value: "annotation" },
   { label: "History", value: "history" },
 ] as const;

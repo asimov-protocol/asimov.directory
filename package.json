@@ -25,6 +25,8 @@
     "@wagmi/core": "^2.16.3",
     "@web3modal/wagmi": "^5.1.11",
     "browserify-fs": "^1.0.0",
+    "graphiql": "^3.8.3",
+    "graphql": "^16.10.0",
     "near-api-js": "^5.0.1",
     "next": "15.1.6",
     "react": "^19",
