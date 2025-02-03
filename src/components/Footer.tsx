@@ -6,7 +6,7 @@ import Logo from "@/components/Logo";
 
 const Footer = () => (
   <footer className="py-16 relative bg-gradient-to-tr from-oOrange-500/45 to-transparent to-40%">
-    <div className="container-base">
+    <div className="container-base space-y-8">
       <Logo />
       <p className="text-gGray-300 max-w-sm">
         Eliminate bias in AI with LLM-agnostic, tamper-proof datasets secured by blockchain
@@ -26,7 +26,7 @@ const Footer = () => (
       </div>
 
       {/* Divider */}
-      <div className="border-t border-gray-700 pt-4 flex align-center justify-between">
+      <div className="border-t border-gray-700 pt-7 flex align-center justify-between">
         <p className="text-sm text-gGray-300">&copy; ASIMOV Protocol - {new Date().getFullYear()}</p>
 
         {/* Social Icons */}

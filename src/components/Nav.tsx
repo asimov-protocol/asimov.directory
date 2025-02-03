@@ -82,7 +82,7 @@ const Nav = () => {
                 ) : (
                   <button
                     onClick={handleSignIn}
-                    className="ml-4 px-4 py-2 text-sm font-medium text-white bg-oOrange-500 rounded-lg shadow transition-colors cursor-pointer hover:bg-oOrange-600"
+                    className="ml-4 px-4 py-2 font-arges text-2xl font-semibold tracking-wider text-white bg-oOrange-500 rounded-lg shadow transition-colors cursor-pointer hover:bg-oOrange-600"
                   >
                     Connect Wallet
                   </button>

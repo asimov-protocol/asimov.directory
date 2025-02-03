@@ -28,7 +28,7 @@ const DatasetHeroSection = ({ name, description }: Props) => (
 
     <button className="flex items-center space-x-2 bg-oOrange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 cursor-pointer transition-colors">
       <CloudArrowDown className="w-5 h-5" />
-      <span>Download dataset</span>
+      <span className="font-arges text-2xl font-semibold tracking-wider">Download dataset</span>
     </button>
   </div>
 );

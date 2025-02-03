@@ -1,21 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import '@near-wallet-selector/modal-ui/styles.css';
+import "@near-wallet-selector/modal-ui/styles.css";
 import Nav from "@/components/Nav";
 import { WalletSelectorProvider } from "@/context/WalletSelectorContext";
 import { BreadcrumbProvider } from "@/context/BreadcrumbContext";
 import Footer from "@/components/Footer";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Asimov Directory",
@@ -29,9 +18,7 @@ type Props = {
 export default function RootLayout({ children }: Props) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className="antialiased">
         <WalletSelectorProvider>
           <Nav />
           <main className="relative">

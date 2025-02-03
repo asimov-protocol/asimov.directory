@@ -14,6 +14,8 @@
   --color-sSlate-900: #05122e;
   --color-oOrange-500: #f37021;
   --hero-height: calc(100vh - 160px);
+  --font-suisse-intl: 'SuisseIntl', sans-serif;
+  --font-arges: 'Arges', sans-serif;
 }
 
 @layer utilities {
@@ -27,16 +29,60 @@
   }
 }
 
+@font-face {
+  font-family: 'SuisseIntl';
+  src: url('/fonts/local/SuisseIntl-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap; /* Keep text visible during load */
+}
+
+@font-face {
+  font-family: 'SuisseIntl';
+  src: url('/fonts/local/SuisseIntl-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SuisseIntl';
+  src: url('/fonts/local/SuisseIntl-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 2) Arges: Medium, Black */
+@font-face {
+  font-family: 'Arges';
+  src: url('/fonts/local/Arges-NormalMedium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Arges';
+  src: url('/fonts/local/Arges-NormalBlack.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 
 :root {
   --background: var(--color-sSlate-900);
   --foreground: var(--color-gGray-100);
+
+  --font-suisse-intl: 'SuisseIntl', sans-serif;
+  --font-arges: 'Arges', sans-serif;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-suisse-intl), Arial, Helvetica, sans-serif;
 }
 
 button {
