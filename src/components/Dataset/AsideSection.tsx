@@ -1,6 +1,7 @@
 import { Dataset } from "@/types/dataset";
 import { labels, formatDate } from "@/utils";
-import { DatasetCategory } from "../Datasets/Category";
+import { DatasetCategory } from "@/components/Datasets/Category";
+import StatsChart from "./StatsChart";
 
 type Props = {
   dataset: Dataset;
@@ -12,7 +13,8 @@ const AsideSection = ({ dataset }: Props) => {
 
       <div className="pb-3">
         <h3 className="text-lg font-semibold mb-4">Stats</h3>
-        <p className="text-xl font-bold">254 <span className="text-sm font-normal text-gray-400">Views</span></p>
+        <StatsChart />
+        <p className="text-xl font-bold mt-2">254 <span className="text-sm font-normal text-gray-400">Views</span></p>
         <p className="text-xl font-bold">87 <span className="text-sm font-normal text-gray-400">Downloads</span></p>
       </div>
 
