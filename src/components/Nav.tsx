@@ -31,7 +31,7 @@ const Nav = () => {
   };
 
   return (
-    <header className="bg-background text-sStone-200 shadow w-full mx-auto">
+    <header className="bg-background text-sStone-200 shadow w-full mx-auto border-b-4 border-oOrange-500">
       <nav className="container-base py-2">
         <div className="relative flex h-16 items-center justify-between">
           <div className="flex shrink-0 items-center w-full">

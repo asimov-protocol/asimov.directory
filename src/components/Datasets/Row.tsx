@@ -3,7 +3,7 @@ import { Dataset } from '@/types/dataset';
 import Image from 'next/image';
 import Link from 'next/link';
 import { DatasetCategory, ShowAllCategories } from './Category';
-import { labels } from '@/utils';
+import { labels, formatDate } from '@/utils';
 
 type Props = {
   dataset: Dataset;
@@ -18,7 +18,7 @@ const DatasetRow = ({ dataset }: Props) => {
   };
 
   return (
-    <tr key={dataset.id}>
+    <tr className="hover:bg-sSlate-600 transition-colors">
       <td className="px-5 py-4 min-w-16">
         <Image
           className="rounded-md"
@@ -52,8 +52,8 @@ const DatasetRow = ({ dataset }: Props) => {
         </div>
       </td>
       <td className="px-5 py-4">{dataset.short_description}</td>
-      <td className="px-5 py-4">
-        {new Date(dataset.created_at).toLocaleString()}
+      <td className="px-5 py-4 min-w-36">
+        {formatDate(dataset.created_at)}
       </td>
     </tr>
   );

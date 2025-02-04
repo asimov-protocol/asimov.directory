@@ -14,13 +14,19 @@ const Footer = () => (
 
       {/* Navigation Links */}
       <div className="flex space-x-6 text-gGray-300">
-        {['Datasets', 'About', 'Docs', 'Careers', 'Privacy'].map((link) => (
+        {[
+          { name: 'Datasets', url: "/" },
+          { name: 'About', url: "#" },
+          { name: 'Docs', url: "#" },
+          { name: 'Careers', url: "#" },
+          { name: 'Privacy', url: "#" }
+        ].map((nav) => (
           <Link
-            key={link}
-            href="#"
+            key={nav.name}
+            href={nav.url}
             className="hover:text-white transition-colors"
           >
-            {link}
+            {nav.name}
           </Link>
         ))}
       </div>
@@ -32,16 +38,17 @@ const Footer = () => (
         {/* Social Icons */}
         <div className="flex justify-center space-x-4">
           {[
-            { name: 'X, formally Twitter', icon: XLogo },
-            { name: 'LinkedIn', icon: LinkedinLogo },
-            { name: 'GitHub', icon: GithubLogo },
-            { name: 'Discord', icon: DiscordLogo },
-          ].map(({ name, icon: Icon }) => (
+            { name: "X, formally Twitter", icon: XLogo, url: "https://x.com/asimov_protocol" },
+            { name: "LinkedIn", icon: LinkedinLogo, url: "https://www.linkedin.com/company/asimov-protocol" },
+            { name: "GitHub", icon: GithubLogo, url: "https://github.com/asimov-protocol" },
+            { name: "Discord", icon: DiscordLogo, url: "https://discord.com/invite/QSdEnmTG78" },
+          ].map(({ name, icon: Icon, url }) => (
             <Link
               key={name}
-              href="#"
+              href={url}
               aria-label={name}
               className="text-gGray-100 hover:text-white transition-colors"
+              target="_blank"
             >
               <Icon size={24} weight="fill" />
             </Link>

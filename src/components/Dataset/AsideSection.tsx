@@ -1,5 +1,5 @@
 import { Dataset } from "@/types/dataset";
-import { labels } from "@/utils";
+import { labels, formatDate } from "@/utils";
 import { DatasetCategory } from "../Datasets/Category";
 
 type Props = {
@@ -49,12 +49,12 @@ const AsideSection = ({ dataset }: Props) => {
 
       <div className="py-3">
         <h3 className="text-lg font-semibold">Added</h3>
-        <p className="text-gray-300">{new Date(dataset.created_at).toLocaleString()}</p>
+        <p className="text-gray-300">{formatDate(dataset.created_at)}</p>
       </div>
 
       <div className="py-3">
         <h3 className="text-lg font-semibold">Updated</h3>
-        <p className="text-gray-300">{new Date(dataset.updated_at).toLocaleString()}</p>
+        <p className="text-gray-300">{formatDate(dataset.updated_at)}</p>
       </div>
 
       <div className="py-3">

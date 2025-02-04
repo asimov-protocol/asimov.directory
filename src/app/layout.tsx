@@ -21,8 +21,7 @@ export default function RootLayout({ children }: Props) {
       <body className="antialiased">
         <WalletSelectorProvider>
           <Nav />
-          <main className="relative">
-            <div className="absolute inset-0 bg-linear-170 from-oOrange-500/45 to-transparent to-50% -z-1 w-full h-80 pointer-events-none" />
+          <main className="relative ">
             <BreadcrumbProvider>
               <div className="container-default">
                 {children}
