@@ -1,35 +1,70 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useDatasets } from '@/hooks/useDatasets';
-import DatasetList from '@/components/Datasets/List';
-import Search from '@/components/Search';
-import { labels, prettyKey } from '@/utils';
-import { DatasetCategory } from './Datasets/Category';
+import { useState, useEffect } from "react";
+import DatasetList from "@/components/Datasets/List";
+import Search from "@/components/Search";
+import { labels, prettyKey } from "@/utils";
+import { DatasetCategory } from "./Datasets/Category";
 
-const Datasets = () => {
-  const [currentPage, setCurrentPage] = useState(0);
-  const { datasetList, loading, error } = useDatasets(currentPage, 24);
-  const [searchTerm, setSearchTerm] = useState('');
+export default function Datasets() {
+  const [catalog, setCatalog] = useState<any>(null);
+  const [datasets, setDatasets] = useState<any[]>([]);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const maxPage = datasetList ? Math.ceil(datasetList.pagination.total / datasetList.pagination.per_page) : 1;
-  const showPage = currentPage + 1;
+  useEffect(() => {
+    fetchPage(null);
+  }, []);
 
-  const handlePrevPage = () => {
-    if (currentPage > 0) setCurrentPage((prev) => prev - 1);
+  const fetchPage = async (cursor: string | null) => {
+    setLoading(true);
+    setError("");
+    try {
+      const limit = 24;
+      let url = `/api/datasets?limit=${limit}`;
+
+      if (cursor) {
+        url += `&after=${encodeURIComponent(cursor)}`;
+      }
+      // If you want server-side search, you'd add a param like:
+      // if (searchTerm) {
+      //   url += `&q=${encodeURIComponent(searchTerm)}`;
+      // }
+
+      const res = await fetch(url);
+      if (!res.ok) {
+        throw new Error(`Failed to fetch datasets: ${res.status} ${res.statusText}`);
+      }
+
+      // Expecting { catalog, items, nextCursor, total }
+      const data = await res.json();
+
+      if (!cursor) {
+        setCatalog(data.catalog || null);
+        setDatasets(data.items);
+      } else {
+        setDatasets((prev) => [...prev, ...data.items]);
+      }
+
+      setNextCursor(data.nextCursor);
+    } catch (err: any) {
+      setError(err.message || "Error fetching data");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleNextPage = () => {
-    if (currentPage < maxPage - 1) setCurrentPage((prev) => prev + 1);
+  const loadMore = () => {
+    if (nextCursor) {
+      fetchPage(nextCursor);
+    }
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
-    const value = e.target.value;
-    setSearchTerm(value);
+    setSearchTerm(e.target.value);
   };
-
-  console.log({ searchTerm });
 
   return (
     <div className="flex flex-col gap-y-8">
@@ -37,12 +72,12 @@ const Datasets = () => {
         Explore datasets
       </h1>
       <p className="text-lg/8 text-sStone-200 text-left max-w-2xl">
-        A robust collection of high-quality, tamper-proof datasets designed for LLM-agnostic AI training, empowering developers to enhance model performance and reliability.
+        A robust collection of high-quality, tamper-proof datasets designed for LLM-agnostic AI training,
+        empowering developers to enhance model performance and reliability.
       </p>
 
       <div className="flex flex-col w-full gap-4">
         <Search onChange={handleSearchChange} />
-
         <div className="flex gap-2 flex-wrap">
           {labels.map((label) => (
             <DatasetCategory key={prettyKey(label)} category={label} />
@@ -50,41 +85,32 @@ const Datasets = () => {
         </div>
       </div>
 
+      {/* Loading + Error states */}
       {loading && <p>Loading datasets...</p>}
       {error && <p className="text-red-500">Error: {error}</p>}
 
-      {!loading && !error && datasetList && (
+      {/* Dataset list */}
+      {!loading && !error && datasets.length > 0 && (
         <>
-          <DatasetList datasets={datasetList.datasets} />
+          <DatasetList datasets={datasets} />
 
-          {/* Pagination Controls */}
-          {maxPage > 1 && (
+          {nextCursor && (
             <div className="mt-4 flex justify-end items-center gap-x-4 border-t border-gray-200 pt-4">
               <button
-                className="px-4 py-2 rounded-md disabled:bg-transparent disabled:cursor-not-allowed border border-neutral-300 text-gGray-300 cursor-pointer hover:not-disabled:text-white"
-                onClick={handlePrevPage}
-                disabled={currentPage <= 0}
+                className="px-4 py-2 rounded-md border border-neutral-300 text-gGray-300 cursor-pointer hover:text-white"
+                onClick={loadMore}
               >
-                Previous
-              </button>
-
-              <div className="text-sm">
-                Page {showPage} of {maxPage}
-              </div>
-
-              <button
-                className="px-4 py-2 rounded-md disabled:bg-transparent disabled:cursor-not-allowed border border-neutral-300 text-gGray-300 cursor-pointer hover:not-disabled:text-white"
-                onClick={handleNextPage}
-                disabled={currentPage >= maxPage - 1}
-              >
-                Next
+                Load More
               </button>
             </div>
           )}
         </>
       )}
+
+      {/* If no items found */}
+      {!loading && !error && datasets.length === 0 && (
+        <p>No datasets found.</p>
+      )}
     </div>
   );
-};
-
-export default Datasets;
+}
