@@ -9,7 +9,7 @@ import React, {
   ReactNode,
 } from 'react';
 import { Wallet } from '@/components/wallet-selector/WalletSelector';
-import { networkId as defaultNetwork } from '@/config';
+import { networkId as defaultNetwork, contractId } from '@/config';
 
 export interface WalletContextValue {
   wallet: Wallet | null;
@@ -35,7 +35,7 @@ export const WalletSelectorProvider: React.FC<{ children: ReactNode }> = ({
     // Initialize the Wallet instance
     const initWallet = async () => {
       try {
-        const walletInstance = new Wallet({ networkId: defaultNetwork });
+        const walletInstance = new Wallet({ networkId: defaultNetwork, createAccessKeyFor: contractId });
         const signedAccountId = await walletInstance.startUp((account) => {
           setAccountId(account);
           setIsSignedIn(!!account);

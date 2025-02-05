@@ -22,6 +22,7 @@
     "@near-wallet-selector/sender": "^8.9.16",
     "@near-wallet-selector/welldone-wallet": "^8.9.16",
     "@phosphor-icons/react": "^2.1.7",
+    "@wagmi/connectors": "^5.7.5",
     "@wagmi/core": "^2.16.3",
     "@web3modal/wagmi": "^5.1.11",
     "browserify-fs": "^1.0.0",
