@@ -16,7 +16,8 @@ import jsonld from "jsonld";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const limitParam = searchParams.get("limit") || "24";
-  const after = searchParams.get("after"); // last dataset's id from the previous page
+  const after = searchParams.get("after");
+  const q = searchParams.get("q")?.toLowerCase() || "";
   const limit = parseInt(limitParam, 10);
 
   const ghUrl = process.env.GITHUB_DATASETS_API_URL;
@@ -28,7 +29,7 @@ export async function GET(request: Request) {
   }
   const response = await fetch(ghUrl, {
     headers: {
-      Authorization: `Bearer ${process.env.GITHUB_TOKEN}`, // Must remain server-side
+      Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
     },
   });
 
@@ -90,7 +91,35 @@ export async function GET(request: Request) {
   const graph = Array.isArray(compacted["@graph"]) ? compacted["@graph"] : [];
 
   const catalogNode = graph.find((node: any) => node.type === "dcat:Catalog") || null;
-  const datasetNodes = graph.filter((node: any) => node.type === "dcat:Dataset");
+  let datasetNodes = graph.filter((node: any) => node.type === "dcat:Dataset");
+
+  if (q) {
+    datasetNodes = datasetNodes.filter((item: any) => {
+      const idMatch = (item.id || "").toLowerCase().includes(q);
+
+      // Label match? (if item.label is array)
+      let labelMatch = false;
+      if (Array.isArray(item.label)) {
+        labelMatch = item.label.some((lab: any) => {
+          // lab["@value"] could be something like "Core terms..."
+          const val = (lab["@value"] || "").toLowerCase();
+          return val.includes(q);
+        });
+      }
+
+      // isDefinedBy match? (if item.isDefinedBy is array)
+      let defMatch = false;
+      if (Array.isArray(item.isDefinedBy)) {
+        defMatch = item.isDefinedBy.some((def: any) => {
+          // def could be an object with "id", or even a string if further compacted
+          const val = (def.id || "").toLowerCase();
+          return val.includes(q);
+        });
+      }
+
+      return idMatch || labelMatch || defMatch;
+    });
+  }
 
   datasetNodes.sort((a: any, b: any) => (a.id ?? "").localeCompare(b.id ?? ""));
 

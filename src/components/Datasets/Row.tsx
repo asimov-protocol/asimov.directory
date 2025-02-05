@@ -10,7 +10,7 @@ type Props = {
 
 const DatasetRow = ({ dataset }: Props) => {
   const label = Array.isArray(dataset.label) ? dataset.label : [dataset.label];
-  const enLabel = label.find((l) => l['@language'] === 'en');
+  const enLabel = label.find((l) => l['@language'] === 'en')!;
   // const [expandLabels, setExpandLabels] = useState(false);
   // const handleExpandLabels = () => {
   //   setExpandLabels((prev) => !prev);
@@ -29,22 +29,25 @@ const DatasetRow = ({ dataset }: Props) => {
   return (
     <tr className="hover:bg-sSlate-600 transition-colors">
       <td className="px-5 py-4 min-w-16">
-        <Image
-          className="rounded-md"
-          src="/logo.png"
-          width={64}
-          height={64}
-          alt={`Dataset Logo for ${enLabel?.['@value']}`}
-        />
+        <div className="rounded flex items-center justify-center bg-sSlate-600 w-16 h-16">
+          <Image
+            className="rounded-md"
+            src="/logo-stacked-white.svg"
+            width={64}
+            height={64}
+            alt={`Dataset Logo for ${enLabel?.['@value']}`}
+          />
+        </div>
       </td>
       <td className="px-5 py-4 font-semibold">
         <div className="flex flex-col items-start gap-x-2 w-72">
-        {enLabel?.['@value']}
-          {/* <Link
-            href={`/datasets/${dataset.id}`}
+
+          <Link
+            href={`/datasets/${btoa(dataset.id)}`}
             className="text-white hover:underline transition-colors"
           >
-          </Link> */}
+            {enLabel?.['@value']}
+          </Link>
           {/* <div className="underline text-sm text-neutral-300">{dataset.isDefinedBy?.id || 'N/A'}</div> */}
           {/* <div className='flex flex-wrap gap-1 mt-2'>
             {labels.slice(0, expandLabels ? labels.length - 1 : LABELS_NUM).map((label, index) => (

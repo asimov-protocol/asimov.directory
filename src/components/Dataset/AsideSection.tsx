@@ -1,13 +1,8 @@
-import { Dataset } from "@/types/dataset";
 import { labels, formatDate } from "@/utils";
 import { DatasetCategory } from "@/components/Datasets/Category";
 import StatsChart from "./StatsChart";
 
-type Props = {
-  dataset: Dataset;
-};
-
-const AsideSection = ({ dataset }: Props) => {
+const AsideSection = () => {
   return (
     <div className="text-white pt-0 py-6 divide-y divide-gray-700 sticky top-4">
 
@@ -20,12 +15,12 @@ const AsideSection = ({ dataset }: Props) => {
 
       <div className="py-3">
         <h3 className="text-lg font-semibold">Author</h3>
-        <p className="text-orange-400 underline">{dataset.creator}</p>
+        <p className="text-orange-400 underline">Jon Doe</p>
       </div>
 
       <div className="py-3">
         <h3 className="text-lg font-semibold">Format</h3>
-        <p className="text-gray-300">JSON</p>
+        <p className="text-gray-300">RDF</p>
       </div>
 
       <div className="py-3">
@@ -51,12 +46,12 @@ const AsideSection = ({ dataset }: Props) => {
 
       <div className="py-3">
         <h3 className="text-lg font-semibold">Added</h3>
-        <p className="text-gray-300">{formatDate(dataset.created_at)}</p>
+        <p className="text-gray-300">{formatDate(new Date().getMilliseconds())}</p>
       </div>
 
       <div className="py-3">
         <h3 className="text-lg font-semibold">Updated</h3>
-        <p className="text-gray-300">{formatDate(dataset.updated_at)}</p>
+        <p className="text-gray-300">{formatDate(new Date().getMilliseconds())}</p>
       </div>
 
       <div className="py-3">

@@ -6,7 +6,6 @@ type Props = {
 };
 
 const DatasetList = ({ datasets }: Props) => {
-  console.log("datasets: ", datasets);
   return (
     <div className="overflow-x-auto">
       <div className='min-w-5xl w-full'>
