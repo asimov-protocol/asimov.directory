@@ -7,7 +7,7 @@ import { TabProvider } from "@/context/TabsContext";
 import OverviewSection from "@/components/Dataset/OverviewSection";
 import AsideSection from "@/components/Dataset/AsideSection";
 import DataViewSection from "@/components/Dataset/DataViewSection";
-import QuerySection from "@/components/Dataset/QuerySection";
+// import QuerySection from "@/components/Dataset/QuerySection";
 import Breadcrumbs from "./Breadcrumbs";
 import { useBreadcrumbContext } from "@/context/BreadcrumbContext";
 import { type Dataset } from "@/types/dataset";
@@ -78,7 +78,7 @@ const Dataset = ({ id }: { id: string }) => {
 
             <DataViewSection />
 
-            <QuerySection />
+            {/* <QuerySection /> */}
           </TabProvider>
         </div>
         <div className="relative">

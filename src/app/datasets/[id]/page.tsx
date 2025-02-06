@@ -1,6 +1,7 @@
+import { PageProps } from ".next/types/app/page";
 import Dataset from "@/components/Dataset";
 
-type Props = {
+type Props = PageProps & {
   params: {
     id: string;
   };

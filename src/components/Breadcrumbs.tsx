@@ -6,7 +6,6 @@ const Breadcrumbs = () => {
 
   const breadcrumbs = [
     { label: 'Home', href: '/' },
-    // { label: 'Datasets', href: '/datasets' },
     { label: currentDataset },
   ];
 
