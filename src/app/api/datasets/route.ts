@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Buffer } from "buffer";
-import jsonld from "jsonld";
+import jsonld, { type JsonLdDocument } from "jsonld";
+import type { JsonLdObj, JsonLdArray } from "jsonld/jsonld-spec";
 
 /**
  * GET /api/datasets?limit=24&after=<datasetId>
@@ -50,7 +51,7 @@ export async function GET(request: Request) {
   }
 
   const decoded = Buffer.from(ghData.content, "base64").toString("utf-8");
-  let originalJsonLd: any;
+  let originalJsonLd: JsonLdDocument;
   try {
     originalJsonLd = JSON.parse(decoded);
   } catch (err: any) {
@@ -60,7 +61,7 @@ export async function GET(request: Request) {
     );
   }
 
-  let expanded: any;
+  let expanded: JsonLdArray;
   try {
     expanded = await jsonld.expand(originalJsonLd);
   } catch (err: any) {
@@ -78,7 +79,7 @@ export async function GET(request: Request) {
     "dcat": "http://www.w3.org/ns/dcat#"
   };
 
-  let compacted: any;
+  let compacted: JsonLdObj;
   try {
     compacted = await jsonld.compact(expanded, context);
   } catch (err: any) {
@@ -90,31 +91,36 @@ export async function GET(request: Request) {
 
   const graph = Array.isArray(compacted["@graph"]) ? compacted["@graph"] : [];
 
-  const catalogNode = graph.find((node: any) => node.type === "dcat:Catalog") || null;
-  let datasetNodes = graph.filter((node: any) => node.type === "dcat:Dataset");
+  const catalogNode = graph.find((node) => node.type === "dcat:Catalog") || null;
+  let datasetNodes = graph.filter((node) => node.type === "dcat:Dataset");
 
   if (q) {
     datasetNodes = datasetNodes.filter((item: any) => {
-      const idMatch = (item.id || "").toLowerCase().includes(q);
+      console.log("item", item);
+      const idMatch = (item.id as string || "").toLowerCase().includes(q);
 
       // Label match? (if item.label is array)
-      let labelMatch = item.label?.["@value"]?.toLowerCase().includes(decodeURIComponent(q)) || false;
+      let labelMatch = false;
       if (Array.isArray(item.label)) {
         labelMatch = item.label.some((lab: any) => {
           // lab["@value"] could be something like "Core terms..."
           const val = (lab["@value"] || "").toLowerCase();
           return val.includes(decodeURIComponent(q));
         });
+      } else if (item.label !== null && typeof item.label === "object") {
+        labelMatch = item.label['@value']?.toLowerCase().includes(decodeURIComponent(q)) || false;
       }
 
       // isDefinedBy match? (if item.isDefinedBy is array)
-      let defMatch = item.isDefinedBy?.["@id"]?.toLowerCase().includes(decodeURIComponent(q)) || false;
+      let defMatch = false;
       if (Array.isArray(item.isDefinedBy)) {
         defMatch = item.isDefinedBy.some((def: any) => {
           // def could be an object with "id", or even a string if further compacted
           const val = (def.id || "").toLowerCase();
           return val.includes(decodeURIComponent(q));
         });
+      } else if (item.isDefinedBy !== null && typeof item.isDefinedBy === "object") {
+        defMatch = (item.isDefinedBy["@id"] || "").toLowerCase().includes(decodeURIComponent(q));
       }
 
       return idMatch || labelMatch || defMatch;
@@ -136,7 +142,7 @@ export async function GET(request: Request) {
   let nextCursor: string | null = null;
   if (startIndex + limit < datasetNodes.length) {
     const lastItem = items[items.length - 1];
-    nextCursor = lastItem?.id || null;
+    nextCursor = lastItem?.id as string || null;
   }
 
   return NextResponse.json({

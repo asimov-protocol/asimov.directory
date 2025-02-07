@@ -14,10 +14,14 @@ import { useBreadcrumbContext } from "@/context/BreadcrumbContext";
 import { type Dataset } from "@/types/dataset";
 import { fetcher } from "@/utils";
 
-const Dataset = ({ id }: { id: string }) => {
-  const { data, error } = useSWR(`/api/dataset?id=${id}`, fetcher);
+type Props = {
+  dataset: Dataset;
+}
 
-  const dataset: Dataset | null = data?.dataset ?? null;
+const Dataset = ({ id }: { id: string }) => {
+  const { data, error } = useSWR<Props, Error>(`/api/dataset?id=${id}`, fetcher);
+
+  const dataset = data?.dataset ?? null;
   const { setCurrentDataset } = useBreadcrumbContext();
 
   useEffect(() => {

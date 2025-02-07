@@ -9,6 +9,7 @@ import useDebounce from "@/hooks/useDebounce";
 import { Spinner } from "@phosphor-icons/react";
 import useSWRInfinite from "swr/infinite";
 import { fetcher } from "@/utils";
+import { type Dataset } from "@/types/dataset";
 
 export default function Datasets() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -44,9 +45,9 @@ export default function Datasets() {
     setSize(1);
   }, [debouncedSearchTerm, setSize]);
 
-  const datasets = data ? data.flatMap((page) => page.items) : [];
-  const totalDatasets = data?.[0]?.total;
-  const nextCursor = data ? data[data.length - 1]?.nextCursor : null;
+  const datasets: Dataset[] = data ? data.flatMap((page) => page.items) : [];
+  const totalDatasets: number = data?.[0]?.total;
+  const nextCursor: string = data ? data[data.length - 1]?.nextCursor : null;
 
   function loadMore() {
     if (nextCursor) {
