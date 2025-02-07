@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import useSWR from "swr";
 import DatasetHeroSection from "@/components/Dataset/HeroSection";
 import NavigationBar from "@/components/Dataset/NavigationBar";
 import { TabProvider } from "@/context/TabsContext";
@@ -11,61 +12,40 @@ import DataViewSection from "@/components/Dataset/DataViewSection";
 import Breadcrumbs from "./Breadcrumbs";
 import { useBreadcrumbContext } from "@/context/BreadcrumbContext";
 import { type Dataset } from "@/types/dataset";
+import { fetcher } from "@/utils";
 
 const Dataset = ({ id }: { id: string }) => {
-  const [dataset, setDataset] = useState<Dataset | null>(null);
-  const [error, setError] = useState("");
+  const { data, error } = useSWR(`/api/dataset?id=${id}`, fetcher);
+
+  const dataset: Dataset | null = data?.dataset ?? null;
   const { setCurrentDataset } = useBreadcrumbContext();
 
   useEffect(() => {
-    fetchDataset(id);
-  }, [id]);
-
-  useEffect(() => {
-    if (!dataset) {
-      return;
-    }
-    const label = Array.isArray(dataset.label) ? dataset.label : [dataset.label];
-    const enLabel = label.find((l) => l['@language'] === 'en')!;
-    if (enLabel?.['@value']) {
-      setCurrentDataset(enLabel['@value']);
+    if (dataset) {
+      const labels = Array.isArray(dataset.label) ? dataset.label : [dataset.label];
+      const enLabel = labels.find((l) => l['@language'] === 'en');
+      if (enLabel?.['@value']) {
+        setCurrentDataset(enLabel['@value']);
+      }
     }
   }, [dataset, setCurrentDataset]);
 
-  const fetchDataset = async (id: string) => {
-    setError("");
-
-    try {
-      const url = `/api/dataset?id=${id}`;
-
-      const res = await fetch(url);
-      if (!res.ok) {
-        throw new Error(`Error fetching dataset: ${res.status} ${res.statusText}`);
-      }
-
-      const data = await res.json();
-      setDataset(data.dataset);
-    } catch (err: any) {
-      setError(err.message || "Error fetching data");
-    }
-  }
-
   if (error) {
-    return <p className="text-red-500">Error: {error}</p>;
+    return <p className="text-red-500">Error: {error.message}</p>;
   }
 
   if (!dataset) {
     return <p>Loading dataset...</p>;
   }
 
-  const label = Array.isArray(dataset.label) ? dataset.label : [dataset.label];
-  const enLabel = label.find((l) => l['@language'] === 'en')!;
+  const labelsArray = Array.isArray(dataset.label) ? dataset.label : [dataset.label];
+  const enLabel = labelsArray.find((l) => l['@language'] === 'en');
 
   return (
     <div className="space-y-6 md:space-y-12">
       <Breadcrumbs />
       <DatasetHeroSection
-        name={enLabel?.['@value']}
+        name={enLabel?.['@value'] ?? "Dataset"}
         description="An RDF dataset representing structured, linked data for semantic web applications, enabling interoperability, data integration, and SPARQL querying."
       />
 

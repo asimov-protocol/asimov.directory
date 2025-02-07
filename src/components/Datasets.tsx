@@ -7,67 +7,55 @@ import { labels, prettyKey } from "@/utils";
 import { DatasetCategory } from "./Datasets/Category";
 import useDebounce from "@/hooks/useDebounce";
 import { Spinner } from "@phosphor-icons/react";
+import useSWRInfinite from "swr/infinite";
+import { fetcher } from "@/utils";
 
 export default function Datasets() {
-  const [datasets, setDatasets] = useState<any[]>([]);
-  const [nextCursor, setNextCursor] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [totalDatasets, setTotalDatasets] = useState(null);
   const debouncedSearchTerm = useDebounce<string>(searchTerm, 250);
+  const PAGE_SIZE = 24;
+
+  const {
+    data,
+    error,
+    size,
+    setSize,
+    isLoading,
+    isValidating,
+  } = useSWRInfinite(
+    (pageIndex, previousPageData) => {
+      if (previousPageData && !previousPageData.nextCursor) return null;
+      let url = `/api/datasets?limit=${PAGE_SIZE}`;
+      if (pageIndex !== 0 && previousPageData?.nextCursor) {
+        url += `&after=${encodeURIComponent(previousPageData.nextCursor)}`;
+      }
+      if (debouncedSearchTerm) {
+        url += `&q=${encodeURIComponent(debouncedSearchTerm)}`;
+      }
+      return url;
+    },
+    fetcher,
+    {
+      revalidateOnFocus: false,
+    }
+  );
 
   useEffect(() => {
-    fetchPage(null, debouncedSearchTerm);
-  }, [debouncedSearchTerm]);
+    setSize(1);
+  }, [debouncedSearchTerm, setSize]);
 
-  const fetchPage = async (cursor: string | null, q: string) => {
-    setLoading(true);
-    setError("");
-
-    try {
-      const limit = 24;
-      let url = `/api/datasets?limit=${limit}`;
-
-      if (cursor) {
-        url += `&after=${encodeURIComponent(cursor)}`;
-      }
-
-      if (q) {
-        url += `&q=${encodeURIComponent(q)}`;
-      }
-
-      const res = await fetch(url);
-      if (!res.ok) {
-        throw new Error(`Error fetching datasets: ${res.status} ${res.statusText}`);
-      }
-
-      const data = await res.json();
-
-      if (!cursor) {
-        setDatasets(data.items);
-      } else {
-        setDatasets((prev) => [...prev, ...data.items]);
-      }
-
-      setNextCursor(data.nextCursor);
-      setTotalDatasets(data.total);
-    } catch (err: any) {
-      setError(err.message || "Error fetching data");
-    } finally {
-      setLoading(false);
-    }
-  }
+  const datasets = data ? data.flatMap((page) => page.items) : [];
+  const totalDatasets = data?.[0]?.total;
+  const nextCursor = data ? data[data.length - 1]?.nextCursor : null;
 
   function loadMore() {
     if (nextCursor) {
-      fetchPage(nextCursor, searchTerm);
+      setSize(size + 1);
     }
   }
 
   function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const newTerm = e.target.value;
-    setSearchTerm(newTerm);
+    setSearchTerm(e.target.value);
   }
 
   return (
@@ -81,7 +69,10 @@ export default function Datasets() {
       </p>
 
       <div className="flex flex-col w-full gap-4">
-        <Search onChange={handleSearchChange} placeholder={`Search ${totalDatasets ?? ''} datasets by name`} />
+        <Search
+          onChange={handleSearchChange}
+          placeholder={`Search ${totalDatasets ?? ""} datasets by name`}
+        />
         <div className="flex gap-2 flex-wrap">
           {labels.map((label) => (
             <DatasetCategory key={prettyKey(label)} category={label} />
@@ -89,7 +80,7 @@ export default function Datasets() {
         </div>
       </div>
 
-      {error && <p className="text-red-500">Error: {error}</p>}
+      {error && <p className="text-red-500">Error: {error.message}</p>}
 
       {!error && datasets.length > 0 && (
         <>
@@ -99,6 +90,7 @@ export default function Datasets() {
             <div className="flex justify-center">
               <button
                 onClick={loadMore}
+                disabled={isValidating}
                 className="px-4 py-2 rounded-md disabled:bg-transparent disabled:cursor-not-allowed border border-neutral-300 text-gGray-300 cursor-pointer hover:not-disabled:text-white"
               >
                 Load More
@@ -108,15 +100,14 @@ export default function Datasets() {
         </>
       )}
 
-      {loading && (
+      {(isLoading || isValidating) && (
         <div className="flex justify-center">
           <Spinner className="mr-3 size-5 animate-spin" />
           <p>Loading datasets...</p>
         </div>
       )}
 
-
-      {!loading && !error && datasets.length === 0 && <p>No datasets found.</p>}
+      {!isLoading && !error && datasets.length === 0 && <p>No datasets found.</p>}
     </div>
   );
 }

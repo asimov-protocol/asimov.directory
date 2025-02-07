@@ -28,6 +28,17 @@ export function formatDate(date: number): string {
   });
 }
 
+/**
+ * Fetcher function for useSWR to fetch data from an API.
+ */
+export async function fetcher(url: string) {
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Error fetching data: ${res.status} ${res.statusText}`);
+  }
+  return res.json();
+};
+
 // TODO: remove this after implementing the actual API
 export const labels = ["History", "Timeline", "Science", "Tech", "Fact-checking", "Emerging industries"];
 
