@@ -98,22 +98,22 @@ export async function GET(request: Request) {
       const idMatch = (item.id || "").toLowerCase().includes(q);
 
       // Label match? (if item.label is array)
-      let labelMatch = false;
+      let labelMatch = item.label?.["@value"]?.toLowerCase().includes(decodeURIComponent(q)) || false;
       if (Array.isArray(item.label)) {
         labelMatch = item.label.some((lab: any) => {
           // lab["@value"] could be something like "Core terms..."
           const val = (lab["@value"] || "").toLowerCase();
-          return val.includes(q);
+          return val.includes(decodeURIComponent(q));
         });
       }
 
       // isDefinedBy match? (if item.isDefinedBy is array)
-      let defMatch = false;
+      let defMatch = item.isDefinedBy?.["@id"]?.toLowerCase().includes(decodeURIComponent(q)) || false;
       if (Array.isArray(item.isDefinedBy)) {
         defMatch = item.isDefinedBy.some((def: any) => {
           // def could be an object with "id", or even a string if further compacted
           const val = (def.id || "").toLowerCase();
-          return val.includes(q);
+          return val.includes(decodeURIComponent(q));
         });
       }
 
