@@ -7,8 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "lint:fix": "next lint --fix --max-warnings 0",
     "format": "prettier --check .",
-    "format:fix": "prettier --write ."
+    "format:fix": "prettier --write .",
+    "prepare": "husky"
   },
   "dependencies": {
     "@near-wallet-selector/bitte-wallet": "^8.9.16",
@@ -53,6 +55,7 @@
     "eslint-config-next": "15.1.6",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.3",
+    "husky": "^9.1.7",
     "pino-pretty": "^13.0.0",
     "postcss": "^8.5.1",
     "prettier": "^3.5.0",
