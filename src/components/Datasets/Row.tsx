@@ -1,16 +1,16 @@
-import { Dataset } from '@/types/dataset';
+import type { CompactedNode } from '@/types/dataset';
 import Image from 'next/image';
 import Link from 'next/link';
 
 type Props = {
-  dataset: Dataset;
+  dataset: CompactedNode;
 }
 
 // const LABELS_NUM = 3;
 
 const DatasetRow = ({ dataset }: Props) => {
   const label = Array.isArray(dataset.label) ? dataset.label : [dataset.label];
-  const enLabel = label.find((l) => l['@language'] === 'en')!;
+  const enLabel = label.find((l) => l!.language === 'en')!;
   // const [expandLabels, setExpandLabels] = useState(false);
   // const handleExpandLabels = () => {
   //   setExpandLabels((prev) => !prev);
@@ -23,7 +23,7 @@ const DatasetRow = ({ dataset }: Props) => {
     return parts[parts.length - 1];
   }
 
-  const sourceName = extractLastSegment(dataset.id);
+  const sourceName = extractLastSegment(dataset.id!);
   const link = `https://testnet.nearblocks.io/address/${sourceName}`;
 
   return (
@@ -35,7 +35,7 @@ const DatasetRow = ({ dataset }: Props) => {
             src="/logo-stacked-white.svg"
             width={64}
             height={64}
-            alt={`Dataset Logo for ${enLabel?.['@value']}`}
+            alt={`Dataset Logo for ${enLabel.value}`}
           />
         </div>
       </td>
@@ -43,10 +43,10 @@ const DatasetRow = ({ dataset }: Props) => {
         <div className="flex flex-col items-start gap-x-2 w-72">
 
           <Link
-            href={`/datasets/${btoa(dataset.id)}`}
+            href={`/datasets/${btoa(dataset.id!)}`}
             className="text-white hover:underline transition-colors"
           >
-            {enLabel?.['@value']}
+            {enLabel?.value}
           </Link>
           {/* <div className="underline text-sm text-neutral-300">{dataset.isDefinedBy?.id || 'N/A'}</div> */}
           {/* <div className='flex flex-wrap gap-1 mt-2'>

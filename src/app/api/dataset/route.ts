@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { Buffer } from "buffer";
 import jsonld from "jsonld";
+import { CompactedNode } from "@/types/dataset";
+import { context } from "../utils";
 
 /**
  * GET /api/dataset?id=<datasetId>
@@ -79,14 +81,6 @@ export async function GET(request: Request) {
     );
   }
 
-  const context = {
-    "id": "@id",
-    "type": "@type",
-    "label": "http://www.w3.org/2000/01/rdf-schema#label",
-    "isDefinedBy": "http://www.w3.org/2000/01/rdf-schema#isDefinedBy",
-    "dcat": "http://www.w3.org/ns/dcat#"
-  };
-
   let compacted: any;
   try {
     compacted = await jsonld.compact(expanded, context);
@@ -98,9 +92,9 @@ export async function GET(request: Request) {
   }
 
   // 5. Locate the dataset node with the specified ID
-  const graph = Array.isArray(compacted["@graph"]) ? compacted["@graph"] : [];
+  const graph = Array.isArray(compacted["@graph"]) ? compacted["@graph"] as CompactedNode[] : [];
   const datasetNode = graph.find(
-    (node: any) => node.type === "dcat:Dataset" && node.id === id
+    (node) => node.type === "dcat:Dataset" && node.id === id
   );
 
   if (!datasetNode) {

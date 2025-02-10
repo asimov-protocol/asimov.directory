@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import DatasetList from "@/components/Datasets/List";
 import Search from "@/components/Search";
 import { labels, prettyKey } from "@/utils";
@@ -9,7 +9,7 @@ import useDebounce from "@/hooks/useDebounce";
 import { Spinner } from "@phosphor-icons/react";
 import useSWRInfinite from "swr/infinite";
 import { fetcher } from "@/utils";
-import { type Dataset } from "@/types/dataset";
+import type { DatasetsApiResponse } from "@/types/dataset";
 
 export default function Datasets() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,7 +23,7 @@ export default function Datasets() {
     setSize,
     isLoading,
     isValidating,
-  } = useSWRInfinite(
+  } = useSWRInfinite<DatasetsApiResponse, Error>(
     (pageIndex, previousPageData) => {
       if (previousPageData && !previousPageData.nextCursor) return null;
       let url = `/api/datasets?limit=${PAGE_SIZE}`;
@@ -41,21 +41,17 @@ export default function Datasets() {
     }
   );
 
-  useEffect(() => {
-    setSize(1);
-  }, [debouncedSearchTerm, setSize]);
+  const datasets = useMemo(() => data ? data.flatMap((page) => page.items) : [], [data]);
+  const totalDatasets = useMemo(() => data?.[0]?.total, [data]);
+  const nextCursor = data ? data[data.length - 1]?.nextCursor : null;
 
-  const datasets: Dataset[] = data ? data.flatMap((page) => page.items) : [];
-  const totalDatasets: number = data?.[0]?.total;
-  const nextCursor: string = data ? data[data.length - 1]?.nextCursor : null;
-
-  function loadMore() {
+  const loadMore = () => {
     if (nextCursor) {
       setSize(size + 1);
     }
   }
 
-  function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   }
 

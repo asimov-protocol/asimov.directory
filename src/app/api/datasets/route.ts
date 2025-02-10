@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { Buffer } from "buffer";
 import jsonld, { type JsonLdDocument } from "jsonld";
 import type { JsonLdObj, JsonLdArray } from "jsonld/jsonld-spec";
+import { CompactedNode } from "@/types/dataset";
+import { context } from "../utils";
 
 /**
  * GET /api/datasets?limit=24&after=<datasetId>
@@ -71,14 +73,6 @@ export async function GET(request: Request) {
     );
   }
 
-  const context = {
-    "id": "@id",
-    "type": "@type",
-    "label": "http://www.w3.org/2000/01/rdf-schema#label",
-    "isDefinedBy": "http://www.w3.org/2000/01/rdf-schema#isDefinedBy",
-    "dcat": "http://www.w3.org/ns/dcat#"
-  };
-
   let compacted: JsonLdObj;
   try {
     compacted = await jsonld.compact(expanded, context);
@@ -89,49 +83,45 @@ export async function GET(request: Request) {
     );
   }
 
-  const graph = Array.isArray(compacted["@graph"]) ? compacted["@graph"] : [];
+  const graph = Array.isArray(compacted["@graph"]) ? compacted["@graph"] as CompactedNode[] : [];
 
   const catalogNode = graph.find((node) => node.type === "dcat:Catalog") || null;
   let datasetNodes = graph.filter((node) => node.type === "dcat:Dataset");
 
   if (q) {
-    datasetNodes = datasetNodes.filter((item: any) => {
-      console.log("item", item);
+    datasetNodes = datasetNodes.filter((item) => {
       const idMatch = (item.id as string || "").toLowerCase().includes(q);
 
       // Label match? (if item.label is array)
       let labelMatch = false;
       if (Array.isArray(item.label)) {
-        labelMatch = item.label.some((lab: any) => {
-          // lab["@value"] could be something like "Core terms..."
-          const val = (lab["@value"] || "").toLowerCase();
-          return val.includes(decodeURIComponent(q));
+        labelMatch = item.label.some((lab) => {
+          if (lab.value) {
+            return lab.value.toLowerCase().includes(decodeURIComponent(q));
+          }
+          return false;
         });
-      } else if (item.label !== null && typeof item.label === "object") {
-        labelMatch = item.label['@value']?.toLowerCase().includes(decodeURIComponent(q)) || false;
+      } else if (item.label && item.label.value) {
+        // label is single object like { "@value", "@language" }
+        labelMatch = item.label.value.toLowerCase().includes(decodeURIComponent(q));
       }
 
       // isDefinedBy match? (if item.isDefinedBy is array)
       let defMatch = false;
-      if (Array.isArray(item.isDefinedBy)) {
-        defMatch = item.isDefinedBy.some((def: any) => {
-          // def could be an object with "id", or even a string if further compacted
-          const val = (def.id || "").toLowerCase();
-          return val.includes(decodeURIComponent(q));
-        });
-      } else if (item.isDefinedBy !== null && typeof item.isDefinedBy === "object") {
-        defMatch = (item.isDefinedBy["@id"] || "").toLowerCase().includes(decodeURIComponent(q));
+      if (item.isDefinedBy && item.isDefinedBy.id) {
+        // single object
+        defMatch = item.isDefinedBy.id.toLowerCase().includes(decodeURIComponent(q));
       }
 
       return idMatch || labelMatch || defMatch;
     });
   }
 
-  datasetNodes.sort((a: any, b: any) => (a.id ?? "").localeCompare(b.id ?? ""));
+  datasetNodes.sort((a, b) => (a.id ?? "").localeCompare(b.id ?? ""));
 
   let startIndex = 0;
   if (after) {
-    const idx = datasetNodes.findIndex((item: any) => item.id === after);
+    const idx = datasetNodes.findIndex((item) => item.id === after);
     if (idx >= 0) {
       startIndex = idx + 1;
     }

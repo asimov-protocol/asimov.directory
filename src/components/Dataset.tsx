@@ -11,11 +11,11 @@ import DataViewSection from "@/components/Dataset/DataViewSection";
 // import QuerySection from "@/components/Dataset/QuerySection";
 import Breadcrumbs from "./Breadcrumbs";
 import { useBreadcrumbContext } from "@/context/BreadcrumbContext";
-import { type Dataset } from "@/types/dataset";
+import type { CompactedNode } from "@/types/dataset";
 import { fetcher } from "@/utils";
 
 type Props = {
-  dataset: Dataset;
+  dataset: CompactedNode;
 }
 
 const Dataset = ({ id }: { id: string }) => {
@@ -27,9 +27,9 @@ const Dataset = ({ id }: { id: string }) => {
   useEffect(() => {
     if (dataset) {
       const labels = Array.isArray(dataset.label) ? dataset.label : [dataset.label];
-      const enLabel = labels.find((l) => l['@language'] === 'en');
-      if (enLabel?.['@value']) {
-        setCurrentDataset(enLabel['@value']);
+      const enLabel = labels.find((l) => l!.language === 'en');
+      if (enLabel?.value) {
+        setCurrentDataset(enLabel.value);
       }
     }
   }, [dataset, setCurrentDataset]);
@@ -43,13 +43,13 @@ const Dataset = ({ id }: { id: string }) => {
   }
 
   const labelsArray = Array.isArray(dataset.label) ? dataset.label : [dataset.label];
-  const enLabel = labelsArray.find((l) => l['@language'] === 'en');
+  const enLabel = labelsArray.find((l) => l!.language === 'en');
 
   return (
     <div className="space-y-6 md:space-y-12">
       <Breadcrumbs />
       <DatasetHeroSection
-        name={enLabel?.['@value'] ?? "Dataset"}
+        name={enLabel?.value ?? "Dataset"}
         description="An RDF dataset representing structured, linked data for semantic web applications, enabling interoperability, data integration, and SPARQL querying."
       />
 

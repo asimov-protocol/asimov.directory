@@ -1,8 +1,8 @@
-import { Dataset } from "@/types/dataset";
+import type { CompactedNode } from "@/types/dataset";
 import DatasetRow from "./Row";
 
 type Props = {
-  datasets: Dataset[];
+  datasets: CompactedNode[];
 };
 
 const DatasetList = ({ datasets }: Props) => {
