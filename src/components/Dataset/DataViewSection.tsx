@@ -8,7 +8,7 @@ import { useTabContext } from '@/context/TabsContext';
 const DataViewSection = () => {
   const { activeTab } = useTabContext();
 
-  if (activeTab !== "viewer") {
+  if (activeTab !== 'viewer') {
     return null;
   }
 
@@ -31,13 +31,13 @@ const DataViewSection = () => {
       foaf:name "Charlie Johnson" ;
       foaf:age 28 ;
       foaf:mbox <mailto:charlie@example.org> .
-`
+`;
   return (
     <div>
       <SyntaxHighlighter
         language="turtle"
         style={atomOneDark}
-        customStyle={{ background: "transparent" }}
+        customStyle={{ background: 'transparent' }}
         showLineNumbers
       >
         {data}

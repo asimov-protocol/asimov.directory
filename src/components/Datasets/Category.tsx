@@ -14,7 +14,11 @@ const DatasetCategory = ({ category }: CategoryProps) => (
   </div>
 );
 
-const ShowAllCategories = ({ ariaExpanded, onClick, label }: ShowAllCategoriesProps) => (
+const ShowAllCategories = ({
+  ariaExpanded,
+  onClick,
+  label,
+}: ShowAllCategoriesProps) => (
   <button
     className="text-xs text-neutral-300 border border-gGray-400 rounded-md px-1.5 py-0.5 cursor-pointer font-semibold"
     aria-expanded={ariaExpanded}
@@ -24,7 +28,4 @@ const ShowAllCategories = ({ ariaExpanded, onClick, label }: ShowAllCategoriesPr
   </button>
 );
 
-export {
-  DatasetCategory,
-  ShowAllCategories
-};
+export { DatasetCategory, ShowAllCategories };

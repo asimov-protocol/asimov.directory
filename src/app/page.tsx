@@ -1,7 +1,5 @@
-import Datasets from "@/components/Datasets";
+import Datasets from '@/components/Datasets';
 
 export default function HomePage() {
-  return (
-    <Datasets />
-  );
+  return <Datasets />;
 }

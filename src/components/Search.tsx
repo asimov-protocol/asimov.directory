@@ -1,11 +1,11 @@
-import { MagnifyingGlass } from "@phosphor-icons/react";
+import { MagnifyingGlass } from '@phosphor-icons/react';
 
 type Props = {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
-}
+};
 
-const Search = ({ onChange, placeholder = "Search" }: Props) => {
+const Search = ({ onChange, placeholder = 'Search' }: Props) => {
   return (
     <div className="flex items-center w-full bg-transparent border border-gGray-300 rounded-xl p-2 input-focus">
       <MagnifyingGlass className="text-gGray-300 w-5 h-5 mx-2" />

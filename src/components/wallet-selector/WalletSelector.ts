@@ -1,4 +1,9 @@
-import type { FinalExecutionOutcome, WalletSelector, WalletSelectorState, NetworkId } from '@near-wallet-selector/core';
+import type {
+  FinalExecutionOutcome,
+  WalletSelector,
+  WalletSelectorState,
+  NetworkId,
+} from '@near-wallet-selector/core';
 import { setupWalletSelector } from '@near-wallet-selector/core';
 import { setupEthereumWallets } from '@near-wallet-selector/ethereum-wallets';
 import { setupHereWallet } from '@near-wallet-selector/here-wallet';
@@ -41,11 +46,15 @@ export class Wallet {
     this.selector = setupWalletSelector({
       network: this.networkId,
       modules: [
-        setupEthereumWallets({ wagmiConfig: wagmiConfig as any, web3Modal: web3Modal as any, alwaysOnboardDuringSignIn: true }),
+        setupEthereumWallets({
+          wagmiConfig: wagmiConfig as any,
+          web3Modal: web3Modal as any,
+          alwaysOnboardDuringSignIn: true,
+        }),
         setupMeteorWallet(),
         setupBitteWallet({
-          walletUrl: "https://wallet.bitte.ai",
-          callbackUrl: "https://www.mywebsite.com",
+          walletUrl: 'https://wallet.bitte.ai',
+          callbackUrl: 'https://www.mywebsite.com',
           deprecated: false,
         }) as any,
         setupHereWallet(),
@@ -60,18 +69,26 @@ export class Wallet {
 
     const walletSelector = await this.selector;
     const isSignedIn = walletSelector.isSignedIn();
-    const accountId = isSignedIn ? walletSelector.store.getState().accounts[0].accountId : '';
+    const accountId = isSignedIn
+      ? walletSelector.store.getState().accounts[0].accountId
+      : '';
 
-    walletSelector.store.observable.subscribe(async (state: WalletSelectorState) => {
-      const signedAccount = state?.accounts.find((account: { active: boolean }) => account.active)?.accountId;
-      accountChangeHook(signedAccount || '');
-    });
+    walletSelector.store.observable.subscribe(
+      async (state: WalletSelectorState) => {
+        const signedAccount = state?.accounts.find(
+          (account: { active: boolean }) => account.active,
+        )?.accountId;
+        accountChangeHook(signedAccount || '');
+      },
+    );
 
     return accountId;
   };
 
   signIn = async () => {
-    const modal = setupModal(await this.selector, { contractId: this.createAccessKeyFor || '' });
+    const modal = setupModal(await this.selector, {
+      contractId: this.createAccessKeyFor || '',
+    });
     modal.show();
   };
 
@@ -80,7 +97,15 @@ export class Wallet {
     selectedWallet.signOut();
   };
 
-  viewMethod = async ({ contractId, method, args = {} }: { contractId: string; method: string; args?: object }) => {
+  viewMethod = async ({
+    contractId,
+    method,
+    args = {},
+  }: {
+    contractId: string;
+    method: string;
+    args?: object;
+  }) => {
     const url = `https://rpc.${this.networkId}.near.org`;
     const provider = new providers.JsonRpcProvider({ url });
 
@@ -150,13 +175,19 @@ export class Wallet {
     });
     // return amount on NEAR
     if (format) {
-      return account.amount ? utils.format.formatNearAmount(account.amount) : '0';
+      return account.amount
+        ? utils.format.formatNearAmount(account.amount)
+        : '0';
     } else {
       return account.amount || '0';
     }
   };
 
-  signAndSendTransactions = async ({ transactions }: { transactions: any[] }) => {
+  signAndSendTransactions = async ({
+    transactions,
+  }: {
+    transactions: any[];
+  }) => {
     const selectedWallet = await (await this.selector).wallet();
     return selectedWallet.signAndSendTransactions({ transactions });
   };
@@ -176,7 +207,10 @@ export class Wallet {
   };
 }
 
-export const NearContext: Context<{ wallet: Wallet | undefined; signedAccountId: string }> = createContext({
+export const NearContext: Context<{
+  wallet: Wallet | undefined;
+  signedAccountId: string;
+}> = createContext({
   wallet: undefined as Wallet | undefined,
   signedAccountId: '',
 });

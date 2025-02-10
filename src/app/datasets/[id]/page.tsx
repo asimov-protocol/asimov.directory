@@ -1,5 +1,5 @@
-import { PageProps } from ".next/types/app/page";
-import Dataset from "@/components/Dataset";
+import { PageProps } from '.next/types/app/page';
+import Dataset from '@/components/Dataset';
 
 type Props = PageProps & {
   params: {
@@ -9,7 +9,5 @@ type Props = PageProps & {
 
 export default async function DatasetPage({ params }: Props) {
   const { id } = await params;
-  return (
-    <Dataset id={id} />
-  );
+  return <Dataset id={id} />;
 }

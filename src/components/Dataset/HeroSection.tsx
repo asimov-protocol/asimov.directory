@@ -1,5 +1,5 @@
-import Image from "next/image";
-import { CloudArrowDown } from "@phosphor-icons/react";
+import Image from 'next/image';
+import { CloudArrowDown } from '@phosphor-icons/react';
 
 type Props = {
   name: string;
@@ -21,7 +21,7 @@ const DatasetHeroSection = ({ name, description }: Props) => (
       <div>
         <h2 className="text-2xl font-bold">{name}</h2>
         <p className="text-gray-300">
-          {description || "No description available."}
+          {description || 'No description available.'}
         </p>
       </div>
     </div>
@@ -29,7 +29,9 @@ const DatasetHeroSection = ({ name, description }: Props) => (
     <div>
       <button className="flex items-center ml-auto space-x-2 bg-oOrange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 cursor-pointer transition-colors">
         <CloudArrowDown className="w-5 h-5" />
-        <span className="font-arges text-2xl font-semibold tracking-wider">Download dataset</span>
+        <span className="font-arges text-2xl font-semibold tracking-wider">
+          Download dataset
+        </span>
       </button>
     </div>
   </div>

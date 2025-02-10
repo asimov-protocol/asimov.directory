@@ -1,4 +1,4 @@
-import { NetworkId } from "@near-wallet-selector/core";
+import { NetworkId } from '@near-wallet-selector/core';
 
 const evmWalletChains = {
   mainnet: {
@@ -15,6 +15,7 @@ const evmWalletChains = {
   },
 };
 
-export const networkId: NetworkId = (process.env.NEXT_PUBLIC_NETWORK_ID as NetworkId) || 'testnet';
+export const networkId: NetworkId =
+  (process.env.NEXT_PUBLIC_NETWORK_ID as NetworkId) || 'testnet';
 export const EVMWalletChain = evmWalletChains[networkId];
 export const contractId = process.env.NEXT_PUBLIC_CONTRACT_ID || 'test.testnet';

@@ -1,5 +1,5 @@
-import type { CompactedNode } from "@/types/dataset";
-import DatasetRow from "./Row";
+import type { CompactedNode } from '@/types/dataset';
+import DatasetRow from './Row';
 
 type Props = {
   datasets: CompactedNode[];
@@ -8,12 +8,14 @@ type Props = {
 const DatasetList = ({ datasets }: Props) => {
   return (
     <div className="overflow-x-auto">
-      <div className='min-w-5xl w-full'>
+      <div className="min-w-5xl w-full">
         <table className="table-auto w-full text-left">
           <thead>
             <tr className="border-b border-gGray-300 text-gGray-300 text-sm font-normal">
-              {["", "Dataset", "Source", "Defined by" ].map((header) => (
-                <th key={header.toLowerCase()} className="px-5 py-2">{header}</th>
+              {['', 'Dataset', 'Source', 'Defined by'].map((header) => (
+                <th key={header.toLowerCase()} className="px-5 py-2">
+                  {header}
+                </th>
               ))}
             </tr>
           </thead>

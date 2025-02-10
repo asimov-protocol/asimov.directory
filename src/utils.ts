@@ -9,8 +9,8 @@ export function prettyKey(input: string): string {
   return input
     .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9 ]/g, "")
-    .replace(/\s+/g, "_");
+    .replace(/[^a-z0-9 ]/g, '')
+    .replace(/\s+/g, '_');
 }
 
 /**
@@ -24,7 +24,7 @@ export function formatDate(date: number): string {
   return new Date(date).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
-    year: 'numeric'
+    year: 'numeric',
   });
 }
 
@@ -37,15 +37,22 @@ export async function fetcher(url: string) {
     throw new Error(`Error fetching data: ${res.status} ${res.statusText}`);
   }
   return res.json();
-};
+}
 
 // TODO: remove this after implementing the actual API
-export const labels = ["History", "Timeline", "Science", "Tech", "Fact-checking", "Emerging industries"];
+export const labels = [
+  'History',
+  'Timeline',
+  'Science',
+  'Tech',
+  'Fact-checking',
+  'Emerging industries',
+];
 
 export const datasetTabs = [
-  { label: "Overview", value: "overview" },
-  { label: "Data viewer", value: "viewer" },
+  { label: 'Overview', value: 'overview' },
+  { label: 'Data viewer', value: 'viewer' },
   // { label: "Query", value: "query" },
-  { label: "Annotation", value: "annotation" },
-  { label: "History", value: "history" },
+  { label: 'Annotation', value: 'annotation' },
+  { label: 'History', value: 'history' },
 ] as const;

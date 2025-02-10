@@ -1,4 +1,4 @@
-import { datasetTabs } from "@/utils";
+import { datasetTabs } from '@/utils';
 
 export interface Pagination {
   page: number;
@@ -11,22 +11,20 @@ export interface DatasetList {
   datasets: CompactedNode[];
 }
 
-export type DatasetTabValue = (typeof datasetTabs)[number]["value"];
+export type DatasetTabValue = (typeof datasetTabs)[number]['value'];
 
-export type LabelValue =
-  {
-    value: string;
-    language: string;
-  };
+export type LabelValue = {
+  value: string;
+  language: string;
+};
 
 /**
  * "isDefinedBy" often references an object with "@id",
  * but can also be a string or array.
  */
-export type IsDefinedByValue =
-  {
-    id: string;
-  };
+export type IsDefinedByValue = {
+  id: string;
+};
 
 /**
  * A minimal shape of one node from the JSON-LD graph *after* compaction.

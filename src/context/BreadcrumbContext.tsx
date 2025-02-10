@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode } from 'react';
 
 // Breadcrumbs context type
 interface BreadcrumbContextType {
@@ -8,11 +8,15 @@ interface BreadcrumbContextType {
   setCurrentDataset: (dataset: string) => void;
 }
 
-const BreadcrumbContext = createContext<BreadcrumbContextType | undefined>(undefined);
+const BreadcrumbContext = createContext<BreadcrumbContextType | undefined>(
+  undefined,
+);
 
 // Breadcrumb provider
-export const BreadcrumbProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [currentDataset, setCurrentDataset] = useState<string>("");
+export const BreadcrumbProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const [currentDataset, setCurrentDataset] = useState<string>('');
 
   return (
     <BreadcrumbContext.Provider value={{ currentDataset, setCurrentDataset }}>
@@ -25,7 +29,9 @@ export const BreadcrumbProvider: React.FC<{ children: ReactNode }> = ({ children
 export const useBreadcrumbContext = (): BreadcrumbContextType => {
   const context = useContext(BreadcrumbContext);
   if (!context) {
-    throw new Error("useBreadcrumbContext must be used within a BreadcrumbProvider");
+    throw new Error(
+      'useBreadcrumbContext must be used within a BreadcrumbProvider',
+    );
   }
   return context;
 };

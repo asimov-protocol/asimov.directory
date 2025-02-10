@@ -35,7 +35,10 @@ export const WalletSelectorProvider: React.FC<{ children: ReactNode }> = ({
     // Initialize the Wallet instance
     const initWallet = async () => {
       try {
-        const walletInstance = new Wallet({ networkId: defaultNetwork, createAccessKeyFor: contractId });
+        const walletInstance = new Wallet({
+          networkId: defaultNetwork,
+          createAccessKeyFor: contractId,
+        });
         const signedAccountId = await walletInstance.startUp((account) => {
           setAccountId(account);
           setIsSignedIn(!!account);
@@ -77,7 +80,7 @@ export const useWalletSelector = () => {
   const context = useContext(WalletSelectorContext);
   if (!context) {
     throw new Error(
-      'useWalletSelector must be used within a WalletSelectorProvider'
+      'useWalletSelector must be used within a WalletSelectorProvider',
     );
   }
   return context;

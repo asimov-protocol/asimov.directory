@@ -1,15 +1,15 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import "@near-wallet-selector/modal-ui/styles.css";
-import Nav from "@/components/Nav";
-import { WalletSelectorProvider } from "@/context/WalletSelectorContext";
-import { BreadcrumbProvider } from "@/context/BreadcrumbContext";
-import Footer from "@/components/Footer";
+import type { Metadata } from 'next';
+import './globals.css';
+import '@near-wallet-selector/modal-ui/styles.css';
+import Nav from '@/components/Nav';
+import { WalletSelectorProvider } from '@/context/WalletSelectorContext';
+import { BreadcrumbProvider } from '@/context/BreadcrumbContext';
+import Footer from '@/components/Footer';
 import localFont from 'next/font/local';
 
 export const metadata: Metadata = {
-  title: "Asimov Directory",
-  description: "",
+  title: 'Asimov Directory',
+  description: '',
 };
 
 const suisseIntl = localFont({
@@ -62,9 +62,7 @@ export default function RootLayout({ children }: Props) {
           <Nav />
           <main className="relative ">
             <BreadcrumbProvider>
-              <div className="container-default">
-                {children}
-              </div>
+              <div className="container-default">{children}</div>
             </BreadcrumbProvider>
           </main>
           <Footer />

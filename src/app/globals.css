@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   --color-gGray-100: #f6f6f6;
@@ -37,7 +37,6 @@
     @apply focus-within:ring-2 focus-within:ring-gGray-100 transition-all;
   }
 }
-
 
 :root {
   --background: var(--color-sSlate-900);

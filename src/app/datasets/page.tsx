@@ -1,7 +1,5 @@
-import Datasets from "@/components/Datasets";
+import Datasets from '@/components/Datasets';
 
 export default async function DatasetsPage() {
-  return (
-    <Datasets />
-  );
+  return <Datasets />;
 }

@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
-import { Buffer } from "buffer";
-import jsonld, { type JsonLdDocument } from "jsonld";
-import type { JsonLdObj, JsonLdArray } from "jsonld/jsonld-spec";
-import { CompactedNode } from "@/types/dataset";
-import { context } from "../utils";
+import { NextResponse } from 'next/server';
+import { Buffer } from 'buffer';
+import jsonld, { type JsonLdDocument } from 'jsonld';
+import type { JsonLdObj, JsonLdArray } from 'jsonld/jsonld-spec';
+import { CompactedNode } from '@/types/dataset';
+import { context } from '../utils';
 
 /**
  * GET /api/datasets?limit=24&after=<datasetId>
@@ -18,15 +18,15 @@ import { context } from "../utils";
  */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const limitParam = searchParams.get("limit") || "24";
-  const after = searchParams.get("after");
-  const q = searchParams.get("q")?.toLowerCase() || "";
+  const limitParam = searchParams.get('limit') || '24';
+  const after = searchParams.get('after');
+  const q = searchParams.get('q')?.toLowerCase() || '';
   const limit = parseInt(limitParam, 10);
 
   const ghUrl = process.env.GITHUB_DATASETS_API_URL;
   if (!ghUrl) {
     return NextResponse.json(
-      { error: "GITHUB_DATASETS_API_URL not set in environment." },
+      { error: 'GITHUB_DATASETS_API_URL not set in environment.' },
       { status: 500 },
     );
   }
@@ -47,12 +47,12 @@ export async function GET(request: Request) {
   const ghData = await response.json();
   if (!ghData.content) {
     return NextResponse.json(
-      { error: "No content found in GitHub response." },
+      { error: 'No content found in GitHub response.' },
       { status: 500 },
     );
   }
 
-  const decoded = Buffer.from(ghData.content, "base64").toString("utf-8");
+  const decoded = Buffer.from(ghData.content, 'base64').toString('utf-8');
   let originalJsonLd: JsonLdDocument;
   try {
     originalJsonLd = JSON.parse(decoded);
@@ -83,14 +83,17 @@ export async function GET(request: Request) {
     );
   }
 
-  const graph = Array.isArray(compacted["@graph"]) ? compacted["@graph"] as CompactedNode[] : [];
+  const graph = Array.isArray(compacted['@graph'])
+    ? (compacted['@graph'] as CompactedNode[])
+    : [];
 
-  const catalogNode = graph.find((node) => node.type === "dcat:Catalog") || null;
-  let datasetNodes = graph.filter((node) => node.type === "dcat:Dataset");
+  const catalogNode =
+    graph.find((node) => node.type === 'dcat:Catalog') || null;
+  let datasetNodes = graph.filter((node) => node.type === 'dcat:Dataset');
 
   if (q) {
     datasetNodes = datasetNodes.filter((item) => {
-      const idMatch = (item.id as string || "").toLowerCase().includes(q);
+      const idMatch = ((item.id as string) || '').toLowerCase().includes(q);
 
       // Label match? (if item.label is array)
       let labelMatch = false;
@@ -103,21 +106,25 @@ export async function GET(request: Request) {
         });
       } else if (item.label && item.label.value) {
         // label is single object like { "@value", "@language" }
-        labelMatch = item.label.value.toLowerCase().includes(decodeURIComponent(q));
+        labelMatch = item.label.value
+          .toLowerCase()
+          .includes(decodeURIComponent(q));
       }
 
       // isDefinedBy match? (if item.isDefinedBy is array)
       let defMatch = false;
       if (item.isDefinedBy && item.isDefinedBy.id) {
         // single object
-        defMatch = item.isDefinedBy.id.toLowerCase().includes(decodeURIComponent(q));
+        defMatch = item.isDefinedBy.id
+          .toLowerCase()
+          .includes(decodeURIComponent(q));
       }
 
       return idMatch || labelMatch || defMatch;
     });
   }
 
-  datasetNodes.sort((a, b) => (a.id ?? "").localeCompare(b.id ?? ""));
+  datasetNodes.sort((a, b) => (a.id ?? '').localeCompare(b.id ?? ''));
 
   let startIndex = 0;
   if (after) {
@@ -132,7 +139,7 @@ export async function GET(request: Request) {
   let nextCursor: string | null = null;
   if (startIndex + limit < datasetNodes.length) {
     const lastItem = items[items.length - 1];
-    nextCursor = lastItem?.id as string || null;
+    nextCursor = (lastItem?.id as string) || null;
   }
 
   return NextResponse.json({

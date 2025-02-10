@@ -21,11 +21,15 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "fs": [
-        "./node_modules/browserify-fs"
-      ]
+      "fs": ["./node_modules/browserify-fs"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "types/**/*.d.ts", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "types/**/*.d.ts",
+    ".next/types/**/*.ts"
+  ],
   "exclude": ["node_modules"]
 }

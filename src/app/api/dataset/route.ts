@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
-import { Buffer } from "buffer";
-import jsonld from "jsonld";
-import { CompactedNode } from "@/types/dataset";
-import { context } from "../utils";
+import { NextResponse } from 'next/server';
+import { Buffer } from 'buffer';
+import jsonld from 'jsonld';
+import { CompactedNode } from '@/types/dataset';
+import { context } from '../utils';
 
 /**
  * GET /api/dataset?id=<datasetId>
@@ -15,7 +15,7 @@ import { context } from "../utils";
 export async function GET(request: Request) {
   // 1. Parse query params
   const { searchParams } = new URL(request.url);
-  let id = searchParams.get("id");
+  let id = searchParams.get('id');
 
   if (!id) {
     return NextResponse.json(
@@ -24,7 +24,7 @@ export async function GET(request: Request) {
     );
   }
 
-  id = Buffer.from(id, "base64").toString("utf-8");
+  id = Buffer.from(id, 'base64').toString('utf-8');
 
   console.log(`Fetching dataset with id: ${id}`);
 
@@ -32,7 +32,7 @@ export async function GET(request: Request) {
   const ghUrl = process.env.GITHUB_DATASETS_API_URL;
   if (!ghUrl) {
     return NextResponse.json(
-      { error: "GITHUB_DATASETS_API_URL not set in environment." },
+      { error: 'GITHUB_DATASETS_API_URL not set in environment.' },
       { status: 500 },
     );
   }
@@ -53,13 +53,13 @@ export async function GET(request: Request) {
   const ghData = await response.json();
   if (!ghData.content) {
     return NextResponse.json(
-      { error: "No content found in GitHub response." },
+      { error: 'No content found in GitHub response.' },
       { status: 500 },
     );
   }
 
   // 3. Decode base64 & parse JSON
-  const decoded = Buffer.from(ghData.content, "base64").toString("utf-8");
+  const decoded = Buffer.from(ghData.content, 'base64').toString('utf-8');
   let originalJsonLd: any;
   try {
     originalJsonLd = JSON.parse(decoded);
@@ -92,9 +92,11 @@ export async function GET(request: Request) {
   }
 
   // 5. Locate the dataset node with the specified ID
-  const graph = Array.isArray(compacted["@graph"]) ? compacted["@graph"] as CompactedNode[] : [];
+  const graph = Array.isArray(compacted['@graph'])
+    ? (compacted['@graph'] as CompactedNode[])
+    : [];
   const datasetNode = graph.find(
-    (node) => node.type === "dcat:Dataset" && node.id === id
+    (node) => node.type === 'dcat:Dataset' && node.id === id,
   );
 
   if (!datasetNode) {

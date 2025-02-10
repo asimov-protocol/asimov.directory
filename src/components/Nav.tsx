@@ -1,20 +1,21 @@
 'use client';
 
-import Link from "next/link";
-import Image from "next/image";
-import Logo from "./Logo";
-import { useWalletSelector } from "@/context/WalletSelectorContext";
-import { useState } from "react";
+import Link from 'next/link';
+import Image from 'next/image';
+import Logo from './Logo';
+import { useWalletSelector } from '@/context/WalletSelectorContext';
+import { useState } from 'react';
 
 const Nav = () => {
-  const { accountId, isSignedIn, signIn, signOut, isInitializing } = useWalletSelector();
+  const { accountId, isSignedIn, signIn, signOut, isInitializing } =
+    useWalletSelector();
   const [dropdownToggle, setDropdownToggle] = useState(false);
 
   const handleSignIn = async () => {
     try {
       await signIn();
     } catch (err) {
-      console.error("Failed to sign in:", err);
+      console.error('Failed to sign in:', err);
     }
   };
 
@@ -22,7 +23,7 @@ const Nav = () => {
     try {
       await signOut();
     } catch (err) {
-      console.error("Failed to sign out:", err);
+      console.error('Failed to sign out:', err);
     }
   };
 
@@ -68,7 +69,9 @@ const Nav = () => {
                         aria-orientation="vertical"
                         aria-labelledby="user-menu-button"
                       >
-                        <p className="block px-4 py-2 text-sm text-gray-700">{accountId}</p>
+                        <p className="block px-4 py-2 text-sm text-gray-700">
+                          {accountId}
+                        </p>
                         <button
                           onClick={handleSignOut}
                           className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 bg-transparent border-none rounded-none transition-colors"

@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 type Props = {
   dataset: CompactedNode;
-}
+};
 
 // const LABELS_NUM = 3;
 
@@ -21,7 +21,7 @@ const DatasetRow = ({ dataset }: Props) => {
     const parts = url.split('/');
     // Return the last element in the array
     return parts[parts.length - 1];
-  }
+  };
 
   const sourceName = extractLastSegment(dataset.id!);
   const link = `https://testnet.nearblocks.io/address/${sourceName}`;
@@ -41,7 +41,6 @@ const DatasetRow = ({ dataset }: Props) => {
       </td>
       <td className="px-5 py-4 font-semibold">
         <div className="flex flex-col items-start gap-x-2 w-72">
-
           <Link
             href={`/datasets/${btoa(dataset.id!)}`}
             className="text-white hover:underline transition-colors"
