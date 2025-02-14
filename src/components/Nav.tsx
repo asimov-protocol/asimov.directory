@@ -1,15 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import Logo from './Logo';
 import { useWalletSelector } from '@/context/WalletSelectorContext';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import useClickOutside from '@/hooks/useClickOutside';
+import { User } from '@phosphor-icons/react';
 
 const Nav = () => {
   const { accountId, isSignedIn, signIn, signOut, isInitializing } =
     useWalletSelector();
   const [dropdownToggle, setDropdownToggle] = useState(false);
+  const dropdownRef = useRef(null!);
 
   const handleSignIn = async () => {
     try {
@@ -31,6 +33,8 @@ const Nav = () => {
     setDropdownToggle(!dropdownToggle);
   };
 
+  useClickOutside(dropdownRef, () => setDropdownToggle(false));
+
   return (
     <header className="bg-background text-sStone-200 shadow w-full mx-auto border-b-4 border-oOrange-500">
       <nav className="container-base py-2">
@@ -43,22 +47,19 @@ const Nav = () => {
             {!isInitializing && (
               <div className="flex ml-auto items-center">
                 {isSignedIn ? (
-                  <div className="relative">
+                  <div ref={dropdownRef} className="relative">
                     <button
                       type="button"
-                      className="flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                      className="flex rounded-full p-1 bg-white text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-oOrange-500"
                       id="user-menu-button"
                       aria-expanded={dropdownToggle}
                       aria-haspopup="true"
                       onClick={toggleDropdown}
                     >
                       <span className="sr-only">Open user menu</span>
-                      <Image
-                        className="size-8 rounded-full"
-                        src="/logo.png"
-                        alt="Profile"
-                        width={32}
-                        height={32}
+                      <User
+                        className="size-7 rounded-full text-sSlate-800"
+                        size={32}
                       />
                     </button>
 
