@@ -13,6 +13,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
     "@near-wallet-selector/bitte-wallet": "^8.9.16",
     "@near-wallet-selector/core": "^8.9.16",
     "@near-wallet-selector/ethereum-wallets": "^8.9.16",
