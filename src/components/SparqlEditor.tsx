@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import dynamic from 'next/dynamic';
-import { Monaco } from '@monaco-editor/react';
-
-// Dynamically import the Monaco Editor so it only loads in the browser
-const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
-  ssr: false,
-});
+import Editor from '@/components/Editor';
 
 export interface SparqlEditorProps {
   /**
@@ -38,41 +32,14 @@ const SparqlEditor: React.FC<SparqlEditorProps> = ({
     }
   };
 
-  const handleLoadEditor = (_editor: any, monaco: Monaco) => {
-    if (!monaco) {
-      console.error('Monaco is undefined');
-      return;
-    }
-
-    monaco.editor.defineTheme('myCoolTheme', {
-      base: 'vs-dark',
-      rules: [],
-      inherit: true,
-      colors: {
-        'editor.background': '#05122e',
-        'editor.foreground': '#f6f6f6',
-        'editorWidget.border': '#f6f6f6',
-      },
-    });
-
-    monaco.editor.setTheme('myCoolTheme');
-  };
-
   return (
     <div className="space-y-4 flex items-start flex-col border border-gray-800 rounded-lg p-4">
-      <MonacoEditor
-        theme="myCoolTheme"
+      <Editor
         language="sparql"
         height="300px"
         width="100%"
-        defaultLanguage="sql"
         value={query}
         onChange={(value) => setQuery(value || '')}
-        onMount={handleLoadEditor}
-        options={{
-          minimap: { enabled: false },
-          fontSize: 14,
-        }}
       />
       <button
         onClick={handleRun}

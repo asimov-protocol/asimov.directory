@@ -13,7 +13,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@monaco-editor/react": "^4.7.0",
+    "@monaco-editor/react": "^4.7.0-rc.0",
     "@near-wallet-selector/bitte-wallet": "^8.9.16",
     "@near-wallet-selector/core": "^8.9.16",
     "@near-wallet-selector/ethereum-wallets": "^8.9.16",
@@ -35,11 +35,12 @@
     "jsonld": "^8.3.3",
     "near-api-js": "^5.0.1",
     "next": "15.1.6",
+    "ol": "^10.4.0",
     "rdf-canonize-native": "^1.1.2",
     "react": "^19",
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^19",
-    "react-syntax-highlighter": "^15.6.1",
+    "react-force-graph-2d": "^1.27.0",
     "swr": "^2.3.2",
     "wagmi": "^2.14.9"
   },
@@ -50,7 +51,6 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/react-syntax-highlighter": "^15.5.13",
     "@typescript-eslint/eslint-plugin": "^8.22.0",
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
