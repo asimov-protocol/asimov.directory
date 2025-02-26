@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { osmPlanetAPI } from '../utils';
 
 /**
  * POST /api/sparql
@@ -13,16 +12,17 @@ import { osmPlanetAPI } from '../utils';
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = (await request.json()) as { query?: string };
-    const { query } = body;
+    const body = (await request.json()) as {
+      query?: string;
+      endpoint?: string;
+    };
+    const { query, endpoint } = body;
     if (!query) {
       return NextResponse.json(
         { error: 'No SPARQL query provided.' },
         { status: 400 },
       );
     }
-    const endpoint = osmPlanetAPI;
-    // const endpoint = wikiAPI;
     const url = `${endpoint}?query=${encodeURIComponent(query)}`;
     const response = await fetch(url);
     const data = await response.json();

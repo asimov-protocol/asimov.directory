@@ -7,7 +7,3 @@ export const context = {
   language: '@language',
   value: '@value',
 };
-
-export const wikiAPI = 'https://qlever.cs.uni-freiburg.de/api/wikidata';
-
-export const osmPlanetAPI = 'https://qlever.cs.uni-freiburg.de/api/osm-planet';

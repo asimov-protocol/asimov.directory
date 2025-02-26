@@ -35,7 +35,6 @@ const TableRow = ({ children }: Props) => (
 const Td = ({ children }: Props) => <td className="px-5 py-4">{children}</td>;
 
 const TableItem = ({ args }: any) => {
-  console.log(args);
   if (!args) {
     return <span>None</span>;
   }

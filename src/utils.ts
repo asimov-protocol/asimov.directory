@@ -1,3 +1,6 @@
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 /**
  * Converts a string into a "pretty key" format.
  * Example: "English Wikipedia" -> "english_wikipedia"
@@ -42,13 +45,67 @@ export async function fetcher(url: string, init?: RequestInit) {
 /**
  * Fetches data from the SPARQL API.
  */
-export function sparqlFetcher(params: [string, string]) {
-  const [apiUrl, query] = params;
+export function sparqlFetcher(params: [string, string, string]) {
+  const [apiUrl, query, endpoint] = params;
   return fetcher(apiUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query }),
+    body: JSON.stringify({ query, endpoint }),
   });
+}
+
+/**
+ * Recursively flattens an input.
+ * If an object has a "value" key (and optionally a "type" key), it returns that value.
+ * Otherwise, it processes arrays and objects recursively.
+ */
+export function flatten(input: unknown): unknown {
+  if (Array.isArray(input)) {
+    return input.map(flatten);
+  }
+  if (input !== null && typeof input === 'object') {
+    const obj = input as Record<string, unknown>;
+
+    if ('value' in obj && 'type' in obj) {
+      return obj.value;
+    }
+
+    const output: Record<string, unknown> = {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        output[key] = flatten(obj[key]);
+      }
+    }
+    return output;
+  }
+  return input;
+}
+
+export function exportToCSV(data: any, fileName = 'data.csv') {
+  const flattenedData = data.map(flatten);
+  // Convert JSON data to a worksheet
+  const worksheet = XLSX.utils.json_to_sheet(flattenedData);
+  // Create a new workbook and append the worksheet
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+  // Write the workbook to a binary string in CSV format
+  const csvOutput = XLSX.write(workbook, { bookType: 'csv', type: 'array' });
+
+  // Create a Blob from the CSV data and trigger a download
+  const blob = new Blob([csvOutput], { type: 'text/csv;charset=utf-8;' });
+  saveAs(blob, fileName);
+}
+
+export function exportJSON(data: any, fileName = 'data.json') {
+  // Stringify the original JSON data (preserving its structure)
+  const jsonString = JSON.stringify(data, null, 2);
+  // Create a Blob from the JSON string
+  const blob = new Blob([jsonString], {
+    type: 'application/json;charset=utf-8',
+  });
+  // Trigger the download
+  saveAs(blob, fileName);
 }
 
 // TODO: remove this after implementing the actual API
@@ -68,6 +125,10 @@ export const datasetTabs = [
   { label: 'Annotation', value: 'annotation' },
   { label: 'History', value: 'history' },
 ] as const;
+
+// TODO: remove this after implementing the actual API
+export const wikiAPI = 'https://qlever.cs.uni-freiburg.de/api/wikidata';
+export const osmPlanetAPI = 'https://qlever.cs.uni-freiburg.de/api/osm-planet';
 
 export const wikiQueryExample = `PREFIX wikibase: <http://wikiba.se/ontology#>
 PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>

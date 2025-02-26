@@ -2,10 +2,11 @@
 
 import useSWR from 'swr';
 import { useTabContext } from '@/context/TabsContext';
-import { useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import SparqlEditor from '@/components/SparqlEditor';
 // import GraphView from '@/components/GraphView';
-import { sparqlFetcher } from '@/utils';
+import { exportToCSV, exportJSON, sparqlFetcher } from '@/utils';
+import useClickOutside from '@/hooks/useClickOutside';
 import { Spinner } from '@phosphor-icons/react';
 import {
   Table,
@@ -16,7 +17,7 @@ import {
   Td,
   TableItem,
 } from '@/components/Table';
-import { osmQueryExample } from '@/utils';
+import { wikiQueryExample as queryExample, wikiAPI as endpoint } from '@/utils';
 import DataMapView from '@/components/DataMapView';
 import Editor from '@/components/Editor';
 
@@ -27,34 +28,55 @@ const LIMIT = 100;
 
 const DataViewSection = () => {
   const { activeTab } = useTabContext();
-  const [runQuery, setRunQuery] = useState(null);
+  const [runQuery, setRunQuery] = useState<string | undefined>(undefined);
   const [dataView, setDataView] = useState<DataView>('table');
+  const [dropdownToggle, setDropdownToggle] = useState(false);
+  const isOSMQuery = useMemo(
+    () => runQuery && runQuery.includes('osm'),
+    [runQuery],
+  );
+  const dropdownRef = useRef(null!);
 
   const { data, error, isLoading } = useSWR(
-    runQuery ? ['/api/sparql', runQuery] : null,
+    runQuery ? ['/api/sparql', runQuery, endpoint] : null,
     sparqlFetcher,
   );
+
+  useClickOutside(dropdownRef, () => setDropdownToggle(false));
 
   if (activeTab !== 'viewer') {
     return null;
   }
 
   const handleRunQuery = (query: string) => {
-    setRunQuery(query as any);
+    setRunQuery(query);
   };
 
   const handleSelectView = (e: React.MouseEvent<HTMLButtonElement>) => {
     setDataView(e.currentTarget.value as DataView);
   };
 
-  console.log({ data, error, isLoading });
+  const handleExportCSV = () => {
+    if (data) {
+      exportToCSV(data.results.bindings);
+    }
+  };
+
+  const handleExportJSON = () => {
+    if (data) {
+      exportJSON(data.results.bindings);
+    }
+  };
+
+  const toggleDropdown = () => {
+    setDropdownToggle(!dropdownToggle);
+  };
+
+  console.log({ data, error, isLoading, isOSMQuery });
 
   return (
     <div className="space-y-4">
-      <SparqlEditor
-        initialQuery={osmQueryExample}
-        onRunQuery={handleRunQuery}
-      />
+      <SparqlEditor initialQuery={queryExample} onRunQuery={handleRunQuery} />
 
       {isLoading && (
         <div className="flex justify-center">
@@ -68,7 +90,7 @@ const DataViewSection = () => {
       {data && (
         <>
           <section className="border border-gray-800 rounded-lg p-4 overflow-y-auto max-h-svh">
-            <div className="flex gap-1">
+            <div className="flex gap-1 relative">
               <div className="flex flex-col gap-1">
                 <h2 className="text-2xl font-bold">Query results</h2>
                 <p>
@@ -78,25 +100,60 @@ const DataViewSection = () => {
                     : null}
                 </p>
               </div>
-              <div className="flex gap-2 items-center ml-auto">
+              <div
+                className="flex gap-2 items-center ml-auto relative"
+                ref={dropdownRef}
+              >
                 {[
                   { label: 'Table', value: 'table' },
                   { label: 'Json', value: 'json' },
-                  { label: 'Map', value: 'map' },
-                ].map((item) => (
-                  <button
-                    key={item.value}
-                    className={`px-4 py-2 font-arges text-xl font-semibold tracking-wider text-white rounded-lg shadow transition-colors ${
-                      dataView === item.value
-                        ? 'bg-oOrange-500 hover:bg-orange-600'
-                        : 'bg-sSlate-400 hover:bg-orange-600'
-                    }`}
-                    value={item.value}
-                    onClick={handleSelectView}
+                  { label: 'Map', value: 'map', disabled: !isOSMQuery },
+                ]
+                  .filter((item) => !item.disabled)
+                  .map((item) => (
+                    <button
+                      key={item.value}
+                      className={`px-4 py-2 font-arges text-xl font-semibold tracking-wider text-white rounded-lg shadow transition-colors ${
+                        dataView === item.value
+                          ? 'bg-oOrange-500 hover:bg-orange-600'
+                          : 'bg-sSlate-400 hover:bg-orange-600'
+                      }`}
+                      value={item.value}
+                      onClick={handleSelectView}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                <button
+                  onClick={toggleDropdown}
+                  className="px-4 py-2 font-arges text-2xl font-semibold tracking-wider text-white bg-oOrange-500 hover:bg-orange-600 rounded-lg shadow transition-colors hover:bg-oOrange-600"
+                  aria-expanded={dropdownToggle}
+                  aria-haspopup="true"
+                >
+                  Export
+                </button>
+                {dropdownToggle && (
+                  <div
+                    className="absolute top-full right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-2 ring-1 ring-black/5 focus:outline-hidden shadow-lg"
+                    role="menu"
+                    aria-orientation="vertical"
+                    aria-labelledby="user-menu-button"
                   >
-                    {item.label}
-                  </button>
-                ))}
+                    {[
+                      { label: 'CSV', onClick: handleExportCSV },
+                      { label: 'JSON', onClick: handleExportJSON },
+                    ].map((item) => (
+                      <button
+                        key={item.label}
+                        onClick={item.onClick}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 bg-transparent border-none rounded-none transition-colors"
+                        role="menuitem"
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             {dataView === 'table' && (
