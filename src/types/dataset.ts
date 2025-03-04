@@ -50,3 +50,38 @@ export interface DatasetsApiResponse {
   nextCursor: string | null;
   total: number;
 }
+
+export interface SparqlBinding {
+  [key: string]: {
+    value: string;
+    type: string;
+    datatype?: string;
+  };
+}
+
+export interface SparqlData {
+  results: {
+    bindings: SparqlBinding[];
+  };
+}
+
+export interface DataMapViewProps {
+  data: SparqlData;
+}
+
+/**
+ * This map stores a mapping between some ID (e.g. feature name)
+ * and a WKT string to be exported as GeoJSON.
+ */
+export type GeoDataMap = Map<string, string>;
+
+/**
+ * A small helper interface to describe the label objects
+ * we store in the feature's 'labels' property.
+ */
+export interface LabelInfo {
+  key: string;
+  type: string;
+  value: string;
+  datatype: boolean;
+}

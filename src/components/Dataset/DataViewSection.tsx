@@ -2,7 +2,7 @@
 
 import useSWR from 'swr';
 import { useTabContext } from '@/context/TabsContext';
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import SparqlEditor from '@/components/SparqlEditor';
 // import GraphView from '@/components/GraphView';
 import { exportToCSV, exportJSON, sparqlFetcher } from '@/utils';
@@ -17,7 +17,14 @@ import {
   Td,
   TableItem,
 } from '@/components/Table';
-import { wikiQueryExample as queryExample, wikiAPI as endpoint } from '@/utils';
+import {
+  osmQueryExample as queryExample,
+  osmPlanetAPI as endpoint,
+} from '@/utils';
+// import {
+//   wikiQueryExample as queryExample,
+//   wikiAPI as endpoint,
+// } from '@/utils';
 import DataMapView from '@/components/DataMapView';
 import Editor from '@/components/Editor';
 
@@ -36,21 +43,28 @@ const DataViewSection = () => {
     [runQuery],
   );
   const dropdownRef = useRef(null!);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   const { data, error, isLoading } = useSWR(
     runQuery ? ['/api/sparql', runQuery, endpoint] : null,
     sparqlFetcher,
   );
 
+  const handleRunQuery = useCallback((query: string) => {
+    setRunQuery(query);
+  }, []);
+
+  useEffect(() => {
+    if (runQuery) {
+      sectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [runQuery, data]);
+
   useClickOutside(dropdownRef, () => setDropdownToggle(false));
 
   if (activeTab !== 'viewer') {
     return null;
   }
-
-  const handleRunQuery = (query: string) => {
-    setRunQuery(query);
-  };
 
   const handleSelectView = (e: React.MouseEvent<HTMLButtonElement>) => {
     setDataView(e.currentTarget.value as DataView);
@@ -72,8 +86,6 @@ const DataViewSection = () => {
     setDropdownToggle(!dropdownToggle);
   };
 
-  console.log({ data, error, isLoading, isOSMQuery });
-
   return (
     <div className="space-y-4">
       <SparqlEditor initialQuery={queryExample} onRunQuery={handleRunQuery} />
@@ -89,7 +101,10 @@ const DataViewSection = () => {
 
       {data && (
         <>
-          <section className="border border-gray-800 rounded-lg p-4 overflow-y-auto max-h-svh">
+          <section
+            ref={sectionRef}
+            className="border border-gray-800 rounded-lg p-4 overflow-y-auto max-h-svh"
+          >
             <div className="flex gap-1 relative">
               <div className="flex flex-col gap-1">
                 <h2 className="text-2xl font-bold">Query results</h2>
