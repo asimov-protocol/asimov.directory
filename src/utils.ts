@@ -35,23 +35,38 @@ export function formatDate(date: number): string {
  * Fetcher function for useSWR to fetch data from an API.
  */
 export async function fetcher(url: string, init?: RequestInit) {
-  const res = await fetch(url, init);
-  if (!res.ok) {
-    throw new Error(`Error fetching data: ${res.status} ${res.statusText}`);
+  try {
+    const res = await fetch(url, init);
+    if (!res.ok) {
+      throw new Error(`Error fetching data: ${res.status} ${res.statusText}`);
+    }
+    return res.json();
+  } catch (err: any) {
+    throw new Error(`Error fetching data: ${err.message}`);
   }
-  return res.json();
 }
 
 /**
  * Fetches data from the SPARQL API.
  */
-export function sparqlFetcher(params: [string, string, string]) {
-  const [apiUrl, query, endpoint] = params;
-  return fetcher(apiUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query, endpoint }),
-  });
+export function sparqlFetcher(params: [string, string, string, string]) {
+  console.log({ params });
+  const [apiUrl, query, endpoint, method = 'POST'] = params;
+  try {
+    if (!query) {
+      throw new Error('No SPARQL query provided.');
+    }
+    return fetcher(apiUrl, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/sparql-results+json',
+      },
+      body: JSON.stringify({ query, endpoint }),
+    });
+  } catch (err: any) {
+    throw new Error(err.message || 'Internal Server Error');
+  }
 }
 
 /**
@@ -130,6 +145,8 @@ export const datasetTabs = [
 export const wikiAPI = 'https://qlever.cs.uni-freiburg.de/api/wikidata';
 export const osmPlanetAPI = 'https://qlever.cs.uni-freiburg.de/api/osm-planet';
 
+export const ukraineAPI = 'https://test-indexer.asimovprotocol.dev/query';
+
 export const wikiQueryExample = `PREFIX wikibase: <http://wikiba.se/ontology#>
 PREFIX psn: <http://www.wikidata.org/prop/statement/value-normalized/>
 PREFIX wd: <http://www.wikidata.org/entity/>
@@ -167,3 +184,52 @@ SELECT ?region ?name ?geometry WHERE {
   ?region geo:hasGeometry/geo:asWKT ?geometry .
 }
 `;
+
+export const osmQueryExample2 = `PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX osmway: <https://www.openstreetmap.org/way/>
+PREFIX osmrel: <https://www.openstreetmap.org/relation/>
+SELECT ?way_id ?way_pos ?node_id ?node_pos ?geometry WHERE {
+  osmrel:51477 osmrel:member ?way_member .
+  ?way_member osmrel:member_id ?way_id .
+  ?way_member osmrel:member_role "outer" .
+  ?way_member osmrel:member_pos ?way_pos .
+  ?way_id osmway:member ?node_member .
+  ?node_member osmway:member_id ?node_id .
+  ?node_member osmway:member_pos ?node_pos .
+  ?node_id geo:hasGeometry/geo:asWKT ?geometry .
+}
+ORDER BY ?way_pos ?node_pos`;
+
+export const ukraineQueryExample = `SELECT ?s ?p ?o WHERE {
+  ?s ?p ?o .
+}
+LIMIT 10`;
+
+export const ukraineQueryExample2 = `PREFIX osm2rdf: <https://osm2rdf.cs.uni-freiburg.de/rdf#>
+PREFIX osmrel: <https://www.openstreetmap.org/relation/>
+PREFIX osmway: <https://www.openstreetmap.org/way/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT ?relation ?way ?geometry WHERE {
+  ?relation osm2rdf:hasCompleteGeometry "false"^^xsd:boolean .
+  ?relation osmrel:member ?member .
+  ?member osmrel:member_id ?way ;
+          osmrel:member_role "outer" .
+  ?way geo:hasGeometry/geo:asWKT ?geometry .
+}
+LIMIT 10
+`;
+
+// if make this query using https://qlever.cs.uni-freiburg.de/api/osm-planet API it returns all streets from the Poltava, city in Ukraine
+export const ukraineQueryExample3 = `PREFIX ogc: <http://www.opengis.net/rdf#>
+PREFIX osmrel: <https://www.openstreetmap.org/relation/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX osm: <https://www.openstreetmap.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+SELECT ?osm_id ?shape WHERE {
+  osmrel:1641691 ogc:sfContains ?osm_id .
+  ?osm_id osmkey:highway ?highway .
+  ?osm_id rdf:type osm:way .
+  ?osm_id geo:hasGeometry/geo:asWKT ?shape
+}`;

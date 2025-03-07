@@ -52,6 +52,7 @@
     "@types/file-saver": "^2.0.7",
     "@types/jsonld": "^1.5.15",
     "@types/node": "^20",
+    "@types/ol": "^7.0.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@typescript-eslint/eslint-plugin": "^8.22.0",

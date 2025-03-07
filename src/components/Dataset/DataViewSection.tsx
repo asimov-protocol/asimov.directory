@@ -17,26 +17,30 @@ import {
   Td,
   TableItem,
 } from '@/components/Table';
+// import {
+//   osmQueryExample as queryExample,
+//   osmPlanetAPI as endpoint,
+// } from '@/utils';
 import {
-  osmQueryExample as queryExample,
-  osmPlanetAPI as endpoint,
+  ukraineQueryExample2 as queryExample,
+  ukraineAPI as endpoint,
 } from '@/utils';
 // import {
 //   wikiQueryExample as queryExample,
 //   wikiAPI as endpoint,
 // } from '@/utils';
-import DataMapView from '@/components/DataMapView';
+import DataMapView from '@/components/DataMapView/MapView';
 import Editor from '@/components/Editor';
 
 type DataView = 'table' | 'json' | 'map';
 
-// TODO: make this LIMIT as a state and allow user to view all results
 const LIMIT = 100;
 
 const DataViewSection = () => {
   const { activeTab } = useTabContext();
   const [runQuery, setRunQuery] = useState<string | undefined>(undefined);
   const [dataView, setDataView] = useState<DataView>('table');
+  const [limit, setLimit] = useState(LIMIT);
   const [dropdownToggle, setDropdownToggle] = useState(false);
   const isOSMQuery = useMemo(
     () => runQuery && runQuery.includes('osm'),
@@ -51,7 +55,7 @@ const DataViewSection = () => {
   );
 
   const handleRunQuery = useCallback((query: string) => {
-    setRunQuery(query);
+    setRunQuery(query.replace(/\s+/g, ' '));
   }, []);
 
   useEffect(() => {
@@ -86,6 +90,10 @@ const DataViewSection = () => {
     setDropdownToggle(!dropdownToggle);
   };
 
+  if (error) {
+    console.error(error);
+  }
+
   return (
     <div className="space-y-4">
       <SparqlEditor initialQuery={queryExample} onRunQuery={handleRunQuery} />
@@ -97,7 +105,7 @@ const DataViewSection = () => {
         </div>
       )}
 
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+      {/* {error && <p style={{ color: 'red' }}>Error: {error}</p>} */}
 
       {data && (
         <>
@@ -112,7 +120,15 @@ const DataViewSection = () => {
                   Found {data.results.bindings.length} lines.{' '}
                   {data.results.bindings.length > LIMIT
                     ? `Limited to ${LIMIT}.`
-                    : null}
+                    : null}{' '}
+                  {data.results.bindings.length > LIMIT && (
+                    <button
+                      onClick={() => setLimit(data.results.bindings.length)}
+                      className="underline inline-flex"
+                    >
+                      View all
+                    </button>
+                  )}
                 </p>
               </div>
               <div
@@ -181,7 +197,7 @@ const DataViewSection = () => {
                 </TableHead>
                 <TableBody>
                   {data.results.bindings
-                    .slice(0, LIMIT)
+                    .slice(0, limit)
                     .map((row: any, index: number) => (
                       <TableRow key={index}>
                         <Td>{index + 1}</Td>
@@ -200,7 +216,7 @@ const DataViewSection = () => {
                 height="80vh"
                 defaultLanguage="json"
                 defaultValue={JSON.stringify(
-                  data.results.bindings.slice(0, LIMIT),
+                  data.results.bindings.slice(0, limit),
                   null,
                   2,
                 )}
@@ -210,7 +226,17 @@ const DataViewSection = () => {
                 }}
               />
             )}
-            {dataView === 'map' && <DataMapView data={data} />}
+            {dataView === 'map' && (
+              <DataMapView
+                data={{
+                  ...data,
+                  results: {
+                    ...data.results,
+                    bindings: data.results.bindings.slice(0, limit),
+                  },
+                }}
+              />
+            )}
           </section>
 
           {/* <section className="border border-gray-800 rounded-lg p-4 overflow-hidden relative">

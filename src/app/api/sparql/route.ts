@@ -24,7 +24,15 @@ export async function POST(request: NextRequest) {
       );
     }
     const url = `${endpoint}?query=${encodeURIComponent(query)}`;
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: { Accept: request.headers.get('accept') || 'application/json' },
+    });
+    if (!response.ok) {
+      return NextResponse.json(
+        { error: 'SPARQL endpoint error.' },
+        { status: response.status },
+      );
+    }
     const data = await response.json();
     return NextResponse.json(data);
   } catch (err: any) {
