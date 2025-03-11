@@ -38,11 +38,13 @@ export async function fetcher(url: string, init?: RequestInit) {
   try {
     const res = await fetch(url, init);
     if (!res.ok) {
-      throw new Error(`Error fetching data: ${res.status} ${res.statusText}`);
+      return Promise.reject(
+        new Error(`Error fetching data: ${res.status} ${res.statusText}`),
+      );
     }
     return res.json();
   } catch (err: any) {
-    throw new Error(`Error fetching data: ${err.message}`);
+    return Promise.reject(new Error(`Error fetching data: ${err.message}`));
   }
 }
 
@@ -52,21 +54,17 @@ export async function fetcher(url: string, init?: RequestInit) {
 export function sparqlFetcher(params: [string, string, string, string]) {
   console.log({ params });
   const [apiUrl, query, endpoint, method = 'POST'] = params;
-  try {
-    if (!query) {
-      throw new Error('No SPARQL query provided.');
-    }
-    return fetcher(apiUrl, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/sparql-results+json',
-      },
-      body: JSON.stringify({ query, endpoint }),
-    });
-  } catch (err: any) {
-    throw new Error(err.message || 'Internal Server Error');
+  if (!query) {
+    return Promise.reject(new Error('No SPARQL query provided.'));
   }
+  return fetcher(apiUrl, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/sparql-results+json',
+    },
+    body: JSON.stringify({ query, endpoint }),
+  });
 }
 
 /**

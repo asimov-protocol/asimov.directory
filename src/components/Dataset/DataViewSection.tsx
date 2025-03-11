@@ -105,7 +105,7 @@ const DataViewSection = () => {
         </div>
       )}
 
-      {/* {error && <p style={{ color: 'red' }}>Error: {error}</p>} */}
+      {error && <p style={{ color: 'red' }}>{error.message}</p>}
 
       {data && (
         <>

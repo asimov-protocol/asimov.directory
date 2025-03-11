@@ -44,7 +44,7 @@ const Dataset = ({ id }: { id: string }) => {
   }
 
   if (!dataset) {
-    return <p>Loading dataset...</p>;
+    return <p className="h-dvh">Loading dataset...</p>;
   }
 
   const labelsArray = Array.isArray(dataset.label)
