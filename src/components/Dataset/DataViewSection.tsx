@@ -5,7 +5,12 @@ import { useTabContext } from '@/context/TabsContext';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import SparqlEditor from '@/components/SparqlEditor';
 // import GraphView from '@/components/GraphView';
-import { exportToCSV, exportJSON, sparqlFetcher } from '@/utils';
+import {
+  exportToCSV,
+  exportJSON,
+  sparqlFetcher,
+  isDateLikeField,
+} from '@/utils';
 import useClickOutside from '@/hooks/useClickOutside';
 import { Spinner } from '@phosphor-icons/react';
 import {
@@ -21,18 +26,19 @@ import {
 //   osmQueryExample as queryExample,
 //   osmPlanetAPI as endpoint,
 // } from '@/utils';
-import {
-  ukraineQueryExample2 as queryExample,
-  ukraineAPI as endpoint,
-} from '@/utils';
 // import {
-//   wikiQueryExample as queryExample,
-//   wikiAPI as endpoint,
+//   ukraineQueryExample2 as queryExample,
+//   ukraineAPI as endpoint,
 // } from '@/utils';
+import {
+  wikiQueryExample4 as queryExample,
+  wikiAPI as endpoint,
+} from '@/utils';
 import DataMapView from '@/components/DataMapView/MapView';
+import TimelineView from '@/components/TimelineView';
 import Editor from '@/components/Editor';
 
-type DataView = 'table' | 'json' | 'map';
+type DataView = 'table' | 'json' | 'map' | 'timeline';
 
 const LIMIT = 100;
 
@@ -53,6 +59,17 @@ const DataViewSection = () => {
     runQuery ? ['/api/sparql', runQuery, endpoint] : null,
     sparqlFetcher,
   );
+
+  const canAnyRowBeTimeline = (bindings: any[]): boolean => {
+    return bindings.some((row) =>
+      Object.values(row).some((field) => isDateLikeField(field)),
+    );
+  };
+
+  const canRenderTimeline = useMemo(() => {
+    if (!data) return false;
+    return canAnyRowBeTimeline(data.results.bindings.slice(0, 10));
+  }, [data]);
 
   const handleRunQuery = useCallback((query: string) => {
     setRunQuery(query.replace(/\s+/g, ' '));
@@ -139,6 +156,11 @@ const DataViewSection = () => {
                   { label: 'Table', value: 'table' },
                   { label: 'Json', value: 'json' },
                   { label: 'Map', value: 'map', disabled: !isOSMQuery },
+                  {
+                    label: 'Timeline',
+                    value: 'timeline',
+                    disabled: !canRenderTimeline,
+                  },
                 ]
                   .filter((item) => !item.disabled)
                   .map((item) => (
@@ -235,6 +257,11 @@ const DataViewSection = () => {
                     bindings: data.results.bindings.slice(0, limit),
                   },
                 }}
+              />
+            )}
+            {dataView === 'timeline' && (
+              <TimelineView
+                sparqlData={data.results.bindings.slice(0, limit)}
               />
             )}
           </section>
