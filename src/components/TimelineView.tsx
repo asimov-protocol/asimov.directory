@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import { DataSet } from 'vis-data';
 import { Timeline, TimelineOptions, TimelineItem } from 'vis-timeline/esnext';
+import { isDateLikeField } from '@/utils';
 
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 
@@ -27,25 +28,9 @@ interface TimelineViewProps {
 function transformBindingsToVisItems(bindings: Row[]): TimelineItem[] {
   return bindings
     .map((row, index) => {
-      const dateField = Object.values(row).find((field) => {
-        if (field && typeof field === 'object' && field.type === 'literal') {
-          if (
-            field.datatype &&
-            (field.datatype.includes('dateTime') ||
-              field.datatype.includes('date'))
-          ) {
-            const testDate = new Date(field.value);
-            return !isNaN(testDate.getTime());
-          }
-
-          if (/^\d{4}$/.test(field.value)) {
-            const testDate = new Date(`${field.value}-01-01`);
-            return !isNaN(testDate.getTime());
-          }
-        }
-
-        return false;
-      });
+      const dateField = Object.values(row).find((field) =>
+        isDateLikeField(field),
+      );
 
       if (!dateField) {
         return null;
@@ -74,23 +59,16 @@ function transformBindingsToVisItems(bindings: Row[]): TimelineItem[] {
 }
 
 const TimelineView: React.FC<TimelineViewProps> = ({ sparqlData }) => {
-  // A ref for the container div where the timeline will be rendered
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // If sparqlData is the entire JSON, you'd do:
-    // const bindings = sparqlData?.data?.results?.bindings ?? [];
     const bindings = sparqlData ?? [];
-
-    // Convert the SPARQL data to vis items
     const items = transformBindingsToVisItems(bindings);
     if (!items.length) return;
 
-    // Create a DataSet and the Timeline
     const dataSet = new DataSet(items);
 
     const options: TimelineOptions = {
-      // Additional timeline options
       selectable: true,
       // For more config, see: https://visjs.github.io/vis-timeline/docs/timeline/
     };
@@ -104,7 +82,6 @@ const TimelineView: React.FC<TimelineViewProps> = ({ sparqlData }) => {
       );
     }
 
-    // Cleanup on unmount
     return () => {
       if (timelineInstance) {
         timelineInstance.destroy();
@@ -114,7 +91,6 @@ const TimelineView: React.FC<TimelineViewProps> = ({ sparqlData }) => {
 
   return (
     <div className="border-0">
-      {/* The timeline gets drawn in this container */}
       <div ref={containerRef} className="timeline-container h-lvh border-0" />
       {!sparqlData?.length && <div>No valid timeline data found.</div>}
     </div>

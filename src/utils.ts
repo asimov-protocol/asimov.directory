@@ -120,6 +120,38 @@ export function exportJSON(data: any, fileName = 'data.json') {
   saveAs(blob, fileName);
 }
 
+/**
+ * Checks if a SPARQL binding field is a date-literal based on its `datatype`.
+ * Returns `true` if:
+ *  - `field` exists, is an object,
+ *  - `field.type === 'literal'`,
+ *  - and `field.datatype` includes "date" or "dateTime",
+ *  - and the value parses as a valid JavaScript Date.
+ *
+ * Otherwise, returns `false`.
+ */
+export function isDateLikeField(field: any): boolean {
+  // Must exist and be an object
+  if (!field || typeof field !== 'object') return false;
+
+  // Must be a literal
+  if (field.type !== 'literal') return false;
+
+  const { value, datatype } = field;
+  if (!datatype) return false;
+
+  // Must have a datatype that indicates a date (e.g. "date", "dateTime", "gYear")
+  // Adjust this list if needed for other SPARQL date/time types you want to allow.
+  const isDateDatatype =
+    datatype.includes('dateTime') || datatype.includes('date');
+
+  if (!isDateDatatype) return false;
+
+  // Try to parse the value as a Date
+  const dt = new Date(value);
+  return !isNaN(dt.getTime());
+}
+
 // TODO: remove this after implementing the actual API
 export const labels = [
   'History',
@@ -197,6 +229,45 @@ WHERE {
   }
 }
 ORDER BY ?releaseDate`;
+
+export const wikiQueryExample4 = `PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+
+SELECT ?film
+       ?title
+       (GROUP_CONCAT(DISTINCT ?country; SEPARATOR = "|") AS ?countries)
+       (GROUP_CONCAT(DISTINCT ?genre; SEPARATOR = "|") AS ?genres)
+       (SAMPLE(?description_) AS ?description)
+       (SAMPLE(?sitelinks_) AS ?sitelinks)
+       (SAMPLE(?releaseDate) AS ?releaseDateValue)
+WHERE {
+  ?film wdt:P31 wd:Q11424 .
+  ?film rdfs:label ?title .
+  FILTER (LANG(?title) = "en") .
+
+  ?film wdt:P495 ?country_id .
+  ?country_id rdfs:label ?country .
+  FILTER (LANG(?country) = "en") .
+
+  ?film wdt:P136 ?genre_id .
+  ?genre_id rdfs:label ?genre .
+  FILTER (LANG(?genre) = "en") .
+
+  ?film schema:description ?description_ .
+  FILTER (LANG(?description_) = "en") .
+
+  ?about schema:about ?film .
+  ?about wikibase:sitelinks ?sitelinks_ .
+
+  OPTIONAL {
+    ?film wdt:P577 ?releaseDate .
+  }
+}
+GROUP BY ?film ?title
+ORDER BY DESC(?sitelinks)`;
 
 export const osmQueryExample = `PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
 PREFIX osmrel: <https://www.openstreetmap.org/relation/>
