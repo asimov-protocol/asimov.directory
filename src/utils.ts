@@ -52,7 +52,6 @@ export async function fetcher(url: string, init?: RequestInit) {
  * Fetches data from the SPARQL API.
  */
 export function sparqlFetcher(params: [string, string, string, string]) {
-  console.log({ params });
   const [apiUrl, query, endpoint, method = 'POST'] = params;
   if (!query) {
     return Promise.reject(new Error('No SPARQL query provided.'));
@@ -165,6 +164,39 @@ SELECT DISTINCT ?country ?country_name ?mountain ?mountain_name ?max_height WHER
 }
 ORDER BY DESC(?max_height)
 `;
+
+export const wikiQueryExample2 = `PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT ?film ?title ?releaseDate WHERE {
+  ?film wdt:P31 wd:Q11424;
+        wdt:P577 ?releaseDate.
+  FILTER(?releaseDate >= "2018-01-01T00:00:00Z"^^xsd:dateTime)
+  OPTIONAL {
+    ?film rdfs:label ?title .
+    FILTER (LANG(?title) = "en")
+  }
+}
+ORDER BY DESC(?releaseDate)
+LIMIT 50`;
+
+export const wikiQueryExample3 = `PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?film ?title ?releaseDate
+WHERE {
+
+  ?film wdt:P57 wd:Q3772;
+        wdt:P577 ?releaseDate.
+
+  OPTIONAL {
+    ?film rdfs:label ?title.
+    FILTER (LANG(?title) = "en")
+  }
+}
+ORDER BY ?releaseDate`;
 
 export const osmQueryExample = `PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
 PREFIX osmrel: <https://www.openstreetmap.org/relation/>

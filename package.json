@@ -43,6 +43,7 @@
     "react-dom": "^19",
     "react-force-graph-2d": "^1.27.0",
     "swr": "^2.3.2",
+    "vis-timeline": "^7.7.3",
     "wagmi": "^2.14.9",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },

@@ -52,3 +52,44 @@ body {
 button {
   cursor: pointer;
 }
+
+.timeline-container {
+  background-color: var(--color-sSlate-900);
+  color: var(--color-gGray-100);
+}
+
+.timeline-container .vis-timeline,
+.timeline-container .vis-foreground,
+.timeline-container .vis-background {
+  background-color: var(--color-sSlate-900);
+  color: var(--color-gGray-100);
+  border: none;
+}
+
+.timeline-container .vis-time-axis .vis-text {
+  color: var(--color-gray-300);
+}
+
+.timeline-container .vis-time-axis.vis-background {
+  background-color: var(--color-sSlate-800);
+}
+
+.timeline-container .vis-item {
+  background-color: var(--color-sSlate-800);
+  color: var(--color-gGray-100);
+  border: 1px solid var(--color-sSlate-300);
+}
+
+.timeline-container .vis-item:hover {
+  border-color: var(--color-oOrange-500);
+}
+
+.timeline-container .vis-item.vis-selected {
+  border-color: var(--color-oOrange-500);
+  color: white;
+  background-color: var(--color-oOrange-500);
+}
+
+.timeline-container .vis-current-time {
+  background-color: var(--color-oOrange-500);
+}
