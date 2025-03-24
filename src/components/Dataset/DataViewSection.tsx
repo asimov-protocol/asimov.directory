@@ -4,7 +4,7 @@ import useSWR from 'swr';
 import { useTabContext } from '@/context/TabsContext';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import SparqlEditor from '@/components/SparqlEditor';
-// import GraphView from '@/components/GraphView';
+// import GraphView from '@/components/GraphView/View';
 import {
   exportToCSV,
   exportJSON,
@@ -265,13 +265,12 @@ const DataViewSection = () => {
               />
             )}
           </section>
-
-          {/* <section className="border border-gray-800 rounded-lg p-4 overflow-hidden relative">
-            <h2 className="text-2xl font-bold">Visualization</h2>
-            <GraphView />
-          </section> */}
         </>
       )}
+      {/* <section className="border border-gray-800 rounded-lg p-4 overflow-hidden relative">
+        <h2 className="text-2xl font-bold">Visualization</h2>
+        <GraphView />
+      </section> */}
     </div>
   );
 };
