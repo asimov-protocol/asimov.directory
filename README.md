@@ -2,6 +2,9 @@
 
 A modern, responsive web application for discovering and exploring modules from the ASIMOV ecosystem. Built with SvelteKit and Tailwind CSS, it provides an intuitive interface to browse GitHub repositories from the `asimov-modules` organization.
 
+<img width="1277" alt="Знімок екрана 2025-06-04 о 20 07 33" src="https://github.com/user-attachments/assets/db163479-2b4b-4c1c-b086-cd56509a097e" />
+
+
 ## 🚀 Features
 
 - **Real-time GitHub Integration**: Fetches live data from the `asimov-modules` GitHub organization
