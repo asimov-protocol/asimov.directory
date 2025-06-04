@@ -40,6 +40,8 @@ A modern, responsive web application for discovering and exploring modules from 
 
 2. **Install dependencies**
    ```bash
+   nvm use # Ensure you are using Node.js v22 (required for this project's ESM features and performance optimizations)
+   
    npm install
    # or
    pnpm install
