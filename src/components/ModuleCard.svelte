@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { Star, Users, Calendar } from 'phosphor-svelte';
-  import type { GitHubModule } from '$lib/types.js';
+  import Star from 'phosphor-svelte/lib/Star';
+  import Users from 'phosphor-svelte/lib/Users';
+  import Calendar from 'phosphor-svelte/lib/Calendar';
+  import type { GitHubModule } from '../lib/types';
 
   export let module: GitHubModule;
 
@@ -27,7 +29,7 @@
 </script>
 
 <div class="group relative overflow-hidden rounded-lg border border-sSlate-200 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-lg hover:border-sSlate-300">
-  <!-- Header -->
+
   <div class="mb-4 flex items-start justify-between">
     <div class="flex items-center space-x-3">
       <img
@@ -43,19 +45,16 @@
       </div>
     </div>
 
-    <!-- Stars -->
     <div class="flex items-center space-x-1 text-gGray-400">
       <Star size={16} />
       <span class="text-sm font-medium">{module.stargazers_count}</span>
     </div>
   </div>
 
-  <!-- Description -->
   <p class="mb-4 text-sm text-gGray-500 line-clamp-2 leading-relaxed">
     {module.description || 'No description available'}
   </p>
 
-  <!-- Topics/Tags -->
   {#if module.topics.length > 0}
     <div class="mb-4 flex flex-wrap gap-2">
       {#each module.topics.slice(0, 3) as topic}
@@ -71,7 +70,6 @@
     </div>
   {/if}
 
-  <!-- Footer -->
   <div class="flex items-center justify-between text-xs text-gGray-400">
     <div class="flex items-center space-x-4">
       {#if module.language}
@@ -98,7 +96,6 @@
     </div>
   </div>
 
-  <!-- Click overlay -->
   <a
     href={module.html_url}
     target="_blank"

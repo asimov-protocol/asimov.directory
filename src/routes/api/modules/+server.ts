@@ -1,25 +1,28 @@
 import { json } from '@sveltejs/kit';
 import { GitHubAPI } from '../../../lib/github';
 import { GITHUB_TOKEN } from '../../../lib/environment';
+import type { SortOption } from '../../../lib/types';
 
-console.log('GITHUB_TOKEN:', GITHUB_TOKEN ? 'Available' : 'Not set');
-
-// Create API instance with token if available
 const githubApi = new GitHubAPI(GITHUB_TOKEN);
 
-export async function GET() {
+export async function GET({ url }) {
   try {
-    // Optional: Check rate limit before making requests
+    const sortParam = url.searchParams.get('sort') as SortOption;
+    const sort: SortOption = ['relevant', 'popular', 'newest', 'updated'].includes(sortParam)
+      ? sortParam
+      : 'relevant';
+
     const rateLimit = await githubApi.getRateLimit();
     if (rateLimit) {
       console.log(`GitHub API rate limit: ${rateLimit.resources.core.remaining}/${rateLimit.resources.core.limit}`);
     }
 
-    const modules = await githubApi.fetchOrganizationRepos();
+    const modules = await githubApi.fetchOrganizationRepos(sort);
 
     return json({
       modules,
       total: modules.length,
+      sort,
       rateLimit: rateLimit?.resources.core
     });
   } catch (error) {

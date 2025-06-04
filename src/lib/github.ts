@@ -1,4 +1,4 @@
-import type { GitHubModule } from './types';
+import type { GitHubModule, SortOption } from './types';
 
 const GITHUB_API_BASE = 'https://api.github.com';
 const ORG_NAME = 'asimov-modules';
@@ -37,7 +37,6 @@ export class GitHubAPI {
       return false;
     }
 
-    // Exclude private repos (they shouldn't appear in org API anyway, but just in case)
     if (repo.private) {
       return false;
     }
@@ -45,10 +44,67 @@ export class GitHubAPI {
     return true;
   }
 
-  async fetchOrganizationRepos(): Promise<GitHubModule[]> {
+  private getGitHubSort(sortOption: SortOption): string {
+    switch (sortOption) {
+      case 'popular':
+        return 'sort=stargazers&direction=desc';
+      case 'newest':
+        return 'sort=created&direction=desc';
+      case 'updated':
+        return 'sort=updated&direction=desc';
+      case 'relevant':
+      default:
+        return 'sort=updated&direction=desc'; // Default to updated for "relevant"
+    }
+  }
+
+  private sortModulesClientSide(modules: GitHubModule[], sortOption: SortOption): GitHubModule[] {
+    const sorted = [...modules];
+
+    switch (sortOption) {
+      case 'popular':
+        return sorted.sort((a, b) => b.stargazers_count - a.stargazers_count);
+      case 'newest':
+        return sorted.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
+      case 'updated':
+        return sorted.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
+      case 'relevant':
+        // Custom relevance score: combines stars, recent activity, and has description
+        return sorted.sort((a, b) => {
+          const aScore = this.calculateRelevanceScore(a);
+          const bScore = this.calculateRelevanceScore(b);
+          return bScore - aScore;
+        });
+      default:
+        return sorted;
+    }
+  }
+
+  private calculateRelevanceScore(module: GitHubModule): number {
+    const stars = module.stargazers_count || 0;
+    const hasDescription = module.description ? 1 : 0;
+    const hasTopics = module.topics.length > 0 ? 1 : 0;
+    const contributors = module.contributors_count || 0;
+
+    // Days since last update (recent = higher score)
+    const daysSinceUpdate = (Date.now() - new Date(module.updated_at).getTime()) / (1000 * 60 * 60 * 24);
+    const recencyScore = Math.max(0, 365 - daysSinceUpdate) / 365; // Higher score for more recent updates
+
+    // Weighted relevance score
+    return (
+      stars * 2 +                    // Stars are important
+      contributors * 1.5 +           // Contributors indicate activity
+      hasDescription * 10 +          // Having description is important
+      hasTopics * 5 +               // Topics help categorization
+      recencyScore * 20             // Recent activity is valuable
+    );
+  }
+
+  async fetchOrganizationRepos(sortOption: SortOption = 'relevant'): Promise<GitHubModule[]> {
     try {
+      const sortParam = this.getGitHubSort(sortOption);
       const response = await fetch(
-        `${GITHUB_API_BASE}/orgs/${ORG_NAME}/repos?sort=updated&per_page=100`,
+        `${GITHUB_API_BASE}/orgs/${ORG_NAME}/repos?${sortParam}&per_page=100`,
         { headers: this.getHeaders() }
       );
 
@@ -87,7 +143,8 @@ export class GitHubAPI {
         })
       );
 
-      return modulesWithContributors;
+      // Apply client-side sorting for better control
+      return this.sortModulesClientSide(modulesWithContributors, sortOption);
     } catch (error) {
       console.error('Error fetching GitHub repositories:', error);
       throw error;

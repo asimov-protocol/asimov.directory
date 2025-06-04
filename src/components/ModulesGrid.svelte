@@ -1,7 +1,7 @@
 <script lang="ts">
   import ModuleCard from './ModuleCard.svelte';
   import ModuleCardSkeleton from './ModuleCardSkeleton.svelte';
-  import type { GitHubModule } from '$lib/types.js';
+  import type { GitHubModule } from '../lib/types';
 
   export let modules: GitHubModule[] = [];
   export let loading = false;
