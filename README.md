@@ -4,7 +4,6 @@ A modern, responsive web application for discovering and exploring modules from 
 
 <img width="1277" alt="Знімок екрана 2025-06-04 о 20 07 33" src="https://github.com/user-attachments/assets/db163479-2b4b-4c1c-b086-cd56509a097e" />
 
-
 ## 🚀 Features
 
 - **Real-time GitHub Integration**: Fetches live data from the `asimov-modules` GitHub organization
@@ -33,15 +32,17 @@ A modern, responsive web application for discovering and exploring modules from 
 ## 🔧 Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/your-username/asimov.directory.git
    cd asimov.directory
    ```
 
 2. **Install dependencies**
+
    ```bash
    nvm use # Ensure you are using Node.js v22 (required for this project's ESM features and performance optimizations)
-   
+
    npm install
    # or
    pnpm install
@@ -50,16 +51,19 @@ A modern, responsive web application for discovering and exploring modules from 
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env
    ```
 
    Edit `.env` and add your GitHub token:
+
    ```env
    VITE_GITHUB_TOKEN=your_github_personal_access_token_here
    ```
 
 4. **Start the development server**
+
    ```bash
    npm run dev
    ```
@@ -78,6 +82,7 @@ To avoid rate limits and access private repositories, create a GitHub Personal A
 4. Copy the token and add it to your `.env` file
 
 **Rate Limits:**
+
 - Without token: 60 requests/hour
 - With token: 5,000 requests/hour
 
@@ -89,10 +94,10 @@ The project uses a custom color palette defined in `src/app.css`:
 
 ```css
 @theme {
-  --color-gGray-100: #f6f6f6;
-  --color-sSlate-800: #04163c;
-  --color-oOrange-500: #f37021;
-  /* ... more colors */
+	--color-gGray-100: #f6f6f6;
+	--color-sSlate-800: #04163c;
+	--color-oOrange-500: #f37021;
+	/* ... more colors */
 }
 ```
 

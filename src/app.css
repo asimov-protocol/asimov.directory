@@ -1,19 +1,19 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-gGray-100: #f6f6f6;
-  --color-gGray-300: #b3b3b3;
-  --color-gGray-400: #818181;
-  --color-gGray-500: #555555;
-  --color-sSlate-100: #e6e9f0;
-  --color-sSlate-200: #b5bed1;
-  --color-sSlate-300: #6a7ca2;
-  --color-sSlate-400: #395183;
-  --color-sSlate-600: #072564;
-  --color-sSlate-800: #04163c;
-  --color-sSlate-900: #05122e;
-  --color-oOrange-500: #f37021;
-  --hero-height: calc(100vh - 160px);
-  --font-suisse-intl: 'SuisseIntl', sans-serif;
-  --font-arges: 'Arges', sans-serif;
+	--color-gGray-100: #f6f6f6;
+	--color-gGray-300: #b3b3b3;
+	--color-gGray-400: #818181;
+	--color-gGray-500: #555555;
+	--color-sSlate-100: #e6e9f0;
+	--color-sSlate-200: #b5bed1;
+	--color-sSlate-300: #6a7ca2;
+	--color-sSlate-400: #395183;
+	--color-sSlate-600: #072564;
+	--color-sSlate-800: #04163c;
+	--color-sSlate-900: #05122e;
+	--color-oOrange-500: #f37021;
+	--hero-height: calc(100vh - 160px);
+	--font-suisse-intl: 'SuisseIntl', sans-serif;
+	--font-arges: 'Arges', sans-serif;
 }

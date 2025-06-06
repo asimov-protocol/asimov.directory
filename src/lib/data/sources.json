@@ -1,0 +1,122 @@
+[
+	{
+		"dataset": "Airbnb",
+		"url_prefix": "https://www.airbnb.com/rooms/",
+		"json": true,
+		"rdf": false
+	},
+	{ "dataset": "Amazon", "url_prefix": "https://www.amazon.com/", "json": true, "rdf": false },
+	{
+		"dataset": "Amazon",
+		"url_prefix": "https://www.amazon.com/sp?seller=",
+		"json": true,
+		"rdf": false
+	},
+	{
+		"dataset": "Crunchbase",
+		"url_prefix": "https://www.crunchbase.com/organization/",
+		"json": true,
+		"rdf": false
+	},
+	{ "dataset": "eBay", "url_prefix": "https://www.ebay.com/itm/", "json": true, "rdf": false },
+	{
+		"dataset": "Facebook",
+		"url_prefix": "https://www.facebook.com/events/",
+		"json": true,
+		"rdf": false
+	},
+	{
+		"dataset": "Facebook",
+		"url_prefix": "https://www.facebook.com/groups/",
+		"json": true,
+		"rdf": false
+	},
+	{
+		"dataset": "Facebook",
+		"url_prefix": "https://www.facebook.com/marketplace/item/",
+		"json": true,
+		"rdf": false
+	},
+	{
+		"dataset": "Facebook",
+		"url_prefix": "https://www.facebook.com/share/p/",
+		"json": true,
+		"rdf": false
+	},
+	{
+		"dataset": "Google",
+		"url_prefix": "https://www.google.com/shopping/product/",
+		"json": true,
+		"rdf": false
+	},
+	{ "dataset": "Indeed", "url_prefix": "https://www.indeed.com/cmp/", "json": true, "rdf": false },
+	{
+		"dataset": "Instagram",
+		"url_prefix": "https://www.instagram.com/",
+		"json": true,
+		"rdf": false
+	},
+	{
+		"dataset": "Instagram",
+		"url_prefix": "https://www.instagram.com/p/",
+		"json": true,
+		"rdf": false
+	},
+	{
+		"dataset": "Instagram",
+		"url_prefix": "https://www.instagram.com/reel/",
+		"json": true,
+		"rdf": false
+	},
+	{
+		"dataset": "LinkedIn",
+		"url_prefix": "https://www.linkedin.com/company/",
+		"json": true,
+		"rdf": false
+	},
+	{
+		"dataset": "LinkedIn",
+		"url_prefix": "https://www.linkedin.com/in/",
+		"json": true,
+		"rdf": false
+	},
+	{
+		"dataset": "LinkedIn",
+		"url_prefix": "https://www.linkedin.com/jobs/",
+		"json": true,
+		"rdf": false
+	},
+	{
+		"dataset": "LinkedIn",
+		"url_prefix": "https://www.linkedin.com/posts/",
+		"json": true,
+		"rdf": false
+	},
+	{
+		"dataset": "LinkedIn",
+		"url_prefix": "https://www.linkedin.com/pulse/",
+		"json": true,
+		"rdf": false
+	},
+	{
+		"dataset": "Walmart",
+		"url_prefix": "https://www.walmart.com/global/seller/",
+		"json": true,
+		"rdf": false
+	},
+	{ "dataset": "Walmart", "url_prefix": "https://www.walmart.com/ip/", "json": true, "rdf": false },
+	{ "dataset": "X (Twitter)", "url_prefix": "https://x.com/", "json": true, "rdf": true },
+	{
+		"dataset": "Yahoo",
+		"url_prefix": "https://finance.yahoo.com/quote/",
+		"json": true,
+		"rdf": false
+	},
+	{ "dataset": "YouTube", "url_prefix": "https://www.youtube.com/@", "json": true, "rdf": false },
+	{
+		"dataset": "YouTube",
+		"url_prefix": "https://www.youtube.com/watch?v=",
+		"json": true,
+		"rdf": false
+	}
+]
