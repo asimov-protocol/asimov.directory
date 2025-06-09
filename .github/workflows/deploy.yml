@@ -13,7 +13,7 @@ jobs:
       contents: write
 
     env:
-      VITE_GITHUB_TOKEN: ${{ secrets.VITE_GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout
