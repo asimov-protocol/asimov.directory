@@ -1,0 +1,13 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+    types: [opened, synchronize, reopened]
+jobs:
+  project-build-test:
+    uses: asimov-protocol/.github/.github/workflows/npm-ci.yml@v1.0
+    with:
+      skip-tests: true
