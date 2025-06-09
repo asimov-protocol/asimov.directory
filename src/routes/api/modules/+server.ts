@@ -1,9 +1,9 @@
 import { json } from '@sveltejs/kit';
 import { GitHubAPI } from '../../../lib/github';
-import { GITHUB_TOKEN } from '../../../lib/environment';
 import type { SortOption } from '../../../lib/types';
+import { GITHUB_TOKEN } from '$env/static/private';
 
-const githubApi = new GitHubAPI(GITHUB_TOKEN);
+const githubApi = new GitHubAPI(GITHUB_TOKEN ?? undefined);
 
 export async function GET({ url }) {
 	try {
