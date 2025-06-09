@@ -148,7 +148,7 @@
 
 		<div class="px-6 pb-6">
 			<div class="space-y-1">
-				{#each displayedSources as source, index}
+				{#each displayedSources as source, index (source.url_prefix + '-' + index)}
 					<div
 						class="group/endpoint border-sSlate-100 bg-sSlate-50/50 hover:border-sSlate-200 relative flex items-center rounded-lg border p-3 transition-all hover:bg-white hover:shadow-sm"
 					>

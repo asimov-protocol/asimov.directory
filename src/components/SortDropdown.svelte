@@ -62,7 +62,7 @@
 			class="border-sSlate-200 absolute right-0 z-50 mt-2 w-64 rounded-lg border bg-white shadow-lg"
 		>
 			<div class="py-2">
-				{#each sortOptions as option}
+				{#each sortOptions as option (option.value)}
 					<button
 						type="button"
 						class="hover:bg-sSlate-50 w-full px-4 py-3 text-left transition-colors {value ===

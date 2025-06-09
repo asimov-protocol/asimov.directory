@@ -54,7 +54,7 @@
 
 	{#if module.topics.length > 0}
 		<div class="mb-4 flex flex-wrap gap-2">
-			{#each module.topics.slice(0, 3) as topic}
+			{#each module.topics.slice(0, 3) as topic (topic)}
 				<span
 					class="bg-sSlate-100 text-sSlate-600 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
 				>

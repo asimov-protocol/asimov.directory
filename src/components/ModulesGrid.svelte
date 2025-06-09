@@ -18,7 +18,7 @@
 		</div>
 	{:else if loading}
 		<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-			{#each Array(skeletonCount) as _}
+			{#each Array(skeletonCount) as _, index (index)}
 				<ModuleCardSkeleton />
 			{/each}
 		</div>

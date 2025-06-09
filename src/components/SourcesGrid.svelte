@@ -64,7 +64,7 @@
 		</div>
 	{:else if loading}
 		<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-			{#each Array(12) as _}
+			{#each [...Array(12).keys()] as index (index)}
 				<div class="border-sSlate-200 overflow-hidden rounded-lg border bg-white p-6 shadow-sm">
 					<div class="mb-4 flex items-start justify-between">
 						<div class="flex items-center space-x-3">
