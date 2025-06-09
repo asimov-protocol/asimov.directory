@@ -5,6 +5,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import path from 'path';
 
 export default defineConfig({
+	base: '/',
 	plugins: [
 		tailwindcss(),
 		sveltekit(),
