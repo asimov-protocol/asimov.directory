@@ -5,6 +5,6 @@ export const GITHUB_TOKEN = browser ? undefined : import.meta.env.VITE_GITHUB_TO
 
 // Rate limit info
 export const RATE_LIMITS = {
-  UNAUTHENTICATED: 60, // requests per hour
-  AUTHENTICATED: 5000  // requests per hour
+	UNAUTHENTICATED: 60, // requests per hour
+	AUTHENTICATED: 5000 // requests per hour
 } as const;
