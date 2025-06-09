@@ -36,6 +36,7 @@
 	{#if value}
 		<button
 			onclick={clearSearch}
+			aria-label="Clear search"
 			class="text-gGray-400 hover:text-sSlate-600 absolute inset-y-0 right-0 flex items-center pr-3 transition-colors"
 		>
 			<X class="h-4 w-4" />
