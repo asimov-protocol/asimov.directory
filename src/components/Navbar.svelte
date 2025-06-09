@@ -84,9 +84,10 @@
 			<div class="md:hidden">
 				<button
 					type="button"
-					onclick={toggleMobileMenu}
+					on:click={toggleMobileMenu}
 					class="text-gGray-500 hover:text-sSlate-800 transition-colors"
 					aria-label="Toggle mobile menu"
+					aria-expanded={mobileMenuOpen}
 				>
 					{#if mobileMenuOpen}
 						<X size={24} />
@@ -101,7 +102,7 @@
 			<div class="border-sSlate-200 border-t pt-2 pb-3 md:hidden">
 				<a
 					href="/"
-					onclick={closeMobileMenu}
+					on:click={closeMobileMenu}
 					class="block rounded-lg px-4 py-2 text-base font-medium transition-colors {currentPath ===
 					'/'
 						? 'bg-oOrange-50 text-oOrange-500'
@@ -111,7 +112,7 @@
 				</a>
 				<a
 					href="/modules"
-					onclick={closeMobileMenu}
+					on:click={closeMobileMenu}
 					class="block rounded-lg px-4 py-2 text-base font-medium transition-colors {currentPath ===
 					'/modules'
 						? 'bg-oOrange-50 text-oOrange-500'
@@ -128,8 +129,7 @@
 	<button
 		type="button"
 		class="fixed inset-0 z-40 border-0 bg-white/30 backdrop-blur-sm md:hidden"
-		onclick={closeMobileMenu}
-		onkeydown={(e) => e.key === 'Escape' && closeMobileMenu()}
+		on:click={closeMobileMenu}
 		aria-label="Close menu"
 	></button>
 {/if}
