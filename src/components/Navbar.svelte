@@ -50,15 +50,7 @@
 	});
 </script>
 
-<svelte:head>
-	{#if mobileMenuOpen}
-		<style>
-			body {
-				overflow: hidden !important;
-			}
-		</style>
-	{/if}
-</svelte:head>
+// Removed the redundant <svelte:head> block.
 
 <nav class="border-sSlate-200 sticky top-0 z-50 border-b bg-white">
 	<div class="container mx-auto px-4">
