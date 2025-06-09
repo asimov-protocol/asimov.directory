@@ -6,10 +6,7 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		adapter: adapter({
-			fallback: 'index.html',
-			strict: false
-		}),
+		adapter: adapter(),
 		prerender: {
 			entries: []
 		},
