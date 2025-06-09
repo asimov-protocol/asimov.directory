@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-node';
+import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -7,8 +7,12 @@ const config = {
 
 	kit: {
 		adapter: adapter({
-			out: 'build'
+			fallback: 'index.html',
+			strict: false
 		}),
+		prerender: {
+			entries: []
+		},
 		// Disable CSRF origin checking globally (less secure but fixes the issue)
 		csrf: {
 			checkOrigin: false
