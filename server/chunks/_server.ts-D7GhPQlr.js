@@ -163,7 +163,7 @@ class GitHubAPI {
     return null;
   }
 }
-const GITHUB_TOKEN = "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";
+const GITHUB_TOKEN = "ghs_itXj8KzMl0e2AIePLml4lAzulrqtTm0D3wUj";
 const githubApi = new GitHubAPI(GITHUB_TOKEN);
 async function GET({ url }) {
   try {
@@ -195,4 +195,4 @@ async function GET({ url }) {
 }
 
 export { GET };
-//# sourceMappingURL=_server.ts-DrcbWote.js.map
+//# sourceMappingURL=_server.ts-D7GhPQlr.js.map
