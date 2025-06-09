@@ -1,0 +1,40 @@
+{
+	"name": "asimov.directory",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"start": "node build",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"format": "prettier --write .",
+		"lint": "prettier --check . && eslint ."
+	},
+	"devDependencies": {
+		"@eslint/compat": "^1.2.9",
+		"@eslint/js": "^9.28.0",
+		"@sveltejs/adapter-auto": "^6.0.1",
+		"@sveltejs/adapter-node": "^5.2.12",
+		"@sveltejs/kit": "^2.21.2",
+		"@sveltejs/vite-plugin-svelte": "^5.1.0",
+		"@tailwindcss/vite": "^4.1.8",
+		"eslint": "^9.28.0",
+		"eslint-config-prettier": "^10.1.5",
+		"eslint-plugin-svelte": "^3.9.1",
+		"globals": "^16.2.0",
+		"phosphor-svelte": "^3.0.1",
+		"prettier": "^3.5.3",
+		"prettier-plugin-svelte": "^3.4.0",
+		"prettier-plugin-tailwindcss": "^0.6.12",
+		"svelte": "^5.33.14",
+		"svelte-check": "^4.2.1",
+		"tailwindcss": "^4.1.8",
+		"typescript": "^5.8.3",
+		"typescript-eslint": "^8.33.1",
+		"vite": "^6.3.5"
+	}
+}
