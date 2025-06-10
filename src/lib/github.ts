@@ -1,4 +1,5 @@
 import type { GitHubModule, ModuleMetadata, SortOption } from './types';
+import { load as yamlLoad } from 'js-yaml';
 
 const GITHUB_API_BASE = 'https://api.github.com';
 const ORG_NAME = 'asimov-modules';
@@ -161,57 +162,25 @@ export class GitHubAPI {
 			}
 
 			const data = await response.json();
-			const content = atob(data.content);
+			// Use Buffer instead of atob for Node.js compatibility
+			const content = Buffer.from(data.content, 'base64').toString('utf-8');
 
-			// Simple YAML parser for our specific structure
-			const metadata = this.parseModuleYaml(content);
+			// Parse YAML using js-yaml
+			const parsedYaml = yamlLoad(content) as any;
+
+			// Validate and transform to our ModuleMetadata type
+			const metadata: ModuleMetadata = {
+				name: parsedYaml.name || '',
+				label: parsedYaml.label || '',
+				summary: parsedYaml.summary || '',
+				links: Array.isArray(parsedYaml.links) ? parsedYaml.links : [],
+				provides: parsedYaml.provides || {},
+				handles: parsedYaml.handles || {}
+			};
+
 			return metadata;
 		} catch (error) {
 			console.warn(`Failed to fetch metadata for ${owner}/${repo}:`, error);
-			return null;
-		}
-	}
-
-	private parseModuleYaml(yamlContent: string): ModuleMetadata | null {
-		try {
-			const lines = yamlContent.split('\n');
-			const metadata: Partial<ModuleMetadata> = {};
-			let currentSection = '';
-			let currentArray: string[] = [];
-
-			for (const line of lines) {
-				const trimmed = line.trim();
-
-				if (trimmed.startsWith('name:')) {
-					metadata.name = trimmed.split('name:')[1].trim();
-				} else if (trimmed.startsWith('label:')) {
-					metadata.label = trimmed.split('label:')[1].trim();
-				} else if (trimmed.startsWith('summary:')) {
-					metadata.summary = trimmed.split('summary:')[1].trim();
-				} else if (trimmed === 'links:') {
-					currentSection = 'links';
-					currentArray = [];
-				} else if (currentSection === 'links' && trimmed.startsWith('- ')) {
-					currentArray.push(trimmed.substring(2));
-				} else if (
-					trimmed &&
-					!trimmed.startsWith('-') &&
-					!trimmed.startsWith(' ') &&
-					currentSection === 'links'
-				) {
-					metadata.links = currentArray;
-					currentSection = '';
-				}
-			}
-
-			// Handle case where links are at the end of file
-			if (currentSection === 'links') {
-				metadata.links = currentArray;
-			}
-
-			return metadata as ModuleMetadata;
-		} catch (error) {
-			console.warn('Failed to parse YAML:', error);
 			return null;
 		}
 	}
