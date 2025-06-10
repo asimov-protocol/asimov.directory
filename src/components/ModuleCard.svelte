@@ -12,6 +12,49 @@
 
 	export let module: GitHubModule;
 
+	const LANGUAGE_COLORS: Record<string, string> = {
+		JavaScript: '#f1e05a',
+		TypeScript: '#2b7489',
+		Python: '#3572A5',
+		Java: '#b07219',
+		Go: '#00ADD8',
+		Rust: '#dea584',
+		PHP: '#4F5D95'
+	};
+
+	const LINK_PROVIDERS = [
+		{
+			pattern: 'github.com',
+			icon: Github,
+			color: 'text-gray-800',
+			title: 'GitHub'
+		},
+		{
+			pattern: 'crates.io',
+			icon: Crates,
+			color: 'text-green-600',
+			title: 'Crates.io'
+		},
+		{
+			pattern: 'pypi.org',
+			icon: PyPI,
+			color: 'text-blue-600',
+			title: 'PyPI'
+		},
+		{
+			pattern: 'rubygems.org',
+			icon: RubyGems,
+			color: 'text-red-600',
+			title: 'RubyGems'
+		},
+		{
+			pattern: 'npmjs.com',
+			icon: NPM,
+			color: 'text-red-500',
+			title: 'npm'
+		}
+	];
+
 	function formatDate(dateString: string): string {
 		return new Date(dateString).toLocaleDateString('en-US', {
 			year: 'numeric',
@@ -21,57 +64,40 @@
 	}
 
 	function getLanguageColor(language: string | null): string {
-		const colors: Record<string, string> = {
-			JavaScript: '#f1e05a',
-			TypeScript: '#2b7489',
-			Python: '#3572A5',
-			Java: '#b07219',
-			Go: '#00ADD8',
-			Rust: '#dea584',
-			PHP: '#4F5D95'
-		};
-		return colors[language || ''] || '#6a7ca2';
+		return LANGUAGE_COLORS[language || ''] || '#6a7ca2';
 	}
 
-	function getLinkIcon(url: string) {
+	function getLinkProvider(url: string) {
 		const domain = url.toLowerCase();
+		const provider = LINK_PROVIDERS.find((p) => domain.includes(p.pattern));
 
-		if (domain.includes('github.com')) return Github;
-		if (domain.includes('crates.io')) return Crates;
-		if (domain.includes('pypi.org')) return PyPI;
-		if (domain.includes('rubygems.org')) return RubyGems;
-		if (domain.includes('npmjs.com')) return NPM;
-
-		return Globe;
+		return (
+			provider || {
+				icon: Globe,
+				color: 'text-gray-500',
+				title: getHostname(url)
+			}
+		);
 	}
 
-	function getLinkColor(url: string): string {
-		const domain = url.toLowerCase();
-
-		if (domain.includes('github.com')) return 'text-gray-800';
-		if (domain.includes('crates.io')) return 'text-green-600';
-		if (domain.includes('pypi.org')) return 'text-blue-600';
-		if (domain.includes('rubygems.org')) return 'text-red-600';
-		if (domain.includes('npmjs.com')) return 'text-red-500';
-
-		return 'text-gray-500';
-	}
-
-	function getLinkTitle(url: string): string {
-		const domain = url.toLowerCase();
-
-		if (domain.includes('github.com')) return 'GitHub';
-		if (domain.includes('crates.io')) return 'Crates.io';
-		if (domain.includes('pypi.org')) return 'PyPI';
-		if (domain.includes('rubygems.org')) return 'RubyGems';
-		if (domain.includes('npmjs.com')) return 'npm';
-
+	function getHostname(url: string): string {
 		try {
 			return new URL(url).hostname;
 		} catch {
 			return 'External Link';
 		}
 	}
+
+	$: displayName = module.metadata?.label || module.name;
+	$: description = module.metadata?.summary || module.description || 'No description available';
+	$: visibleTopics = module.topics.slice(0, 3);
+	$: extraTopicsCount = Math.max(0, module.topics.length - 3);
+	$: visibleLinks = module.metadata?.links?.slice(0, 5) || [];
+	$: extraLinksCount = Math.max(0, (module.metadata?.links?.length || 0) - 5);
+	$: hasTopics = module.topics.length > 0;
+	$: hasLinks = module.metadata?.links && module.metadata.links.length > 0;
+	$: hasLanguage = !!module.language;
+	$: hasContributors = !!module.contributors_count;
 </script>
 
 <div
@@ -82,7 +108,7 @@
 			<img src={module.owner.avatar_url} alt={module.owner.login} class="h-8 w-8 rounded-full" />
 			<div>
 				<h3 class="text-sSlate-800 group-hover:text-oOrange-500 font-medium transition-colors">
-					{module.metadata?.label || module.name}
+					{displayName}
 				</h3>
 				<p class="text-gGray-400 text-sm">{module.owner.login}</p>
 			</div>
@@ -95,47 +121,47 @@
 	</div>
 
 	<p class="text-gGray-500 mb-4 line-clamp-2 text-sm leading-relaxed">
-		{module.metadata?.summary || module.description || 'No description available'}
+		{description}
 	</p>
 
-	{#if module.topics.length > 0}
+	{#if hasTopics}
 		<div class="mb-4 flex flex-wrap gap-2">
-			{#each module.topics.slice(0, 3) as topic (topic)}
+			{#each visibleTopics as topic (topic)}
 				<span
 					class="bg-sSlate-100 text-sSlate-600 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
 				>
 					{topic}
 				</span>
 			{/each}
-			{#if module.topics.length > 3}
+			{#if extraTopicsCount > 0}
 				<span
 					class="bg-gGray-100 text-gGray-400 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
 				>
-					+{module.topics.length - 3}
+					+{extraTopicsCount}
 				</span>
 			{/if}
 		</div>
 	{/if}
 
-	{#if module.metadata?.links && module.metadata.links.length > 0}
+	{#if hasLinks}
 		<div class="mb-4 flex items-center space-x-2">
 			<span class="text-gGray-400 text-xs font-medium">Links:</span>
 			<div class="flex items-center space-x-2">
-				{#each module.metadata.links.slice(0, 5) as link (link)}
-					{@const IconComponent = getLinkIcon(link)}
+				{#each visibleLinks as link (link)}
+					{@const provider = getLinkProvider(link)}
 					<a
 						href={link}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="relative z-20 transition-transform hover:scale-110 {getLinkColor(link)}"
-						title={getLinkTitle(link)}
+						class="relative z-20 transition-transform hover:scale-110 {provider.color}"
+						title={provider.title}
 						on:click|stopPropagation
 					>
-						<svelte:component this={IconComponent} className="w-5 h-5" />
+						<svelte:component this={provider.icon} className="w-5 h-5" />
 					</a>
 				{/each}
-				{#if module.metadata.links.length > 5}
-					<span class="text-gGray-400 text-xs">+{module.metadata.links.length - 5}</span>
+				{#if extraLinksCount > 0}
+					<span class="text-gGray-400 text-xs">+{extraLinksCount}</span>
 				{/if}
 			</div>
 		</div>
@@ -143,7 +169,7 @@
 
 	<div class="text-gGray-400 flex items-center justify-between text-xs">
 		<div class="flex items-center space-x-4">
-			{#if module.language}
+			{#if hasLanguage}
 				<div class="flex items-center space-x-1">
 					<div
 						class="h-3 w-3 rounded-full"
@@ -153,7 +179,7 @@
 				</div>
 			{/if}
 
-			{#if module.contributors_count}
+			{#if hasContributors}
 				<div class="flex items-center space-x-1">
 					<Users size={12} />
 					<span>{module.contributors_count}</span>
