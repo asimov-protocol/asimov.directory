@@ -1,8 +1,14 @@
 <script lang="ts">
+	import type { GitHubModule } from '../lib/types';
 	import Star from 'phosphor-svelte/lib/Star';
 	import Users from 'phosphor-svelte/lib/Users';
 	import Calendar from 'phosphor-svelte/lib/Calendar';
-	import type { GitHubModule } from '../lib/types';
+	import Globe from 'phosphor-svelte/lib/Globe';
+	import Crates from './icons/Crates.svelte';
+	import PyPI from './icons/Pypi.svelte';
+	import RubyGems from './icons/Rubygems.svelte';
+	import NPM from './icons/Npm.svelte';
+	import Github from './icons/Github.svelte';
 
 	export let module: GitHubModule;
 
@@ -26,6 +32,46 @@
 		};
 		return colors[language || ''] || '#6a7ca2';
 	}
+
+	function getLinkIcon(url: string) {
+		const domain = url.toLowerCase();
+
+		if (domain.includes('github.com')) return Github;
+		if (domain.includes('crates.io')) return Crates;
+		if (domain.includes('pypi.org')) return PyPI;
+		if (domain.includes('rubygems.org')) return RubyGems;
+		if (domain.includes('npmjs.com')) return NPM;
+
+		return Globe;
+	}
+
+	function getLinkColor(url: string): string {
+		const domain = url.toLowerCase();
+
+		if (domain.includes('github.com')) return 'text-gray-800';
+		if (domain.includes('crates.io')) return 'text-green-600';
+		if (domain.includes('pypi.org')) return 'text-blue-600';
+		if (domain.includes('rubygems.org')) return 'text-red-600';
+		if (domain.includes('npmjs.com')) return 'text-red-500';
+
+		return 'text-gray-500';
+	}
+
+	function getLinkTitle(url: string): string {
+		const domain = url.toLowerCase();
+
+		if (domain.includes('github.com')) return 'GitHub';
+		if (domain.includes('crates.io')) return 'Crates.io';
+		if (domain.includes('pypi.org')) return 'PyPI';
+		if (domain.includes('rubygems.org')) return 'RubyGems';
+		if (domain.includes('npmjs.com')) return 'npm';
+
+		try {
+			return new URL(url).hostname;
+		} catch {
+			return 'External Link';
+		}
+	}
 </script>
 
 <div
@@ -36,7 +82,7 @@
 			<img src={module.owner.avatar_url} alt={module.owner.login} class="h-8 w-8 rounded-full" />
 			<div>
 				<h3 class="text-sSlate-800 group-hover:text-oOrange-500 font-medium transition-colors">
-					{module.name}
+					{module.metadata?.label || module.name}
 				</h3>
 				<p class="text-gGray-400 text-sm">{module.owner.login}</p>
 			</div>
@@ -49,7 +95,7 @@
 	</div>
 
 	<p class="text-gGray-500 mb-4 line-clamp-2 text-sm leading-relaxed">
-		{module.description || 'No description available'}
+		{module.metadata?.summary || module.description || 'No description available'}
 	</p>
 
 	{#if module.topics.length > 0}
@@ -68,6 +114,30 @@
 					+{module.topics.length - 3}
 				</span>
 			{/if}
+		</div>
+	{/if}
+
+	{#if module.metadata?.links && module.metadata.links.length > 0}
+		<div class="mb-4 flex items-center space-x-2">
+			<span class="text-gGray-400 text-xs font-medium">Links:</span>
+			<div class="flex items-center space-x-2">
+				{#each module.metadata.links.slice(0, 5) as link (link)}
+					{@const IconComponent = getLinkIcon(link)}
+					<a
+						href={link}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="relative z-20 transition-transform hover:scale-110 {getLinkColor(link)}"
+						title={getLinkTitle(link)}
+						on:click|stopPropagation
+					>
+						<svelte:component this={IconComponent} className="w-5 h-5" />
+					</a>
+				{/each}
+				{#if module.metadata.links.length > 5}
+					<span class="text-gGray-400 text-xs">+{module.metadata.links.length - 5}</span>
+				{/if}
+			</div>
 		</div>
 	{/if}
 
