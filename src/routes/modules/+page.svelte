@@ -1,49 +1,27 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import ModulesGrid from '../../components/ModulesGrid.svelte';
 	import SortDropdown from '../../components/SortDropdown.svelte';
-	import type { GitHubModule } from '$lib/types.js';
+	import { createModulesQuery } from '$lib/queries/modules';
+	import type { SortOption } from '$lib/types';
 
-	let modules: GitHubModule[] = [];
-	let loading = true;
-	let error: string | null = null;
-	let currentSort = 'relevant';
+	$: sortOption = ($page.url.searchParams.get('sort') as SortOption) || 'relevant';
 
-	async function loadModules(sort: string = 'relevant') {
-		try {
-			loading = true;
-			error = null;
+	// Create the query - this handles all the loading, error states, and data fetching
+	$: modulesQuery = createModulesQuery(sortOption);
 
-			const params = new URLSearchParams();
-			params.set('sort', sort);
-
-			const response = await fetch(`/api/modules?${params}`);
-			const data = await response.json();
-
-			if (!response.ok) {
-				throw new Error(data.message || 'Failed to load modules');
-			}
-
-			modules = data.modules;
-			currentSort = sort;
-		} catch (err) {
-			console.error('Error loading modules:', err);
-			error = err instanceof Error ? err.message : 'Failed to load modules';
-			modules = [];
-		} finally {
-			loading = false;
-		}
-	}
+	$: isLoading = $modulesQuery.isLoading;
+	$: isError = $modulesQuery.isError;
+	$: error = $modulesQuery.error ? $modulesQuery.error.message || 'Unknown error' : null;
+	$: data = $modulesQuery.data;
+	$: modules = data?.modules || [];
 
 	function handleSortChange(newSort: string) {
-		if (newSort !== currentSort) {
-			loadModules(newSort);
-		}
+		const url = new URL($page.url);
+		url.searchParams.set('sort', newSort);
+		goto(url.toString(), { replaceState: true });
 	}
-
-	onMount(() => {
-		loadModules();
-	});
 </script>
 
 <div class="bg-gGray-100 min-h-screen">
@@ -57,15 +35,15 @@
 
 		<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 			<div class="flex justify-end">
-				<SortDropdown value={currentSort} onChange={handleSortChange} />
+				<SortDropdown value={sortOption} onChange={handleSortChange} />
 			</div>
 			<div class="text-gGray-500 text-sm">
-				{#if !loading && !error}
+				{#if !isLoading && !isError && data}
 					{modules.length} module{modules.length !== 1 ? 's' : ''} found
 				{/if}
 			</div>
 		</div>
 
-		<ModulesGrid {modules} {loading} {error} />
+		<ModulesGrid {modules} loading={isLoading} error={isError ? error || 'Unknown error' : null} />
 	</div>
 </div>

@@ -41,6 +41,7 @@
 		"vite-plugin-static-copy": "^3.0.0"
 	},
 	"dependencies": {
+		"@tanstack/svelte-query": "^5.80.6",
 		"js-yaml": "^4.1.0"
 	}
 }
