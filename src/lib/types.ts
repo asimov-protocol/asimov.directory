@@ -1,3 +1,20 @@
+export interface ModuleMetadata {
+	name: string;
+	label: string;
+	summary: string;
+	links?: string[];
+	provides?: {
+		flows?: string[];
+	};
+	handles?: {
+		url_protocols?: string[];
+		url_prefixes?: string[];
+		url_patterns?: string[];
+		file_extensions?: string[];
+		content_types?: string[];
+	};
+}
+
 export interface GitHubModule {
 	id: number;
 	name: string;
@@ -13,6 +30,7 @@ export interface GitHubModule {
 		login: string;
 		avatar_url: string;
 	};
+	metadata?: ModuleMetadata;
 }
 
 export interface GitHubContributor {
