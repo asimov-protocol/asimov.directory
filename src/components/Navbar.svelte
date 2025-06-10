@@ -4,6 +4,7 @@
 	import List from 'phosphor-svelte/lib/List';
 	import X from 'phosphor-svelte/lib/X';
 	import { onMount, onDestroy } from 'svelte';
+	import Logo from './Logo.svelte';
 
 	$: currentPath = $page.url.pathname;
 	let mobileMenuOpen = false;
@@ -58,7 +59,7 @@
 					href="/"
 					class="text-sSlate-800 hover:text-oOrange-500 text-xl font-bold transition-colors"
 				>
-					ASIMOV.Directory
+					<Logo style="w-50" />
 				</a>
 
 				<div class="hidden items-center space-x-6 md:flex">
