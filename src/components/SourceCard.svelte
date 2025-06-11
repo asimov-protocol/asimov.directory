@@ -19,6 +19,7 @@
 		House,
 		Package
 	} from 'phosphor-svelte';
+	import * as psl from 'psl';
 	import type { DataSource } from '../lib/types';
 
 	export let sources: DataSource[] = [];
@@ -27,26 +28,63 @@
 	let showAll = false;
 	let copiedStates: { [key: string]: boolean } = {};
 
-	const DOMAIN_CONFIG: { [domain: string]: { name: string; icon: any } } = {
-		'airbnb.com': { name: 'Airbnb', icon: House },
-		'amazon.com': { name: 'Amazon', icon: AmazonLogo },
-		'facebook.com': { name: 'Facebook', icon: FacebookLogo },
-		'instagram.com': { name: 'Instagram', icon: InstagramLogo },
-		'linkedin.com': { name: 'LinkedIn', icon: LinkedinLogo },
-		'twitter.com': { name: 'X (Twitter)', icon: TwitterLogo },
-		'x.com': { name: 'X (Twitter)', icon: TwitterLogo },
-		'youtube.com': { name: 'YouTube', icon: YoutubeLogo },
-		'google.com': { name: 'Google', icon: GoogleLogo },
-		'indeed.com': { name: 'Indeed', icon: Briefcase },
-		'ebay.com': { name: 'eBay', icon: ShoppingBag },
-		'crunchbase.com': { name: 'Crunchbase', icon: Rocket },
-		'walmart.com': { name: 'Walmart', icon: ShoppingBag },
-		'yahoo.com': { name: 'Yahoo', icon: ChartLineUp }
+	type DomainConfigType = {
+		[key: string]: { name?: string; icon: typeof Globe };
 	};
 
+	const DOMAIN_CONFIG: DomainConfigType = {
+		'airbnb.com': { icon: House },
+		'amazon.com': { icon: AmazonLogo },
+		'facebook.com': { icon: FacebookLogo },
+		'instagram.com': { icon: InstagramLogo },
+		'linkedin.com': { icon: LinkedinLogo },
+		'twitter.com': { name: 'X (Twitter)', icon: TwitterLogo },
+		'x.com': { name: 'X (Twitter)', icon: TwitterLogo },
+		'youtube.com': { icon: YoutubeLogo },
+		'google.com': { icon: GoogleLogo },
+		'indeed.com': { icon: Briefcase },
+		'ebay.com': { name: 'eBay', icon: ShoppingBag },
+		'crunchbase.com': { icon: Rocket },
+		'walmart.com': { icon: ShoppingBag },
+		'yahoo.com': { icon: ChartLineUp }
+	};
+
+	function generateDisplayName(domain: string): string {
+		try {
+			const parsed = psl.parse(domain.toLowerCase().replace(/^www\./, ''));
+
+			if (parsed.error || !parsed.domain) {
+				return domain.charAt(0).toUpperCase() + domain.slice(1);
+			}
+
+			const domainName = parsed.domain.split('.')[0];
+
+			return domainName
+				.split('-')
+				.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+				.join(' ');
+		} catch {
+			return domain.charAt(0).toUpperCase() + domain.slice(1);
+		}
+	}
+
 	function getDomainConfig(domain: string) {
-		const config = DOMAIN_CONFIG[domain.toLowerCase()];
-		return config || { name: domain, icon: Globe };
+		try {
+			const parsed = psl.parse(domain.toLowerCase().replace(/^www\./, ''));
+			const actualDomain = parsed.error || !parsed.domain ? domain : parsed.domain;
+
+			const config = DOMAIN_CONFIG[actualDomain.toLowerCase()] || {};
+			return {
+				name: config.name || generateDisplayName(domain),
+				icon: config.icon || Globe
+			};
+		} catch {
+			const config = DOMAIN_CONFIG[domain.toLowerCase()] || {};
+			return {
+				name: config.name || generateDisplayName(domain),
+				icon: config.icon || Globe
+			};
+		}
 	}
 
 	function groupSourcesByEndpoint(sources: DataSource[]) {
