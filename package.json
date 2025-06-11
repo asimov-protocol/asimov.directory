@@ -22,6 +22,7 @@
 		"@sveltejs/kit": "^2.21.2",
 		"@sveltejs/vite-plugin-svelte": "^5.1.0",
 		"@tailwindcss/vite": "^4.1.8",
+		"@types/js-yaml": "^4.0.9",
 		"@types/node": "^22.15.30",
 		"eslint": "^9.28.0",
 		"eslint-config-prettier": "^10.1.5",
@@ -38,5 +39,9 @@
 		"typescript-eslint": "^8.33.1",
 		"vite": "^6.3.5",
 		"vite-plugin-static-copy": "^3.0.0"
+	},
+	"dependencies": {
+		"@tanstack/svelte-query": "^5.80.6",
+		"js-yaml": "^4.1.0"
 	}
 }

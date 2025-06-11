@@ -1,4 +1,5 @@
-import type { GitHubModule, SortOption } from './types';
+import type { GitHubModule, ModuleMetadata, SortOption } from './types';
+import { load as yamlLoad } from 'js-yaml';
 
 const GITHUB_API_BASE = 'https://api.github.com';
 const ORG_NAME = 'asimov-modules';
@@ -105,59 +106,6 @@ export class GitHubAPI {
 		);
 	}
 
-	async fetchOrganizationRepos(sortOption: SortOption = 'relevant'): Promise<GitHubModule[]> {
-		try {
-			const sortParam = this.getGitHubSort(sortOption);
-			const response = await fetch(
-				`${GITHUB_API_BASE}/orgs/${ORG_NAME}/repos?${sortParam}&per_page=100`,
-				{ headers: this.getHeaders() }
-			);
-
-			if (!response.ok) {
-				// Log rate limit info for debugging
-				const rateLimit = response.headers.get('X-RateLimit-Remaining');
-				const resetTime = response.headers.get('X-RateLimit-Reset');
-				console.warn(
-					`GitHub API rate limit remaining: ${rateLimit}, resets at: ${resetTime ? new Date(parseInt(resetTime) * 1000) : 'unknown'}`
-				);
-
-				throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
-			}
-
-			const repos = await response.json();
-			const filteredRepos = repos.filter(this.shouldIncludeRepo);
-
-			const modulesWithContributors = await Promise.all(
-				filteredRepos.map(async (repo: any) => {
-					const contributorsCount = await this.getContributorsCount(repo.full_name);
-
-					return {
-						id: repo.id,
-						name: repo.name,
-						full_name: repo.full_name,
-						description: repo.description,
-						html_url: repo.html_url,
-						stargazers_count: repo.stargazers_count,
-						language: repo.language,
-						topics: repo.topics || [],
-						updated_at: repo.updated_at,
-						contributors_count: contributorsCount,
-						owner: {
-							login: repo.owner.login,
-							avatar_url: repo.owner.avatar_url
-						}
-					} as GitHubModule;
-				})
-			);
-
-			// Apply client-side sorting for better control
-			return this.sortModulesClientSide(modulesWithContributors, sortOption);
-		} catch (error) {
-			console.error('Error fetching GitHub repositories:', error);
-			throw error;
-		}
-	}
-
 	private async getContributorsCount(repoFullName: string): Promise<number> {
 		try {
 			const response = await fetch(
@@ -198,6 +146,105 @@ export class GitHubAPI {
 			console.warn('Failed to get rate limit info:', error);
 		}
 		return null;
+	}
+
+	async fetchModuleMetadata(owner: string, repo: string): Promise<ModuleMetadata | null> {
+		try {
+			const response = await fetch(
+				`${GITHUB_API_BASE}/repos/${owner}/${repo}/contents/.asimov/module.yaml`,
+				{
+					headers: this.getHeaders()
+				}
+			);
+
+			if (!response.ok) {
+				return null;
+			}
+
+			const data = await response.json();
+			// Use Buffer instead of atob for Node.js compatibility
+			const content = Buffer.from(data.content, 'base64').toString('utf-8');
+
+			// Parse YAML using js-yaml
+			const parsedYaml = yamlLoad(content) as any;
+
+			// Validate and transform to our ModuleMetadata type
+			const metadata: ModuleMetadata = {
+				name: parsedYaml.name || '',
+				label: parsedYaml.label || '',
+				summary: parsedYaml.summary || '',
+				links: Array.isArray(parsedYaml.links) ? parsedYaml.links : [],
+				provides: parsedYaml.provides || {},
+				handles: parsedYaml.handles || {}
+			};
+
+			return metadata;
+		} catch (error) {
+			console.warn(`Failed to fetch metadata for ${owner}/${repo}:`, error);
+			return null;
+		}
+	}
+
+	async fetchOrganizationRepos(sortOption: SortOption = 'relevant'): Promise<GitHubModule[]> {
+		try {
+			const sortParam = this.getGitHubSort(sortOption);
+			const response = await fetch(
+				`${GITHUB_API_BASE}/orgs/${ORG_NAME}/repos?${sortParam}&per_page=100`,
+				{ headers: this.getHeaders() }
+			);
+
+			if (!response.ok) {
+				// Log rate limit info for debugging
+				const rateLimit = response.headers.get('X-RateLimit-Remaining');
+				const resetTime = response.headers.get('X-RateLimit-Reset');
+				console.warn(
+					`GitHub API rate limit remaining: ${rateLimit}, resets at: ${resetTime ? new Date(parseInt(resetTime) * 1000) : 'unknown'}`
+				);
+
+				throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+			}
+
+			const repos = await response.json();
+			const filteredRepos = repos.filter(this.shouldIncludeRepo);
+
+			const modulesWithContributors = await Promise.all(
+				filteredRepos.map(async (repo: any) => {
+					const contributorsCount = await this.getContributorsCount(repo.full_name);
+
+					return {
+						id: repo.id,
+						name: repo.name,
+						full_name: repo.full_name,
+						description: repo.description,
+						html_url: repo.html_url,
+						stargazers_count: repo.stargazers_count,
+						language: repo.language,
+						topics: repo.topics || [],
+						created_at: repo.created_at,
+						updated_at: repo.updated_at,
+						contributors_count: contributorsCount,
+						owner: {
+							login: repo.owner.login,
+							avatar_url: repo.owner.avatar_url
+						}
+					} as GitHubModule;
+				})
+			);
+
+			// Fetch metadata for each module
+			const modulesWithMetadata = await Promise.all(
+				modulesWithContributors.map(async (module) => {
+					const metadata = await this.fetchModuleMetadata(module.owner.login, module.name);
+					return { ...module, metadata };
+				})
+			);
+
+			// Apply client-side sorting for better control
+			return this.sortModulesClientSide(modulesWithMetadata, sortOption);
+		} catch (error) {
+			console.error('Error fetching GitHub repositories:', error);
+			throw error;
+		}
 	}
 }
 
