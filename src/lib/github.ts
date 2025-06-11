@@ -3,7 +3,12 @@ import { load as yamlLoad } from 'js-yaml';
 
 const GITHUB_API_BASE = 'https://api.github.com';
 const ORG_NAME = 'asimov-modules';
-const EXCLUDED_REPOS = ['.github'];
+const EXCLUDED_REPOS = [
+	'.github',
+	'asimov-modules.rb',
+	'asimov-modules.py',
+	'asimov-goodreads-module'
+];
 
 export class GitHubAPI {
 	private token?: string;
