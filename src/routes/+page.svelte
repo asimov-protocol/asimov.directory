@@ -1,34 +1,14 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import SourcesGrid from '../components/SourcesGrid.svelte';
-	import type { DataSource } from '$lib/types.js';
-	import sourcesData from '$lib/data/sources.json';
+	import { createSourcesQuery } from '$lib/queries/sources';
 
-	let sources: DataSource[] = [];
-	let loading = true;
-	let error: string | null = null;
+	const sourcesQuery = createSourcesQuery();
 
-	async function loadSources() {
-		try {
-			loading = true;
-			error = null;
-
-			// Simulate API delay for now
-			await new Promise((resolve) => setTimeout(resolve, 500));
-
-			sources = sourcesData as DataSource[];
-		} catch (err) {
-			console.error('Error loading sources:', err);
-			error = err instanceof Error ? err.message : 'Failed to load data sources';
-			sources = [];
-		} finally {
-			loading = false;
-		}
-	}
-
-	onMount(() => {
-		loadSources();
-	});
+	$: isLoading = $sourcesQuery.isLoading;
+	$: isError = $sourcesQuery.isError;
+	$: error = $sourcesQuery.error ? $sourcesQuery.error.message || 'Unknown error' : null;
+	$: data = $sourcesQuery.data;
+	$: sources = data?.sources || [];
 </script>
 
 <div class="bg-gGray-100 min-h-screen">
@@ -37,10 +17,10 @@
 			<h1 class="text-sSlate-800 mb-4 text-4xl font-bold">Data Sources</h1>
 			<p class="text-gGray-500 max-w-2xl text-lg">
 				Explore our comprehensive collection of supported data sources and endpoints for structured
-				data extraction
+				data extraction from ASIMOV modules
 			</p>
 		</div>
 
-		<SourcesGrid {sources} {loading} {error} />
+		<SourcesGrid {sources} loading={isLoading} error={isError ? error || 'Unknown error' : null} />
 	</div>
 </div>
