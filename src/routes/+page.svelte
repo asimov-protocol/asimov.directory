@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import SourcesGrid from '../components/SourcesGrid.svelte';
 	import { createSourcesQuery } from '$lib/queries/sources';
 
-	$: sourcesQuery = createSourcesQuery();
+	const sourcesQuery = createSourcesQuery();
 
 	$: isLoading = $sourcesQuery.isLoading;
 	$: isError = $sourcesQuery.isError;

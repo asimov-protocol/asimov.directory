@@ -170,6 +170,7 @@
 								on:click={() => copyToClipboard(urlPrefix, `${dataset}-${index}`)}
 								class="border-sSlate-200 text-gGray-500 hover:text-sSlate-700 hover:border-sSlate-300 flex h-8 w-8 items-center justify-center rounded-lg border bg-white opacity-0 transition-all group-hover/endpoint:opacity-100"
 								title="Copy endpoint"
+								aria-label="Copy endpoint to clipboard"
 							>
 								{#if copiedStates[`${dataset}-${index}`]}
 									<Check size={14} class="text-green-600" />
@@ -181,7 +182,7 @@
 
 						<div class="flex flex-wrap items-center gap-2">
 							<span class="text-gGray-500 text-xs">Modules:</span>
-							{#each endpointSources as source}
+							{#each endpointSources as source (source.module_name)}
 								<a
 									href="/modules/{source.module_name}"
 									class="bg-oOrange-50 text-oOrange-700 border-oOrange-200 hover:bg-oOrange-100 hover:border-oOrange-300 flex items-center space-x-1 rounded-full border px-2 py-1 text-xs transition-colors"
@@ -194,7 +195,7 @@
 						</div>
 
 						<div class="mt-2 flex items-center space-x-2">
-							{#each endpointSources as source}
+							{#each endpointSources as source (source.module_name)}
 								<div class="flex items-center space-x-1">
 									{#if source.json}
 										<div class="h-1.5 w-1.5 rounded-full bg-blue-500" title="JSON"></div>
