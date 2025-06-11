@@ -16,7 +16,8 @@
 		Briefcase,
 		Rocket,
 		ChartLineUp,
-		House
+		House,
+		Package
 	} from 'phosphor-svelte';
 	import type { DataSource } from '../lib/types';
 
@@ -26,31 +27,37 @@
 	let showAll = false;
 	let copiedStates: { [key: string]: boolean } = {};
 
-	function getSourceIcon(dataset: string) {
-		const iconComponents: Record<string, any> = {
-			Airbnb: House,
-			Amazon: AmazonLogo,
-			Facebook: FacebookLogo,
-			Instagram: InstagramLogo,
-			LinkedIn: LinkedinLogo,
-			'X (Twitter)': TwitterLogo,
-			YouTube: YoutubeLogo,
-			Google: GoogleLogo,
-			Indeed: Briefcase,
-			eBay: ShoppingBag,
-			Crunchbase: Rocket,
-			Walmart: ShoppingBag,
-			Yahoo: ChartLineUp
-		};
-		return iconComponents[dataset] || Globe;
+	const DOMAIN_CONFIG: { [domain: string]: { name: string; icon: any } } = {
+		'airbnb.com': { name: 'Airbnb', icon: House },
+		'amazon.com': { name: 'Amazon', icon: AmazonLogo },
+		'facebook.com': { name: 'Facebook', icon: FacebookLogo },
+		'instagram.com': { name: 'Instagram', icon: InstagramLogo },
+		'linkedin.com': { name: 'LinkedIn', icon: LinkedinLogo },
+		'twitter.com': { name: 'X (Twitter)', icon: TwitterLogo },
+		'x.com': { name: 'X (Twitter)', icon: TwitterLogo },
+		'youtube.com': { name: 'YouTube', icon: YoutubeLogo },
+		'google.com': { name: 'Google', icon: GoogleLogo },
+		'indeed.com': { name: 'Indeed', icon: Briefcase },
+		'ebay.com': { name: 'eBay', icon: ShoppingBag },
+		'crunchbase.com': { name: 'Crunchbase', icon: Rocket },
+		'walmart.com': { name: 'Walmart', icon: ShoppingBag },
+		'yahoo.com': { name: 'Yahoo', icon: ChartLineUp }
+	};
+
+	function getDomainConfig(domain: string) {
+		const config = DOMAIN_CONFIG[domain.toLowerCase()];
+		return config || { name: domain, icon: Globe };
 	}
 
-	function getDomainFromUrl(url: string): string {
-		try {
-			return new URL(url).hostname.replace('www.', '');
-		} catch {
-			return url;
+	function groupSourcesByEndpoint(sources: DataSource[]) {
+		const grouped: Record<string, DataSource[]> = {};
+		for (const source of sources) {
+			if (!grouped[source.url_prefix]) {
+				grouped[source.url_prefix] = [];
+			}
+			grouped[source.url_prefix].push(source);
 		}
+		return Object.entries(grouped);
 	}
 
 	async function copyToClipboard(text: string, key: string) {
@@ -65,15 +72,18 @@
 		}
 	}
 
-	$: IconComponent = getSourceIcon(dataset);
+	$: domainConfig = getDomainConfig(dataset);
+	$: IconComponent = domainConfig.icon;
+	$: displayName = domainConfig.name;
 	$: hasRdf = sources.some((s) => s.rdf);
 	$: hasJson = sources.some((s) => s.json);
-	$: firstSource = sources[0];
-	$: displayedSources = showAll ? sources : sources.slice(0, 2);
-	$: hasMore = sources.length > 2;
+	$: groupedEndpoints = groupSourcesByEndpoint(sources);
+	$: displayedEndpoints = showAll ? groupedEndpoints : groupedEndpoints.slice(0, 3);
+	$: hasMore = groupedEndpoints.length > 3;
+	$: totalEndpoints = groupedEndpoints.length;
 </script>
 
-{#if sources.length > 0 && firstSource}
+{#if sources.length > 0}
 	<div
 		class="group border-sSlate-200 hover:border-sSlate-300 relative overflow-hidden rounded-xl border bg-white shadow-sm transition-all duration-200 hover:shadow-md"
 	>
@@ -89,9 +99,9 @@
 						<h3
 							class="text-sSlate-900 group-hover:text-oOrange-600 font-semibold transition-colors"
 						>
-							{dataset}
+							{displayName}
 						</h3>
-						<p class="text-gGray-500 text-sm">{getDomainFromUrl(firstSource.url_prefix)}</p>
+						<p class="text-gGray-500 text-sm">{dataset}</p>
 					</div>
 				</div>
 
@@ -100,6 +110,7 @@
 						{#if hasJson}
 							<div
 								class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600"
+								title="JSON support"
 							>
 								<FileJs size={14} />
 							</div>
@@ -107,6 +118,7 @@
 						{#if hasRdf}
 							<div
 								class="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-50 text-purple-600"
+								title="RDF support"
 							>
 								<GraphicsCard size={14} />
 							</div>
@@ -114,9 +126,9 @@
 					</div>
 
 					<div class="text-right">
-						<div class="text-sSlate-800 text-lg font-bold">{sources.length}</div>
+						<div class="text-sSlate-800 text-lg font-bold">{totalEndpoints}</div>
 						<div class="text-gGray-400 -mt-1 text-xs">
-							endpoint{sources.length !== 1 ? 's' : ''}
+							endpoint{totalEndpoints !== 1 ? 's' : ''}
 						</div>
 					</div>
 				</div>
@@ -133,7 +145,7 @@
 						on:click={() => (showAll = true)}
 						class="text-oOrange-500 hover:text-oOrange-600 text-xs font-medium transition-colors"
 					>
-						View all {sources.length}
+						View all {totalEndpoints}
 					</button>
 				{:else if showAll}
 					<button
@@ -147,29 +159,15 @@
 		</div>
 
 		<div class="px-6 pb-6">
-			<div class="space-y-1">
-				{#each displayedSources as source, index (source.url_prefix + '-' + index)}
+			<div class="space-y-3">
+				{#each displayedEndpoints as [urlPrefix, endpointSources], index (urlPrefix)}
 					<div
-						class="group/endpoint border-sSlate-100 bg-sSlate-50/50 hover:border-sSlate-200 relative flex items-center rounded-lg border p-3 transition-all hover:bg-white hover:shadow-sm"
+						class="group/endpoint border-sSlate-100 bg-sSlate-50/50 hover:border-sSlate-200 relative rounded-lg border p-4 transition-all hover:bg-white hover:shadow-sm"
 					>
-						<div class="mr-3 min-w-0 flex-1">
-							<code class="text-sSlate-700 block truncate font-mono text-sm"
-								>{source.url_prefix}</code
-							>
-						</div>
-
-						<div class="flex items-center space-x-2">
-							<div class="flex items-center space-x-1">
-								{#if source.json}
-									<div class="h-1.5 w-1.5 rounded-full bg-blue-500" title="JSON"></div>
-								{/if}
-								{#if source.rdf}
-									<div class="h-1.5 w-1.5 rounded-full bg-purple-500" title="RDF"></div>
-								{/if}
-							</div>
-
+						<div class="mb-3 flex items-center justify-between">
+							<code class="text-sSlate-700 block truncate font-mono text-sm">{urlPrefix}</code>
 							<button
-								on:click={() => copyToClipboard(source.url_prefix, `${dataset}-${index}`)}
+								on:click={() => copyToClipboard(urlPrefix, `${dataset}-${index}`)}
 								class="border-sSlate-200 text-gGray-500 hover:text-sSlate-700 hover:border-sSlate-300 flex h-8 w-8 items-center justify-center rounded-lg border bg-white opacity-0 transition-all group-hover/endpoint:opacity-100"
 								title="Copy endpoint"
 							>
@@ -180,6 +178,33 @@
 								{/if}
 							</button>
 						</div>
+
+						<div class="flex flex-wrap items-center gap-2">
+							<span class="text-gGray-500 text-xs">Modules:</span>
+							{#each endpointSources as source}
+								<a
+									href="/modules/{source.module_name}"
+									class="bg-oOrange-50 text-oOrange-700 border-oOrange-200 hover:bg-oOrange-100 hover:border-oOrange-300 flex items-center space-x-1 rounded-full border px-2 py-1 text-xs transition-colors"
+									title="Flows: {source.flows.join(', ') || 'None specified'}"
+								>
+									<Package size={12} />
+									<span>{source.module_label}</span>
+								</a>
+							{/each}
+						</div>
+
+						<div class="mt-2 flex items-center space-x-2">
+							{#each endpointSources as source}
+								<div class="flex items-center space-x-1">
+									{#if source.json}
+										<div class="h-1.5 w-1.5 rounded-full bg-blue-500" title="JSON"></div>
+									{/if}
+									{#if source.rdf}
+										<div class="h-1.5 w-1.5 rounded-full bg-purple-500" title="RDF"></div>
+									{/if}
+								</div>
+							{/each}
+						</div>
 					</div>
 				{/each}
 
@@ -189,7 +214,7 @@
 							<div class="bg-gGray-300 h-1 w-1 rounded-full"></div>
 							<div class="bg-gGray-300 h-1 w-1 rounded-full"></div>
 							<div class="bg-gGray-300 h-1 w-1 rounded-full"></div>
-							<span class="text-xs">+{sources.length - 2} more</span>
+							<span class="text-xs">+{totalEndpoints - 3} more</span>
 						</div>
 					</div>
 				{/if}

@@ -1,4 +1,4 @@
-import type { GitHubModule, ModuleMetadata, SortOption } from './types';
+import type { GitHubModule, ModuleMetadata, SortOption, DataSource } from './types';
 import { load as yamlLoad } from 'js-yaml';
 
 const GITHUB_API_BASE = 'https://api.github.com';
@@ -194,7 +194,6 @@ export class GitHubAPI {
 			);
 
 			if (!response.ok) {
-				// Log rate limit info for debugging
 				const rateLimit = response.headers.get('X-RateLimit-Remaining');
 				const resetTime = response.headers.get('X-RateLimit-Reset');
 				console.warn(
@@ -246,9 +245,44 @@ export class GitHubAPI {
 			throw error;
 		}
 	}
+
+	async fetchDataSources(): Promise<DataSource[]> {
+		try {
+			const modules = await this.fetchOrganizationRepos();
+			const dataSources: DataSource[] = [];
+
+			for (const module of modules) {
+				if (module.metadata?.handles?.url_prefixes) {
+					for (const urlPrefix of module.metadata.handles.url_prefixes) {
+						dataSources.push({
+							dataset: this.getDomainFromUrl(urlPrefix),
+							url_prefix: urlPrefix,
+							json: true,
+							rdf: false,
+							module_name: module.name,
+							module_label: module.metadata.label || module.name,
+							flows: module.metadata.provides?.flows || []
+						});
+					}
+				}
+			}
+
+			return dataSources;
+		} catch (error) {
+			console.error('Error fetching data sources:', error);
+			throw error;
+		}
+	}
+
+	private getDomainFromUrl(url: string): string {
+		try {
+			return new URL(url).hostname.replace('www.', '');
+		} catch {
+			return url.split('/')[0].replace('www.', '');
+		}
+	}
 }
 
-// Create instance with token from environment variable
 const githubToken =
 	typeof import.meta.env !== 'undefined' ? import.meta.env.GITHUB_TOKEN : undefined;
 export const githubApi = new GitHubAPI(githubToken);
