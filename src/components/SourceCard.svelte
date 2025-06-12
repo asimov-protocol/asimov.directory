@@ -226,6 +226,7 @@
 									class="bg-oOrange-50 text-oOrange-700 border-oOrange-200 hover:bg-oOrange-100 hover:border-oOrange-300 flex items-center space-x-1 rounded-full border px-2 py-1 text-xs transition-colors"
 									title="Flows: {source.flows.join(', ') || 'None specified'}"
 									target="_blank"
+									rel="noopener noreferrer"
 								>
 									<Package size={12} />
 									<span>{source.module_label}</span>
