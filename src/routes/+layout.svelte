@@ -3,6 +3,12 @@
 	import { queryClient } from '$lib/queryClient';
 	import '../app.css';
 	import Navbar from '../components/Navbar.svelte';
+	import { onMount } from 'svelte';
+	import { initializeClerk } from '$lib/clerk';
+
+	onMount(() => {
+		initializeClerk();
+	});
 </script>
 
 <QueryClientProvider client={queryClient}>
