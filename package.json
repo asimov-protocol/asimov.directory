@@ -42,6 +42,7 @@
 		"vite-plugin-static-copy": "^3.0.0"
 	},
 	"dependencies": {
+		"@clerk/clerk-js": "^5.69.0",
 		"@tanstack/svelte-query": "^5.80.6",
 		"js-yaml": "^4.1.0",
 		"psl": "^1.15.0"
