@@ -286,6 +286,40 @@ export class GitHubAPI {
 			return url.split('/')[0].replace('www.', '');
 		}
 	}
+
+	async fetchGitHubStats(): Promise<{ stars: number; followers: number }> {
+		try {
+			const [repoResponse, orgResponse] = await Promise.all([
+				fetch(`${GITHUB_API_BASE}/repos/asimov-protocol/asimov.directory`, {
+					headers: this.getHeaders()
+				}),
+				fetch(`${GITHUB_API_BASE}/orgs/asimov-protocol`, {
+					headers: this.getHeaders()
+				})
+			]);
+
+			if (!repoResponse.ok || !orgResponse.ok) {
+				throw new Error('Failed to fetch GitHub stats');
+			}
+
+			const [repoData, orgData] = await Promise.all([repoResponse.json(), orgResponse.json()]);
+
+			return {
+				stars: repoData.stargazers_count || 0,
+				followers: orgData.followers || 0
+			};
+		} catch (error) {
+			console.error('Error fetching GitHub stats:', error);
+			throw error;
+		}
+	}
+}
+
+export function formatStars(count: number): string {
+	if (count >= 1000) {
+		return `${(count / 1000).toFixed(1)}k`;
+	}
+	return count.toString();
 }
 
 const githubToken =

@@ -1,136 +1,167 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { browser } from '$app/environment';
+	import { page } from '$app/state';
+	import { createQuery } from '@tanstack/svelte-query';
 	import List from 'phosphor-svelte/lib/List';
 	import X from 'phosphor-svelte/lib/X';
-	import { onMount, onDestroy } from 'svelte';
+	import Star from 'phosphor-svelte/lib/Star';
+	import Users from 'phosphor-svelte/lib/Users';
 	import Logo from './Logo.svelte';
+	import { githubApi, formatStars } from '../lib/github';
 
-	$: currentPath = $page.url.pathname;
-	let mobileMenuOpen = false;
+	let currentPath = $derived(() => page.url.pathname);
+	let isOpen = $state(false);
 
-	function toggleBodyScroll(disable: boolean) {
-		if (!browser) return;
-
-		if (disable) {
-			document.body.style.overflow = 'hidden';
-			document.body.style.touchAction = 'none';
-		} else {
-			document.body.style.overflow = '';
-			document.body.style.touchAction = '';
-		}
+	function toggleMenu() {
+		isOpen = !isOpen;
 	}
 
-	function toggleMobileMenu() {
-		mobileMenuOpen = !mobileMenuOpen;
-		toggleBodyScroll(mobileMenuOpen);
-	}
-
-	function closeMobileMenu() {
-		mobileMenuOpen = false;
-		toggleBodyScroll(false);
-	}
-
-	onDestroy(() => {
-		if (browser) {
-			toggleBodyScroll(false);
-		}
+	const githubStatsQuery = createQuery({
+		queryKey: ['github-stats'],
+		queryFn: () => githubApi.fetchGitHubStats(),
+		staleTime: 10 * 60 * 1000,
+		gcTime: 20 * 60 * 1000,
+		retry: 1
 	});
 
-	function handleKeydown(event: KeyboardEvent) {
-		if (event.key === 'Escape' && mobileMenuOpen) {
-			closeMobileMenu();
-		}
-	}
-
-	onMount(() => {
-		window.addEventListener('keydown', handleKeydown);
-		return () => {
-			window.removeEventListener('keydown', handleKeydown);
-		};
-	});
+	const navItems = [
+		{ text: 'Sources', href: '/' },
+		{ text: 'Modules', href: '/modules' }
+	];
 </script>
 
-<nav class="border-sSlate-200 sticky top-0 z-50 border-b bg-white">
-	<div class="container mx-auto px-4">
-		<div class="flex h-16 items-center justify-between">
-			<div class="flex items-center space-x-8">
-				<a
-					href="/"
-					class="text-sSlate-800 hover:text-oOrange-500 text-xl font-bold transition-colors"
-				>
-					<Logo style="w-50" />
-				</a>
+<header class="sticky top-0 z-50 border-b border-slate-200 bg-white transition-all duration-300">
+	<div class="container mx-auto flex h-20 items-center justify-between px-4">
+		<a href="/" class="flex items-center gap-2">
+			<Logo class="w-50 text-gray-900" />
+		</a>
 
-				<div class="hidden items-center space-x-6 md:flex">
+		<nav class="hidden items-center space-x-8 md:flex">
+			{#each navItems as item (item.text)}
+				<a
+					href={item.href}
+					class="group relative text-gray-600 transition-colors hover:text-orange-600 {currentPath() ===
+					item.href
+						? 'text-orange-600'
+						: ''}"
+				>
+					{item.text}
+					<div
+						class="absolute -bottom-1 left-0 h-px bg-orange-500 transition-all {currentPath() ===
+						item.href
+							? 'w-full'
+							: 'w-0 group-hover:w-full'}"
+					></div>
+				</a>
+			{/each}
+		</nav>
+
+		<div class="hidden items-center gap-4 md:flex">
+			{#if $githubStatsQuery.data}
+				<div class="flex items-center gap-3">
 					<a
-						href="/"
-						class="text-sm font-medium transition-colors {currentPath === '/'
-							? 'text-oOrange-500'
-							: 'text-gGray-500 hover:text-sSlate-800'}"
+						href="https://github.com/asimov-protocol/asimov.directory"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="group flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white/80 px-3 py-1.5 text-sm transition-all hover:border-orange-200 hover:bg-orange-50"
 					>
-						Sources
+						<Star size={14} class="text-gray-500 group-hover:text-orange-600" />
+						<span class="font-medium text-gray-700 group-hover:text-orange-700">
+							{formatStars($githubStatsQuery.data.stars)}
+						</span>
 					</a>
 					<a
-						href="/modules"
-						class="text-sm font-medium transition-colors {currentPath === '/modules'
-							? 'text-oOrange-500'
-							: 'text-gGray-500 hover:text-sSlate-800'}"
+						href="https://github.com/asimov-protocol"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="group flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white/80 px-3 py-1.5 text-sm transition-all hover:border-orange-200 hover:bg-orange-50"
 					>
-						Modules
+						<Users size={14} class="text-gray-500 group-hover:text-orange-600" />
+						<span class="font-medium text-gray-700 group-hover:text-orange-700">
+							{formatStars($githubStatsQuery.data.followers)}
+						</span>
 					</a>
 				</div>
-			</div>
-
-			<div class="md:hidden">
-				<button
-					type="button"
-					on:click={toggleMobileMenu}
-					class="text-gGray-500 hover:text-sSlate-800 transition-colors"
-					aria-label="Toggle mobile menu"
-					aria-expanded={mobileMenuOpen}
-				>
-					{#if mobileMenuOpen}
-						<X size={24} />
-					{:else}
-						<List size={24} />
-					{/if}
-				</button>
-			</div>
+			{:else if $githubStatsQuery.isLoading}
+				<div class="flex items-center gap-3">
+					<div class="animate-pulse rounded-lg bg-gray-200 px-3 py-1.5">
+						<div class="h-4 w-8 rounded bg-gray-300"></div>
+					</div>
+					<div class="animate-pulse rounded-lg bg-gray-200 px-3 py-1.5">
+						<div class="h-4 w-8 rounded bg-gray-300"></div>
+					</div>
+				</div>
+			{/if}
 		</div>
 
-		{#if mobileMenuOpen}
-			<div class="border-sSlate-200 border-t pt-2 pb-3 md:hidden">
-				<a
-					href="/"
-					on:click={closeMobileMenu}
-					class="block rounded-lg px-4 py-2 text-base font-medium transition-colors {currentPath ===
-					'/'
-						? 'bg-oOrange-50 text-oOrange-500'
-						: 'text-gGray-500 hover:bg-sSlate-50 hover:text-sSlate-800'}"
-				>
-					Sources
-				</a>
-				<a
-					href="/modules"
-					on:click={closeMobileMenu}
-					class="block rounded-lg px-4 py-2 text-base font-medium transition-colors {currentPath ===
-					'/modules'
-						? 'bg-oOrange-50 text-oOrange-500'
-						: 'text-gGray-500 hover:bg-sSlate-50 hover:text-sSlate-800'}"
-				>
-					Modules
-				</a>
-			</div>
-		{/if}
+		<button
+			class="text-gray-600 hover:text-gray-900 focus:outline-none md:hidden"
+			onclick={toggleMenu}
+			type="button"
+			aria-label="Toggle menu"
+			aria-expanded={isOpen}
+		>
+			{#if isOpen}
+				<X size={24} weight="bold" />
+			{:else}
+				<List size={24} weight="bold" />
+			{/if}
+		</button>
 	</div>
-</nav>
 
-{#if mobileMenuOpen}
-	<button
-		type="button"
-		class="fixed inset-0 z-40 border-0 bg-white/30 backdrop-blur-sm md:hidden"
-		on:click={closeMobileMenu}
-		aria-label="Close menu"
-	></button>
-{/if}
+	{#if isOpen}
+		<div class="border-t border-gray-200 bg-white/95 backdrop-blur-md md:hidden">
+			<div class="container mx-auto px-4 py-6">
+				<nav class="flex flex-col space-y-4">
+					{#each navItems as item (item.text)}
+						<a
+							href={item.href}
+							onclick={() => (isOpen = false)}
+							class="border-b border-gray-200 py-2 text-gray-600 transition-colors last:border-b-0 hover:text-orange-600 {currentPath() ===
+							item.href
+								? 'text-orange-600'
+								: ''}"
+						>
+							{item.text}
+						</a>
+					{/each}
+
+					{#if $githubStatsQuery.data}
+						<div class="flex items-center justify-center gap-4 py-2">
+							<a
+								href="https://github.com/asimov-protocol/asimov.directory"
+								target="_blank"
+								rel="noopener noreferrer"
+								class="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm"
+							>
+								<Star size={14} class="text-gray-500" />
+								<span class="font-medium text-gray-700">
+									{formatStars($githubStatsQuery.data.stars)}
+								</span>
+							</a>
+							<a
+								href="https://github.com/asimov-protocol"
+								target="_blank"
+								rel="noopener noreferrer"
+								class="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm"
+							>
+								<Users size={14} class="text-gray-500" />
+								<span class="font-medium text-gray-700">
+									{formatStars($githubStatsQuery.data.followers)}
+								</span>
+							</a>
+						</div>
+					{:else if $githubStatsQuery.isLoading}
+						<div class="flex items-center justify-center gap-4 py-2">
+							<div class="animate-pulse rounded-lg bg-gray-200 px-3 py-1.5">
+								<div class="h-4 w-8 rounded bg-gray-300"></div>
+							</div>
+							<div class="animate-pulse rounded-lg bg-gray-200 px-3 py-1.5">
+								<div class="h-4 w-8 rounded bg-gray-300"></div>
+							</div>
+						</div>
+					{/if}
+				</nav>
+			</div>
+		</div>
+	{/if}
+</header>
