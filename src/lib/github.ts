@@ -318,7 +318,8 @@ export class GitHubAPI {
 
 export function formatStars(count: number): string {
 	if (count >= 1000) {
-		return `${(count / 1000).toFixed(1)}k`;
+		const thousands = count / 1000;
+		return Number.isInteger(thousands) ? `${thousands}k` : `${thousands.toFixed(1)}k`;
 	}
 	return count.toString();
 }
