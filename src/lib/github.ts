@@ -1,14 +1,12 @@
 import type { GitHubModule, ModuleMetadata, SortOption, DataSource } from './types';
 import { load as yamlLoad } from 'js-yaml';
-
-const GITHUB_API_BASE = 'https://api.github.com';
-const ORG_NAME = 'asimov-modules';
-const EXCLUDED_REPOS = [
-	'.github',
-	'asimov-modules.rb',
-	'asimov-modules.py',
-	'asimov-goodreads-module'
-];
+import {
+	GITHUB_API_BASE,
+	ASIMOV_PROTOCOL_ORG_NAME,
+	ASIMOV_MODULES_ORG_NAME,
+	ASIMOV_DIRECTORY_REPO_NAME,
+	EXCLUDED_REPOS
+} from './config';
 
 export class GitHubAPI {
 	private token?: string;
@@ -20,7 +18,7 @@ export class GitHubAPI {
 	private getHeaders(): HeadersInit {
 		const headers: HeadersInit = {
 			Accept: 'application/vnd.github.v3+json',
-			'User-Agent': 'asimov-directory'
+			'User-Agent': ASIMOV_DIRECTORY_REPO_NAME
 		};
 
 		if (this.token) {
@@ -194,7 +192,7 @@ export class GitHubAPI {
 		try {
 			const sortParam = this.getGitHubSort(sortOption);
 			const response = await fetch(
-				`${GITHUB_API_BASE}/orgs/${ORG_NAME}/repos?${sortParam}&per_page=100`,
+				`${GITHUB_API_BASE}/orgs/${ASIMOV_MODULES_ORG_NAME}/repos?${sortParam}&per_page=100`,
 				{ headers: this.getHeaders() }
 			);
 
@@ -286,6 +284,44 @@ export class GitHubAPI {
 			return url.split('/')[0].replace('www.', '');
 		}
 	}
+
+	async fetchGitHubStats(): Promise<{ stars: number; followers: number }> {
+		try {
+			const [repoResponse, orgResponse] = await Promise.all([
+				fetch(
+					`${GITHUB_API_BASE}/repos/${ASIMOV_PROTOCOL_ORG_NAME}/${ASIMOV_DIRECTORY_REPO_NAME}`,
+					{
+						headers: this.getHeaders()
+					}
+				),
+				fetch(`${GITHUB_API_BASE}/orgs/${ASIMOV_PROTOCOL_ORG_NAME}`, {
+					headers: this.getHeaders()
+				})
+			]);
+
+			if (!repoResponse.ok || !orgResponse.ok) {
+				throw new Error('Failed to fetch GitHub stats');
+			}
+
+			const [repoData, orgData] = await Promise.all([repoResponse.json(), orgResponse.json()]);
+
+			return {
+				stars: repoData.stargazers_count || 0,
+				followers: orgData.followers || 0
+			};
+		} catch (error) {
+			console.error('Error fetching GitHub stats:', error);
+			throw error;
+		}
+	}
+}
+
+export function formatStars(count: number): string {
+	if (count >= 1000) {
+		const thousands = count / 1000;
+		return Number.isInteger(thousands) ? `${thousands}k` : `${thousands.toFixed(1)}k`;
+	}
+	return count.toString();
 }
 
 const githubToken =
