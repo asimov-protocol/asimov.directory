@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { browser } from '$app/environment';
+	import { onMount, onDestroy } from 'svelte';
 	import List from 'phosphor-svelte/lib/List';
 	import X from 'phosphor-svelte/lib/X';
 	import Logo from './Logo.svelte';
@@ -8,9 +10,46 @@
 	let currentPath = $derived(() => page.url.pathname);
 	let isOpen = $state(false);
 
+	function toggleBodyScroll(disable: boolean) {
+		if (!browser) return;
+
+		if (disable) {
+			document.body.style.overflow = 'hidden';
+			document.body.style.touchAction = 'none';
+		} else {
+			document.body.style.overflow = '';
+			document.body.style.touchAction = '';
+		}
+	}
+
 	function toggleMenu() {
 		isOpen = !isOpen;
+		toggleBodyScroll(isOpen);
 	}
+
+	function closeMenu() {
+		isOpen = false;
+		toggleBodyScroll(false);
+	}
+
+	function handleKeydown(event: KeyboardEvent) {
+		if (event.key === 'Escape' && isOpen) {
+			closeMenu();
+		}
+	}
+
+	onMount(() => {
+		window.addEventListener('keydown', handleKeydown);
+		return () => {
+			window.removeEventListener('keydown', handleKeydown);
+		};
+	});
+
+	onDestroy(() => {
+		if (browser) {
+			toggleBodyScroll(false);
+		}
+	});
 
 	const navItems = [
 		{ text: 'Sources', href: '/' },
@@ -70,7 +109,7 @@
 					{#each navItems as item (item.text)}
 						<a
 							href={item.href}
-							onclick={() => (isOpen = false)}
+							onclick={closeMenu}
 							class="border-b border-gray-200 py-2 text-gray-600 transition-colors last:border-b-0 hover:text-orange-600 {currentPath() ===
 							item.href
 								? 'text-orange-600'
@@ -86,3 +125,13 @@
 		</div>
 	{/if}
 </header>
+
+{#if isOpen}
+	<button
+		class="fixed inset-0 z-40 bg-white/30 backdrop-blur-sm md:hidden"
+		onclick={closeMenu}
+		onkeydown={(e) => e.key === 'Enter' && closeMenu()}
+		tabindex="0"
+		aria-label="Close menu"
+	></button>
+{/if}
