@@ -207,7 +207,9 @@ export class GitHubAPI {
 			}
 
 			const repos = await response.json();
-			const filteredRepos = repos.filter(this.shouldIncludeRepo);
+			const filteredRepos = repos.filter(
+				(repo: any) => this.shouldIncludeRepo(repo) && repo.name.toLowerCase().includes('module')
+			);
 
 			const modulesWithContributors = await Promise.all(
 				filteredRepos.map(async (repo: any) => {
