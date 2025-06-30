@@ -24,6 +24,38 @@
 	}
 </script>
 
+<svelte:head>
+	<title>ASIMOV Modules - Browse Open Source Modules | ASIMOV.Directory</title>
+	<meta
+		name="description"
+		content="Discover and explore our collection of ASIMOV modules from the GitHub ecosystem. Browse repositories with powerful sorting and filtering options."
+	/>
+	<meta
+		name="keywords"
+		content="ASIMOV modules, GitHub repositories, open source modules, asimov-modules organization, developer tools, module browser"
+	/>
+	<link rel="canonical" href="https://asimov.directory/modules" />
+
+	<meta
+		property="og:title"
+		content="ASIMOV Modules - Browse Open Source Modules | ASIMOV.Directory"
+	/>
+	<meta
+		property="og:description"
+		content="Discover and explore our collection of ASIMOV modules from the GitHub ecosystem. Browse repositories with powerful sorting and filtering options."
+	/>
+	<meta property="og:url" content="https://asimov.directory/modules" />
+
+	<meta
+		name="twitter:title"
+		content="ASIMOV Modules - Browse Open Source Modules | ASIMOV.Directory"
+	/>
+	<meta
+		name="twitter:description"
+		content="Discover and explore our collection of ASIMOV modules from the GitHub ecosystem. Browse repositories with powerful sorting and filtering options."
+	/>
+</svelte:head>
+
 <div class="bg-gGray-100 min-h-screen">
 	<div class="container mx-auto px-4 py-8">
 		<div class="mb-8">
