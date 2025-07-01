@@ -8,7 +8,8 @@ export const EXCLUDED_REPOS = [
 	'.github',
 	'asimov-modules.rb',
 	'asimov-modules.py',
-	'asimov-goodreads-module'
+	'asimov-goodreads-module',
+	'asimov-test-module'
 ];
 
 export const directoryGithubUrl = `${GITHUB_BASE_URL}/${ASIMOV_PROTOCOL_ORG_NAME}/${ASIMOV_DIRECTORY_REPO_NAME}`;
