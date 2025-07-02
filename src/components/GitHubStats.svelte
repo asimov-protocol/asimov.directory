@@ -3,7 +3,7 @@
 	import Star from 'phosphor-svelte/lib/Star';
 	import Users from 'phosphor-svelte/lib/Users';
 	import { githubApi, formatStars } from '../lib/github';
-	import { directoryGithubUrl, asimovProtocolOrgUrl } from '../lib/config';
+	import { asimovModulesOrgUrl, asimovPlatformOrgUrl } from '../lib/config';
 
 	interface Props {
 		variant?: 'desktop' | 'mobile';
@@ -45,13 +45,13 @@
 
 {#if $githubStatsQuery.data}
 	<div class={containerClass}>
-		<a href={directoryGithubUrl} target="_blank" rel="noopener noreferrer" class={linkClass}>
+		<a href={asimovModulesOrgUrl} target="_blank" rel="noopener noreferrer" class={linkClass}>
 			<Star size={14} class={iconClass} />
 			<span class={textClass}>
 				{formatStars($githubStatsQuery.data.stars)}
 			</span>
 		</a>
-		<a href={asimovProtocolOrgUrl} target="_blank" rel="noopener noreferrer" class={linkClass}>
+		<a href={asimovPlatformOrgUrl} target="_blank" rel="noopener noreferrer" class={linkClass}>
 			<Users size={14} class={iconClass} />
 			<span class={textClass}>
 				{formatStars($githubStatsQuery.data.followers)}
