@@ -1,9 +1,6 @@
 import { json } from '@sveltejs/kit';
-import { GitHubAPI } from '../../../lib/github';
+import { githubApi } from '../../../lib/github';
 import type { SortOption } from '../../../lib/types';
-import { env } from '$env/dynamic/private';
-
-const githubApi = new GitHubAPI(env.GITHUB_TOKEN ?? undefined);
 
 export async function GET({ url }) {
 	try {
@@ -12,20 +9,12 @@ export async function GET({ url }) {
 			? sortParam
 			: 'relevant';
 
-		const rateLimit = await githubApi.getRateLimit();
-		if (rateLimit) {
-			console.log(
-				`GitHub API rate limit: ${rateLimit.resources.core.remaining}/${rateLimit.resources.core.limit}`
-			);
-		}
-
 		const modules = await githubApi.fetchOrganizationRepos(sort);
 
 		return json({
 			modules,
 			total: modules.length,
-			sort,
-			rateLimit: rateLimit?.resources.core
+			sort
 		});
 	} catch (error) {
 		console.error('API Error:', error);

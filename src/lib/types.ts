@@ -24,6 +24,7 @@ export interface GitHubModule {
 	stargazers_count: number;
 	language: string | null;
 	topics: string[];
+	created_at: string;
 	updated_at: string;
 	contributors_count?: number;
 	owner: {
@@ -40,6 +41,7 @@ export interface GitHubContributor {
 }
 
 export interface DataSource {
+	id: string; // Unique identifier for the data source
 	dataset: string; // This will be the domain (e.g., "amazon.com", "facebook.com")
 	url_prefix: string;
 	json: boolean;

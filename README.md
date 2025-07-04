@@ -50,19 +50,7 @@ A modern, responsive web application for discovering and exploring modules from 
    yarn install
    ```
 
-3. **Set up environment variables**
-
-   ```bash
-   cp .env.example .env
-   ```
-
-   Edit `.env` and add your GitHub token:
-
-   ```env
-   VITE_GITHUB_TOKEN=your_github_personal_access_token_here
-   ```
-
-4. **Start the development server**
+3. **Start the development server**
 
    ```bash
    npm run dev
@@ -70,21 +58,16 @@ A modern, responsive web application for discovering and exploring modules from 
 
    Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-## 🔑 GitHub Token Setup
+## Data Source
 
-To avoid rate limits and access private repositories, create a GitHub Personal Access Token:
+The application fetches module data from the ASIMOV Platform API
 
-1. Go to GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
-2. Click "Generate new token"
-3. Select scopes:
-   - `public_repo` (read public repositories)
-   - `read:org` (read organization data)
-4. Copy the token and add it to your `.env` file
+This API provides:
 
-**Rate Limits:**
-
-- Without token: 60 requests/hour
-- With token: 5,000 requests/hour
+- Module repository information
+- GitHub stars and metadata
+- YAML manifest data for each module
+- Organization statistics
 
 ## 🎨 Customization
 
@@ -143,11 +126,7 @@ The project is configured with `@sveltejs/adapter-node` and can be deployed to:
 
 ### Environment Variables for Production
 
-Set these environment variables in your deployment platform:
-
-```env
-VITE_GITHUB_TOKEN=your_production_github_token
-```
+No environment variables are required for production deployment since the app uses a public API.
 
 ## 🧪 Development
 
