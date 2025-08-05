@@ -1,0 +1,62 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+// import ModulesAppWithQuery from '../components/ModulesAppWithQuery';
+import ModulesApp from '../components/ModulesApp';
+import type { SortOption } from '../types';
+
+const url = Astro.url;
+const sortParam = url.searchParams.get('sort') as SortOption;
+const initialSort: SortOption = sortParam || 'relevant';
+
+// SEO metadata
+const title = 'ASIMOV Modules - Browse Open Source Modules | ASIMOV.Directory';
+const description = 'Discover and explore our collection of ASIMOV modules from the GitHub ecosystem. Browse repositories with powerful sorting and filtering options.';
+const keywords = 'ASIMOV modules, GitHub repositories, open source modules, asimov-modules organization, developer tools, module browser';
+const canonicalUrl = 'https://asimov.directory/modules-interactive';
+---
+
+<Layout>
+  <head>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter -->
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+
+  <Navbar />
+
+  <div class="bg-gGray-100 min-h-screen" id="modules-page">
+    <div class="container mx-auto px-4 py-8">
+      <div class="mb-8">
+        <h1 class="text-sSlate-800 mb-4 text-4xl font-bold">ASIMOV Modules</h1>
+        <p class="text-gGray-500 max-w-2xl text-lg">
+          Discover and explore our collection of modules from the ASIMOV ecosystem
+        </p>
+      </div>
+
+      <ModulesApp client:load initialSort={initialSort} />
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

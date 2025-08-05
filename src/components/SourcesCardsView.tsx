@@ -1,0 +1,133 @@
+import { useMemo, useState } from 'react';
+import React from 'react';
+import type { GroupedSource } from './sourcesUtils';
+import { generateDisplayName, getDomainIcon } from './sourcesUtils';
+import { Globe, Package, Check, Copy, GithubLogo } from '@phosphor-icons/react';
+
+interface SourcesCardsViewProps {
+  groups: GroupedSource[];
+}
+
+export default function SourcesCardsView({ groups }: SourcesCardsViewProps) {
+  const [copiedItem, setCopiedItem] = useState<string | null>(null);
+
+  const copyToClipboard = async (text: string, itemId: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedItem(itemId);
+      setTimeout(() => setCopiedItem(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {groups.map((group) => (
+        <div key={group.dataset} className="border border-sSlate-200 rounded-lg bg-white overflow-hidden hover:shadow-md transition-shadow">
+          {/* Card Header */}
+          <div className="p-4 border-b border-sSlate-100">
+            <div className="flex items-start space-x-3">
+              <div className="flex-shrink-0">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 text-orange-700 relative">
+                  {React.createElement(getDomainIcon(group.dataset), { className: "text-xl" })}
+                </div>
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg font-semibold text-sSlate-900 mb-1">
+                  {generateDisplayName(group.dataset)}
+                </h3>
+                <p className="text-sm text-gGray-500 font-mono bg-gGray-100 px-2 py-0.5 rounded inline-block">
+                  {group.dataset}
+                </p>
+
+                {/* Format badges */}
+                <div className="flex items-center space-x-1 mt-2">
+                  {group.hasJson && (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      JSON
+                    </span>
+                  )}
+                  {group.hasRdf && (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                      RDF
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Card Stats */}
+          <div className="px-4 py-3 bg-gGray-50/50">
+            <div className="flex items-center justify-between text-sm text-gGray-600">
+              <div className="flex items-center space-x-1">
+                <Globe className="text-sm" />
+                <span>{group.endpoints.length} endpoint{group.endpoints.length !== 1 ? 's' : ''}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <Package className="text-sm" />
+                <span>{group.totalSources} module{group.totalSources !== 1 ? 's' : ''}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Card Endpoints */}
+          <div className="p-4 space-y-3 max-h-48 overflow-y-auto">
+            {group.endpoints.map((endpoint, endpointIndex) => (
+              <div key={endpoint.url_prefix} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <code className="text-xs font-mono text-sSlate-700 bg-sSlate-50 px-2 py-1 rounded flex-1 mr-2 truncate">
+                    {endpoint.url_prefix}
+                  </code>
+
+                  <div className="flex items-center space-x-2">
+                    {/* Format indicators */}
+                    <div className="flex items-center space-x-1">
+                      {endpoint.sources.some(s => s.json) && (
+                        <div className="h-1.5 w-1.5 rounded-full bg-blue-500" title="JSON support"></div>
+                      )}
+                      {endpoint.sources.some(s => s.rdf) && (
+                        <div className="h-1.5 w-1.5 rounded-full bg-purple-500" title="RDF support"></div>
+                      )}
+                    </div>
+
+                    <button
+                      onClick={() => copyToClipboard(endpoint.url_prefix, `card-${group.dataset}-${endpointIndex}`)}
+                      className="p-1 rounded border border-sSlate-200 bg-white text-gGray-500 hover:bg-gGray-50 hover:text-sSlate-700 hover:border-sSlate-300 transition-colors"
+                      title="Copy endpoint URL"
+                    >
+                      {copiedItem === `card-${group.dataset}-${endpointIndex}` ? (
+                        <Check className="text-green-600 text-xs" />
+                      ) : (
+                        <Copy className="text-xs" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Modules for this endpoint */}
+                <div className="flex flex-wrap gap-1">
+                  {endpoint.sources.map((source) => (
+                    <a
+                      key={source.id}
+                      href={`https://github.com/asimov-modules/${source.module_name}`}
+                      className="inline-flex items-center space-x-1 text-xs text-orange-700 hover:text-orange-800 bg-orange-50 hover:bg-orange-100 px-2 py-0.5 rounded border border-orange-200 hover:border-orange-300 transition-colors"
+                      title={`Flows: ${source.flows.join(', ') || 'None specified'}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <GithubLogo />
+                      <span className="truncate max-w-[80px]">{source.module_label}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}

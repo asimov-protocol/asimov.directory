@@ -1,4 +1,4 @@
-import type { GitHubModule, ModuleMetadata, SortOption, DataSource } from './types';
+import type { GitHubModule, ModuleMetadata, SortOption, DataSource } from '../types';
 import { load as yamlLoad } from 'js-yaml';
 import { ZUPLO_API_BASE, ASIMOV_MODULES_ORG_NAME, ASIMOV_PLATFORM_ORG_NAME } from './config';
 
