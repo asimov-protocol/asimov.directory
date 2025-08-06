@@ -150,7 +150,7 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
           <div className="bg-gGray-100 flex items-center rounded-lg p-1">
             <button
               onClick={() => setViewMode('table')}
-              className={`rounded px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`flex justify-center items-center rounded px-3 py-1.5 text-xs font-medium transition-colors ${
                 viewMode === 'table'
                   ? 'text-sSlate-700 bg-white shadow-sm'
                   : 'text-gGray-600 hover:text-sSlate-700'
@@ -161,7 +161,7 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
             </button>
             <button
               onClick={() => setViewMode('cards')}
-              className={`rounded px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`flex justify-center items-center rounded px-3 py-1.5 text-xs font-medium transition-colors ${
                 viewMode === 'cards'
                   ? 'text-sSlate-700 bg-white shadow-sm'
                   : 'text-gGray-600 hover:text-sSlate-700'
