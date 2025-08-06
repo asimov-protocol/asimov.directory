@@ -16,7 +16,9 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
 
   const { data, isLoading: loading, error } = useQuery(createSourcesQuery(), queryClient);
-  const sources = data?.sources || [];
+
+  const sources = useMemo(() => data?.sources || [], [data?.sources]);
+
   const groupedSources: GroupedSource[] = useMemo(() => {
     if (!Array.isArray(sources)) return [];
 
