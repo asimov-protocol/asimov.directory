@@ -34,7 +34,6 @@ export const DOMAIN_ICONS: Record<string, React.ComponentType<any>> = {
 
 export function getDomainIcon(domain: string): React.ComponentType<any> {
   const IconComponent = DOMAIN_ICONS[domain.toLowerCase()] || Globe;
-  console.log('Domain:', domain, 'Icon:', IconComponent.name); // Debug log
   return IconComponent;
 }
 
