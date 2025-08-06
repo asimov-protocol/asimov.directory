@@ -63,6 +63,19 @@ export function generateDisplayName(domain: string): string {
     .join(' ');
 }
 
+/**
+ * Removes wildcard prefix from dataset names for consistent grouping.
+ * @param dataset - The dataset string that may contain wildcard prefixes
+ * @returns The normalized dataset string without wildcard prefixes
+ */
+export function normalizeDataset(dataset: string): string {
+  // Remove wildcard prefix if present
+  if (dataset.startsWith('*.')) {
+    return dataset.substring(2);
+  }
+  return dataset;
+}
+
 export interface GroupedSource {
   dataset: string;
   endpoints: {
