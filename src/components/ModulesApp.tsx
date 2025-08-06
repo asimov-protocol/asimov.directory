@@ -35,13 +35,20 @@ export default function ModulesApp({ initialSort }: ModulesAppProps) {
 
   return (
     <div>
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex justify-end">
-          <div className="relative">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+        <div className="text-gGray-500 order-2 text-sm sm:order-1">
+          {!loading && !error && (
+            <span>
+              {modules.length} module{modules.length !== 1 ? 's' : ''} found
+            </span>
+          )}
+        </div>
+        <div className="order-1 flex justify-start sm:order-2 sm:justify-end">
+          <div className="relative w-fit">
             <select
               value={sortOption}
               onChange={handleSortChange}
-              className="border-sSlate-200 focus:ring-oOrange-500 focus:border-oOrange-500 text-sSlate-800 appearance-none rounded-lg border bg-white px-4 py-2 pr-10 text-sm transition-colors focus:ring-2"
+              className="border-sSlate-200 focus:ring-oOrange-500 focus:border-oOrange-500 text-sSlate-800 w-auto appearance-none rounded-lg border bg-white px-4 py-2 pr-10 text-sm transition-colors focus:ring-2"
             >
               {sortOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -53,13 +60,6 @@ export default function ModulesApp({ initialSort }: ModulesAppProps) {
               <CaretDown className="text-gGray-400 text-sm" />
             </div>
           </div>
-        </div>
-        <div className="text-gGray-500 text-sm">
-          {!loading && !error && (
-            <span>
-              {modules.length} module{modules.length !== 1 ? 's' : ''} found
-            </span>
-          )}
         </div>
       </div>
 
