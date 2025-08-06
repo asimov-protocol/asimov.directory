@@ -5,7 +5,7 @@ import {
   FacebookLogo,
   InstagramLogo,
   LinkedinLogo,
-  TwitterLogo,
+  XLogo,
   YoutubeLogo,
   GoogleLogo,
   Briefcase,
@@ -21,8 +21,8 @@ export const DOMAIN_ICONS: Record<string, React.ComponentType<any>> = {
   'facebook.com': FacebookLogo,
   'instagram.com': InstagramLogo,
   'linkedin.com': LinkedinLogo,
-  'twitter.com': TwitterLogo,
-  'x.com': TwitterLogo,
+  'twitter.com': XLogo,
+  'x.com': XLogo,
   'youtube.com': YoutubeLogo,
   'google.com': GoogleLogo,
   'indeed.com': Briefcase,
@@ -32,12 +32,30 @@ export const DOMAIN_ICONS: Record<string, React.ComponentType<any>> = {
   'yahoo.com': ChartLineUp
 };
 
+const DOMAIN_NAMES: Record<string, string> = {
+  'twitter.com': 'X (Twitter)',
+  'x.com': 'X (Twitter)',
+  'ebay.com': 'eBay',
+  'linkedin.com': 'LinkedIn',
+  '*.linkedin.com': 'LinkedIn',
+  'duckduckgo.com': 'DuckDuckGo',
+  'youtube.com': 'YouTube',
+};
+
 export function getDomainIcon(domain: string): React.ComponentType<any> {
   const IconComponent = DOMAIN_ICONS[domain.toLowerCase()] || Globe;
   return IconComponent;
 }
 
 export function generateDisplayName(domain: string): string {
+  const lowerDomain = domain.toLowerCase();
+
+  // Check if we have a custom name for this domain
+  if (DOMAIN_NAMES[lowerDomain]) {
+    return DOMAIN_NAMES[lowerDomain];
+  }
+
+  // Default logic: capitalize each part separated by hyphens
   const domainName = domain.split('.')[0];
   return domainName
     .split('-')
