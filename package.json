@@ -14,6 +14,7 @@
     "format:check": "prettier --check ."
   },
   "devDependencies": {
+    "@astrojs/sitemap": "^3.2.1",
     "@eslint/compat": "^1.2.3",
     "@types/js-yaml": "^4.0.9",
     "@typescript-eslint/eslint-plugin": "^8.0.0",

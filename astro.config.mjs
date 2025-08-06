@@ -5,14 +5,21 @@ import tailwindcss from '@tailwindcss/vite';
 
 import react from '@astrojs/react';
 import node from '@astrojs/node';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://asimov.directory',
   vite: {
     plugins: [tailwindcss()]
   },
 
-  integrations: [react()],
+  integrations: [
+    react(),
+    sitemap({
+      filter: (page) => !page.includes('/api/')
+    })
+  ],
   output: 'server',
   adapter: node({
     mode: 'standalone'
