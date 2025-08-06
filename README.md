@@ -2,7 +2,8 @@
 
 A modern, responsive web application for discovering and exploring modules and data sources from the ASIMOV ecosystem. Built with Astro, React, and TypeScript, it provides an intuitive interface to browse GitHub repositories from the `asimov-modules` organization and explore data sources with their endpoints.
 
-<img width="1277" alt="Знімок екрана 2025-06-04 о 20 07 33" src="https://github.com/user-attachments/assets/db163479-2b4b-4c1c-b086-cd56509a097e" />
+<img width="1277" height="773" alt="Знімок екрана 2025-08-06 о 17 01 00" src="https://github.com/user-attachments/assets/8be09316-6d87-47ca-8b70-15619d3d5f1f" />
+
 
 ## 🚀 Features
 
