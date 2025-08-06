@@ -63,6 +63,14 @@ export function generateDisplayName(domain: string): string {
     .join(' ');
 }
 
+export function normalizeDataset(dataset: string): string {
+  // Remove wildcard prefix if present
+  if (dataset.startsWith('*.')) {
+    return dataset.substring(2);
+  }
+  return dataset;
+}
+
 export interface GroupedSource {
   dataset: string;
   endpoints: {

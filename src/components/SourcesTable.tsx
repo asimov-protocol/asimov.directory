@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { DataSource } from '../types';
 import SourcesTableView from './SourcesTableView';
 import SourcesCardsView from './SourcesCardsView';
-import { generateDisplayName, type GroupedSource } from '../lib/utils';
+import { generateDisplayName, normalizeDataset, type GroupedSource } from '../lib/utils';
 import { createSourcesQuery } from '../lib/queries/sources';
 import { WarningCircle, List, GridFour, MagnifyingGlass, Database } from '@phosphor-icons/react';
 import { queryClient } from '../store';
@@ -23,7 +23,8 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
     if (!Array.isArray(sources)) return [];
 
     return sources.reduce((groups: GroupedSource[], source: DataSource) => {
-      const existing = groups.find((g: GroupedSource) => g.dataset === source.dataset);
+      const normalizedDataset = normalizeDataset(source.dataset);
+      const existing = groups.find((g: GroupedSource) => g.dataset === normalizedDataset);
 
       if (existing) {
         const existingEndpoint = existing.endpoints.find(
@@ -33,7 +34,7 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
           existingEndpoint.sources.push(source);
         } else {
           existing.endpoints.push({
-            url_prefix: source.url_prefix,
+            url_prefix: source.url_prefix, // Keep original URL prefix (may contain wildcards)
             sources: [source]
           });
         }
@@ -42,10 +43,10 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
         if (source.rdf) existing.hasRdf = true;
       } else {
         groups.push({
-          dataset: source.dataset,
+          dataset: normalizedDataset, // Use normalized dataset for grouping and display
           endpoints: [
             {
-              url_prefix: source.url_prefix,
+              url_prefix: source.url_prefix, // Keep original URL prefix (may contain wildcards)
               sources: [source]
             }
           ],
