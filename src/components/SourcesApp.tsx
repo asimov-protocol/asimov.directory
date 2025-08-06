@@ -7,10 +7,8 @@ export default function SourcesApp() {
 
   return (
     <div className="space-y-6">
-      {/* Search */}
       <SourcesSearch value={searchQuery} onChange={setSearchQuery} />
 
-      {/* Sources Table */}
       <SourcesTable searchQuery={searchQuery} />
     </div>
   );

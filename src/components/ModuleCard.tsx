@@ -68,7 +68,6 @@ export default function ModuleCard({ module }: ModuleCardProps) {
 
   return (
     <div className="group border-sSlate-200 hover:border-sSlate-300 relative overflow-hidden rounded-lg border bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-lg">
-      {/* Header */}
       <div className="mb-4 flex items-start justify-between">
         <div className="flex items-center space-x-3">
           <img
@@ -89,12 +88,10 @@ export default function ModuleCard({ module }: ModuleCardProps) {
         </div>
       </div>
 
-      {/* Description */}
       <p className="text-gGray-500 mb-4 line-clamp-2 text-sm leading-relaxed">
         {module.metadata?.summary || module.description || 'No description available'}
       </p>
 
-      {/* Topics */}
       {module.topics && module.topics.length > 0 && (
         <div className="mb-4 flex flex-wrap gap-2">
           {module.topics.slice(0, 3).map((topic) => (
@@ -113,10 +110,8 @@ export default function ModuleCard({ module }: ModuleCardProps) {
         </div>
       )}
 
-      {/* Footer */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          {/* Language */}
           {module.language && (
             <div className="flex items-center space-x-1">
               <div
@@ -127,14 +122,12 @@ export default function ModuleCard({ module }: ModuleCardProps) {
             </div>
           )}
 
-          {/* Updated date */}
           <div className="text-gGray-400 flex items-center space-x-1">
             <Clock className="text-xs" />
             <span className="text-xs">{formatDate(module.updated_at)}</span>
           </div>
         </div>
 
-        {/* Provider link */}
         {providerInfo && (
           <div className="flex items-center space-x-1">
             <providerInfo.icon className={`${providerInfo.color} text-sm`} />
@@ -143,7 +136,6 @@ export default function ModuleCard({ module }: ModuleCardProps) {
         )}
       </div>
 
-      {/* Link overlay */}
       <a
         href={module.html_url}
         target="_blank"

@@ -13,10 +13,8 @@ const keywords =
 const canonicalUrl = 'https://asimov.directory/';
 ---
 
-<Layout>
-  <head>
-    <title>{title}</title>
-    <meta name="description" content={description} />
+<Layout title={title} description={description}>
+  <Fragment slot="head">
     <meta name="keywords" content={keywords} />
     <link rel="canonical" href={canonicalUrl} />
 
@@ -25,12 +23,14 @@ const canonicalUrl = 'https://asimov.directory/';
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://asimov.directory/og-image.png" />
 
     <!-- Twitter -->
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:card" content="summary_large_image" />
-  </head>
+    <meta name="twitter:image" content="https://asimov.directory/twitter-image.png" />
+  </Fragment>
 
   <Navbar />
 

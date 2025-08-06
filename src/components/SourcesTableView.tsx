@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import React from 'react';
-import type { GroupedSource } from './sourcesUtils';
-import { generateDisplayName, getDomainIcon } from './sourcesUtils';
+import type { GroupedSource } from '../lib/utils';
+import { generateDisplayName, getDomainIcon } from '../lib/utils';
 import {
   Globe,
   Package,
@@ -51,7 +51,6 @@ export default function SourcesTableView({ groups }: SourcesTableViewProps) {
             key={group.dataset}
             className="border-sSlate-200 overflow-hidden rounded-lg border bg-white"
           >
-            {/* Main Source Row - Always Visible */}
             <div
               className="hover:bg-gGray-50/50 cursor-pointer p-4 transition-colors"
               onClick={() => toggleExpanded(group.dataset)}
@@ -68,7 +67,6 @@ export default function SourcesTableView({ groups }: SourcesTableViewProps) {
             >
               <div className="flex items-center justify-between">
                 <div className="flex min-w-0 flex-1 items-center space-x-4">
-                  {/* Expand/Collapse Icon */}
                   <button className="hover:bg-gGray-100 flex-shrink-0 rounded p-1 transition-colors">
                     {isExpanded ? (
                       <CaretDown className="text-gGray-400 transition-transform duration-200" />
@@ -77,7 +75,6 @@ export default function SourcesTableView({ groups }: SourcesTableViewProps) {
                     )}
                   </button>
 
-                  {/* Avatar & Basic Info */}
                   <div className="flex-shrink-0">
                     <div className="relative flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 text-orange-700">
                       {React.createElement(getDomainIcon(group.dataset), { className: 'text-lg' })}
@@ -85,7 +82,6 @@ export default function SourcesTableView({ groups }: SourcesTableViewProps) {
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    {/* Title Row */}
                     <div className="mb-1 flex items-center space-x-3">
                       <h3 className="text-sSlate-900 hover:text-oOrange-600 text-lg font-semibold transition-colors">
                         {generateDisplayName(group.dataset)}
@@ -94,7 +90,6 @@ export default function SourcesTableView({ groups }: SourcesTableViewProps) {
                         {group.dataset}
                       </span>
 
-                      {/* Format badges */}
                       <div className="flex items-center space-x-1">
                         {group.hasJson && (
                           <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
@@ -109,7 +104,6 @@ export default function SourcesTableView({ groups }: SourcesTableViewProps) {
                       </div>
                     </div>
 
-                    {/* Stats Row */}
                     <div className="text-gGray-600 flex items-center space-x-6 text-sm">
                       <div className="flex items-center space-x-1">
                         <Globe className="text-sm" />
@@ -127,7 +121,6 @@ export default function SourcesTableView({ groups }: SourcesTableViewProps) {
                   </div>
                 </div>
 
-                {/* Expand indicator */}
                 <div className="text-gGray-400 flex items-center">
                   <span className="mr-2 text-sm">
                     {isExpanded ? 'Hide details' : 'View endpoints'}
@@ -141,7 +134,6 @@ export default function SourcesTableView({ groups }: SourcesTableViewProps) {
               </div>
             </div>
 
-            {/* Collapsible Endpoints Section */}
             {isExpanded && (
               <div className="border-sSlate-100 bg-gGray-50/30 animate-in slide-in-from-top-2 border-t duration-200">
                 <div className="space-y-3 p-4">
@@ -156,7 +148,6 @@ export default function SourcesTableView({ groups }: SourcesTableViewProps) {
                             {endpoint.url_prefix}
                           </code>
 
-                          {/* Format indicators */}
                           <div className="flex items-center space-x-1">
                             {endpoint.sources.some((s) => s.json) && (
                               <div
@@ -191,7 +182,6 @@ export default function SourcesTableView({ groups }: SourcesTableViewProps) {
                           </button>
                         </div>
 
-                        {/* Modules */}
                         <div className="flex flex-wrap gap-1">
                           {endpoint.sources.map((source) => (
                             <a

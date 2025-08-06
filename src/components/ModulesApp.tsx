@@ -15,16 +15,12 @@ export default function ModulesApp({ initialSort }: ModulesAppProps) {
 
   const { data, isLoading: loading, error } = useQuery(createModulesQuery(sortOption), queryClient);
 
-  console.log('ModulesApp data:', data);
-
-  // Extract modules from the response
   const modules = data?.modules || [];
 
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newSort = event.target.value as SortOption;
     setSortOption(newSort);
 
-    // Update URL without page reload
     const url = new URL(window.location.href);
     url.searchParams.set('sort', newSort);
     window.history.replaceState({}, '', url);
@@ -39,7 +35,6 @@ export default function ModulesApp({ initialSort }: ModulesAppProps) {
 
   return (
     <div>
-      {/* Sort controls */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex justify-end">
           <div className="relative">
@@ -68,7 +63,6 @@ export default function ModulesApp({ initialSort }: ModulesAppProps) {
         </div>
       </div>
 
-      {/* Modules Grid Component */}
       <ModulesGrid modules={modules} loading={loading} error={error?.message || null} />
     </div>
   );

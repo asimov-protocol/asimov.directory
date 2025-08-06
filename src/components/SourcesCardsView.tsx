@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import React from 'react';
-import type { GroupedSource } from './sourcesUtils';
-import { generateDisplayName, getDomainIcon } from './sourcesUtils';
+import type { GroupedSource } from '../lib/utils';
+import { generateDisplayName, getDomainIcon } from '../lib/utils';
 import { Globe, Package, Check, Copy, GithubLogo } from '@phosphor-icons/react';
 
 interface SourcesCardsViewProps {
@@ -28,7 +28,6 @@ export default function SourcesCardsView({ groups }: SourcesCardsViewProps) {
           key={group.dataset}
           className="border-sSlate-200 overflow-hidden rounded-lg border bg-white transition-shadow hover:shadow-md"
         >
-          {/* Card Header */}
           <div className="border-sSlate-100 border-b p-4">
             <div className="flex items-start space-x-3">
               <div className="flex-shrink-0">
@@ -45,7 +44,6 @@ export default function SourcesCardsView({ groups }: SourcesCardsViewProps) {
                   {group.dataset}
                 </p>
 
-                {/* Format badges */}
                 <div className="mt-2 flex items-center space-x-1">
                   {group.hasJson && (
                     <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
@@ -62,7 +60,6 @@ export default function SourcesCardsView({ groups }: SourcesCardsViewProps) {
             </div>
           </div>
 
-          {/* Card Stats */}
           <div className="bg-gGray-50/50 px-4 py-3">
             <div className="text-gGray-600 flex items-center justify-between text-sm">
               <div className="flex items-center space-x-1">
@@ -80,7 +77,6 @@ export default function SourcesCardsView({ groups }: SourcesCardsViewProps) {
             </div>
           </div>
 
-          {/* Card Endpoints */}
           <div className="max-h-48 space-y-3 overflow-y-auto p-4">
             {group.endpoints.map((endpoint, endpointIndex) => (
               <div key={endpoint.url_prefix} className="space-y-2">
@@ -90,7 +86,6 @@ export default function SourcesCardsView({ groups }: SourcesCardsViewProps) {
                   </code>
 
                   <div className="flex items-center space-x-2">
-                    {/* Format indicators */}
                     <div className="flex items-center space-x-1">
                       {endpoint.sources.some((s) => s.json) && (
                         <div
@@ -125,7 +120,6 @@ export default function SourcesCardsView({ groups }: SourcesCardsViewProps) {
                   </div>
                 </div>
 
-                {/* Modules for this endpoint */}
                 <div className="flex flex-wrap gap-1">
                   {endpoint.sources.map((source) => (
                     <a

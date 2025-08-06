@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { DataSource } from '../types';
 import SourcesTableView from './SourcesTableView';
 import SourcesCardsView from './SourcesCardsView';
-import { generateDisplayName, type GroupedSource } from './sourcesUtils';
+import { generateDisplayName, type GroupedSource } from '../lib/utils';
 import { createSourcesQuery } from '../lib/queries/sources';
 import { WarningCircle, List, GridFour, MagnifyingGlass, Database } from '@phosphor-icons/react';
 import { queryClient } from '../store';
@@ -16,15 +16,7 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
 
   const { data, isLoading: loading, error } = useQuery(createSourcesQuery(), queryClient);
-
-  console.log('SourcesTable data:', data);
-
-  // Extract sources from the response
   const sources = data?.sources || [];
-
-  console.log('Extracted sources:', sources);
-
-  // Memoize the expensive grouping operation
   const groupedSources: GroupedSource[] = useMemo(() => {
     if (!Array.isArray(sources)) return [];
 
@@ -65,7 +57,6 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
     }, [] as GroupedSource[]);
   }, [sources]);
 
-  // Memoize filtering and sorting
   const sortedGroups = useMemo(() => {
     const filteredGroups = groupedSources.filter((group) => {
       if (!searchQuery) return true;
@@ -87,7 +78,6 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
     });
 
     return filteredGroups.sort((a, b) => {
-      // Sort by total sources (descending), then by dataset name
       if (b.totalSources !== a.totalSources) {
         return b.totalSources - a.totalSources;
       }
@@ -143,7 +133,6 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
 
   return (
     <div className="space-y-4">
-      {/* Results Summary & View Toggle */}
       <div className="text-gGray-600 flex items-center justify-between text-sm">
         <span>
           {sortedGroups.length} data source{sortedGroups.length !== 1 ? 's' : ''} •{' '}
@@ -158,7 +147,6 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
             </span>
           )}
 
-          {/* View Mode Toggle */}
           <div className="bg-gGray-100 flex items-center rounded-lg p-1">
             <button
               onClick={() => setViewMode('table')}
@@ -186,10 +174,8 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
         </div>
       </div>
 
-      {/* Table View */}
       {viewMode === 'table' && <SourcesTableView groups={sortedGroups} />}
 
-      {/* Cards View */}
       {viewMode === 'cards' && <SourcesCardsView groups={sortedGroups} />}
     </div>
   );
