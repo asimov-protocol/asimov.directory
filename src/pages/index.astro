@@ -1,0 +1,49 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import SourcesApp from '../components/SourcesApp';
+
+// SEO metadata
+const title = 'ASIMOV Data Sources - Browse Available Data Endpoints | ASIMOV.Directory';
+const description =
+  'Discover and explore available data sources from the ASIMOV ecosystem. Browse endpoints, formats, and modules for seamless data integration.';
+const keywords =
+  'ASIMOV data sources, data endpoints, API endpoints, data integration, asimov-modules, developer tools, data browser';
+const canonicalUrl = 'https://asimov.directory/';
+---
+
+<Layout title={title} description={description}>
+  <Fragment slot="head">
+    <meta name="keywords" content={keywords} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://asimov.directory/og-image.png" />
+
+    <!-- Twitter -->
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://asimov.directory/twitter-image.png" />
+  </Fragment>
+
+  <Navbar />
+
+  <div class="bg-gGray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+      <div class="mb-8">
+        <h1 class="text-sSlate-800 mb-4 text-4xl font-bold">ASIMOV Data Sources</h1>
+        <p class="text-gGray-500 max-w-2xl text-lg">
+          Discover and explore available data sources from the ASIMOV ecosystem. Find endpoints,
+          formats, and modules for seamless data integration.
+        </p>
+      </div>
+
+      <SourcesApp client:load />
+    </div>
+  </div>
+</Layout>

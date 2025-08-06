@@ -4,3 +4,36 @@ pnpm-lock.yaml
 yarn.lock
 bun.lock
 bun.lockb
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.astro/
+
+# Static assets
+public/
+
+# Environment variables
+.env*
+
+# IDE and system files
+.vscode/
+.DS_Store
+*.log
+
+# Static assets (binary files)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.woff
+*.woff2
+*.ttf
+*.eot
+
+# Generated files
+*.map

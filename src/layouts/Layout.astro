@@ -1,0 +1,49 @@
+---
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = 'ASIMOV.Directory', description = 'ASIMOV Data Sources Directory' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Favicon and Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Fallback for older browsers -->
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    <!-- Default meta tags (can be overridden by pages) -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <ClientRouter />
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style>
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+</style>

@@ -1,47 +1,52 @@
 # ASIMOV.Directory
 
-A modern, responsive web application for discovering and exploring modules from the ASIMOV ecosystem. Built with SvelteKit and Tailwind CSS, it provides an intuitive interface to browse GitHub repositories from the `asimov-modules` organization.
+A modern, responsive web application for discovering and exploring modules and data sources from the ASIMOV ecosystem. Built with Astro, React, and TypeScript, it provides an intuitive interface to browse GitHub repositories from the `asimov-modules` organization and explore data sources with their endpoints.
 
 <img width="1277" alt="Знімок екрана 2025-06-04 о 20 07 33" src="https://github.com/user-attachments/assets/db163479-2b4b-4c1c-b086-cd56509a097e" />
 
 ## 🚀 Features
 
-- **Real-time GitHub Integration**: Fetches live data from the `asimov-modules` GitHub organization
+- **Dual Interface**: Browse both modules and data sources with dedicated views
+- **Real-time GitHub Integration**: Fetches live data from ASIMOV organizations with GitHub stats
 - **Smart Sorting**: Multiple sorting options including relevance, popularity, newest, and recently updated
-- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
+- **Mobile-First Design**: Fully responsive with optimized mobile layouts and interactions
 - **Interactive Module Cards**: Display stars, contributors, languages, topics, and last update
+- **Data Sources Explorer**: Browse datasets with endpoints, formats (JSON/RDF), and module connections
+- **Advanced Search**: Real-time filtering across modules and data sources
+- **Query Caching**: Efficient data management with TanStack Query
+- **Automated Sitemap**: SEO-optimized with automatic sitemap generation
 - **Loading States**: Smooth skeleton loading animations
-- **Rate Limit Handling**: Supports both authenticated and unauthenticated GitHub API access
-- **Custom Theme**: Beautiful design using custom color palette
+- **Accessibility**: WCAG compliant with proper ARIA labels and keyboard navigation
 
 ## 🛠 Tech Stack
 
-- **Framework**: [SvelteKit](https://kit.svelte.dev/)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
-- **Icons**: [Phosphor Svelte](https://github.com/phosphor-icons/phosphor-svelte)
-- **API**: GitHub REST API
-- **TypeScript**: Full type safety
-- **Deployment**: Node.js adapter ready
+- **Framework**: [Astro 5.12.8](https://astro.build/) - Modern static site generator
+- **UI Library**: [React 19.1.1](https://react.dev/) - Component-based UI
+- **Language**: [TypeScript](https://www.typescriptlang.org/) - Full type safety
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) - Utility-first CSS
+- **Icons**: [Phosphor Icons](https://phosphoricons.com/) - Beautiful icon library
+- **State Management**: [TanStack Query](https://tanstack.com/query/) - Data fetching and caching
+- **Code Quality**: ESLint 9 + Prettier 3 - Modern linting and formatting
+- **Deployment**: Static site generation with SSR support
 
 ## 📋 Prerequisites
 
 - Node.js 22+ (see `.nvmrc`)
 - npm, pnpm, or yarn
-- GitHub Personal Access Token (optional but recommended)
 
 ## 🔧 Installation
 
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/your-username/asimov.directory.git
+   git clone https://github.com/asimov-protocol/asimov.directory.git
    cd asimov.directory
    ```
 
 2. **Install dependencies**
 
    ```bash
-   nvm use # Ensure you are using Node.js v22 (required for this project's ESM features and performance optimizations)
+   nvm use # Ensure you are using Node.js v22
 
    npm install
    # or
@@ -56,50 +61,53 @@ A modern, responsive web application for discovering and exploring modules from 
    npm run dev
    ```
 
-   Open [http://localhost:5173](http://localhost:5173) in your browser.
+   Open [http://localhost:4321](http://localhost:4321) in your browser.
 
-## Data Source
+## 📊 Data Sources
 
-The application fetches module data from the ASIMOV Platform API
+The application fetches data from multiple sources:
 
-This API provides:
-
-- Module repository information
-- GitHub stars and metadata
-- YAML manifest data for each module
-- Organization statistics
+### Modules Data
+- **ASIMOV Platform API**: Module metadata, stars, and GitHub information
+- **GitHub API**: Live repository data and statistics
+- **YAML Manifests**: Module configuration and metadata
 
 ## 🎨 Customization
 
 ### Color Theme
 
-The project uses a custom color palette defined in `src/app.css`:
+The project uses a custom color palette defined in `src/styles/global.css`:
 
 ```css
 @theme {
-	--color-gGray-100: #f6f6f6;
-	--color-sSlate-800: #04163c;
-	--color-oOrange-500: #f37021;
-	/* ... more colors */
+  --color-gGray-100: #f6f6f6;
+  --color-sSlate-800: #04163c;
+  --color-oOrange-500: #f37021;
+  /* ... more colors */
 }
 ```
 
+### Navigation Structure
+
+Two main sections:
+- **Sources** (`/`): Browse data sources with endpoints and formats
+- **Modules** (`/modules`): Explore GitHub modules with metadata
+
 ### Sorting Options
 
-Four sorting methods are available:
+Four sorting methods available for modules:
 
 - **Most Relevant**: Custom algorithm combining stars, activity, description, and topics
 - **Most Popular**: Sorted by GitHub stars
 - **Newest**: Recently created repositories
 - **Recently Updated**: Latest activity
 
-### Excluded Repositories
+### Mobile Optimizations
 
-Configure which repositories to exclude in `src/lib/github.ts`:
-
-```typescript
-const EXCLUDED_REPOS = ['.github', 'docs', 'template'];
-```
+- **Compact Layouts**: Streamlined mobile interfaces for all components
+- **Touch-Friendly**: Optimized tap targets and interactions
+- **Responsive Tables**: Mobile-first data source browser
+- **Collapsible Sections**: Expandable endpoint details
 
 ## 🚀 Deployment
 
@@ -117,43 +125,48 @@ npm run preview
 
 ### Deploy Options
 
-The project is configured with `@sveltejs/adapter-node` and can be deployed to:
+The project is configured as a static site and can be deployed to:
 
-- **Vercel**: `vercel deploy`
-- **Netlify**: Connect GitHub repository
-- **Docker**: Use the generated `build` directory
-- **VPS**: Run `node build` after building
+- **Vercel**: Zero-config deployment with automatic builds
+- **Netlify**: Connect GitHub repository for continuous deployment
+- **GitHub Pages**: Static hosting with GitHub Actions
+- **Cloudflare Pages**: Fast global CDN deployment
+- **Any Static Host**: Use the generated `dist` directory
 
-### Environment Variables for Production
+### SEO Features
 
-No environment variables are required for production deployment since the app uses a public API.
+- **Automatic Sitemap**: Generated at build time with all pages
+- **Meta Tags**: Proper OpenGraph and Twitter Card support
+- **Favicons**: Complete favicon set for all devices
 
 ## 🧪 Development
 
 ### Available Scripts
 
 ```bash
-npm run dev          # Start development server
+npm run dev          # Start development server (localhost:4321)
 npm run build        # Build for production
 npm run preview      # Preview production build
-npm run check        # Run Svelte type checking
-npm run lint         # Run ESLint and Prettier
+npm run astro        # Run Astro CLI commands
+npm run lint         # Run ESLint
+npm run lint:fix     # Fix ESLint issues
 npm run format       # Format code with Prettier
+npm run format:check # Check code formatting
 ```
 
-### Code Quality
+### Code Quality Tools
 
-- **TypeScript**: Full type safety with strict mode
-- **ESLint**: Code linting with Svelte support
-- **Prettier**: Code formatting with Svelte and Tailwind plugins
+- **TypeScript**: Strict mode with comprehensive type checking
+- **ESLint 9**: Modern flat config with Astro, React, and accessibility rules
+- **Prettier 3**: Code formatting with plugin support
+- **Pre-commit Hooks**: Automated code quality checks
 
-## 📊 API Rate Limits
+## 📊 Performance & Caching
 
-The application monitors GitHub API rate limits:
-
-- Displays remaining requests in console
-- Graceful fallback for missing data
-- Handles rate limit exceeded errors
+### Query Caching
+- **TanStack Query**: Intelligent data caching with stale-while-revalidate
+- **Optimistic Updates**: Smooth user experience with background refetching
+- **Error Recovery**: Automatic retry logic for failed requests
 
 ## 🤝 Contributing
 
@@ -163,18 +176,25 @@ The application monitors GitHub API rate limits:
 4. Push to branch: `git push origin feature/amazing-feature`
 5. Open a Pull Request
 
+### Development Guidelines
+
+- Follow TypeScript strict mode requirements
+- Ensure mobile responsiveness for all components
+- Add proper accessibility attributes
+- Include error handling for API calls
+- Test across different screen sizes
+
 ## 🔗 Links
 
 - **Live Demo**: [asimov.directory](https://asimov.directory)
 - **ASIMOV Modules**: [github.com/asimov-modules](https://github.com/asimov-modules)
-- **Issues**: [Report bugs or request features](https://github.com/your-username/asimov.directory/issues)
+- **ASIMOV Platform**: [github.com/asimov-platform](https://github.com/asimov-platform)
+- **Issues**: [Report bugs or request features](https://github.com/asimov-protocol/asimov.directory/issues)
 
 ## 📞 Support
 
 If you have any questions or need help, please:
 
-1. Check the [Issues](https://github.com/your-username/asimov.directory/issues) page
+1. Check the [Issues](https://github.com/asimov-protocol/asimov.directory/issues) page
 2. Create a new issue with details about your problem
-3. Contact the ASIMOV.systems team
-
----
+3. Contact the ASIMOV team
