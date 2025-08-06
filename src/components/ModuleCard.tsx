@@ -89,12 +89,7 @@ export default function ModuleCard({ module }: ModuleCardProps) {
   };
 
   return (
-    <a
-      className="group border-sSlate-200 hover:border-sSlate-300 relative overflow-hidden rounded-lg border bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-lg"
-      aria-label={`View ${module.name} on GitHub`}
-      href={module.html_url}
-      target="_blank"
-      rel="noopener noreferrer"
+    <div className="group border-sSlate-200 hover:border-sSlate-300 relative overflow-hidden rounded-lg border bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-lg"
     >
       <div className="mb-4 flex items-start justify-between">
         <div className="flex items-center space-x-3">
@@ -185,6 +180,13 @@ export default function ModuleCard({ module }: ModuleCardProps) {
           <span className="text-xs">Updated: {formatDate(module.updated_at)}</span>
         </div>
       </div>
-    </a>
+      <a
+        href={module.html_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute inset-0 z-10"
+        aria-label={`View ${module.name} on GitHub`}
+      ></a>
+    </div>
   );
 }

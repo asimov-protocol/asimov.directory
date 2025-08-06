@@ -1,7 +1,7 @@
 ---
 import Logo from './Logo.astro';
 import NavbarIcons from './NavbarIcons.tsx';
-// import GitHubStats from './GitHubStats.astro';
+import GitHubStats from './GitHubStats.tsx';
 
 const navItems = [
   { text: 'Sources', href: '/' },
@@ -34,8 +34,7 @@ const navItems = [
     </nav>
 
     <div class="hidden items-center gap-4 md:flex">
-      <!-- GitHubStats placeholder -->
-      <div>GitHub Stats (Desktop)</div>
+      <GitHubStats variant="desktop" client:load />
     </div>
 
     <button
@@ -67,8 +66,10 @@ const navItems = [
           ))
         }
 
-        <!-- GitHubStats placeholder -->
-        <div class="pt-4">GitHub Stats (Mobile)</div>
+        <!-- GitHubStats for mobile -->
+        <div class="pt-4">
+          <GitHubStats variant="mobile" client:load />
+        </div>
       </nav>
     </div>
   </div>
