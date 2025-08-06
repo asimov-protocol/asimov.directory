@@ -13,12 +13,13 @@ export const GET: APIRoute = async ({ url }) => {
     let filteredSources = sources;
     if (search.trim()) {
       const query = search.toLowerCase();
-      filteredSources = sources.filter((source: DataSource) =>
-        source.dataset.toLowerCase().includes(query) ||
-        source.url_prefix.toLowerCase().includes(query) ||
-        source.module_label.toLowerCase().includes(query) ||
-        source.module_name.toLowerCase().includes(query) ||
-        source.flows.some((flow: string) => flow.toLowerCase().includes(query))
+      filteredSources = sources.filter(
+        (source: DataSource) =>
+          source.dataset.toLowerCase().includes(query) ||
+          source.url_prefix.toLowerCase().includes(query) ||
+          source.module_label.toLowerCase().includes(query) ||
+          source.module_name.toLowerCase().includes(query) ||
+          source.flows.some((flow: string) => flow.toLowerCase().includes(query))
       );
     }
 
@@ -33,8 +34,8 @@ export const GET: APIRoute = async ({ url }) => {
       {
         status: 200,
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       }
     );
   } catch (error) {
@@ -48,8 +49,8 @@ export const GET: APIRoute = async ({ url }) => {
       {
         status: 500,
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       }
     );
   }

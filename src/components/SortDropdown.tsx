@@ -1,6 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
 import { CaretDown } from '@phosphor-icons/react';
-import type { GitHubModule, SortOption } from '../types';
+import type { SortOption } from '../types';
 
 interface SortDropdownProps {
   value: SortOption;

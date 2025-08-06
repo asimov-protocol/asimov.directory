@@ -42,7 +42,7 @@ export function generateDisplayName(domain: string): string {
   const domainName = domain.split('.')[0];
   return domainName
     .split('-')
-    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ');
 }
 

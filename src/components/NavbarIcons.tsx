@@ -4,7 +4,7 @@ export default function NavbarIcons() {
   return (
     <>
       <List id="menu-icon" className="text-2xl" />
-      <X id="close-icon" className="text-2xl hidden" />
+      <X id="close-icon" className="hidden text-2xl" />
     </>
   );
 }

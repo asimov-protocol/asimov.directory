@@ -10,7 +10,7 @@ interface SourcesSearchProps {
 export default function SourcesSearch({
   value,
   onChange,
-  placeholder = "Search data sources, endpoints, and modules..."
+  placeholder = 'Search data sources, endpoints, and modules...'
 }: SourcesSearchProps) {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -20,11 +20,13 @@ export default function SourcesSearch({
 
   return (
     <div className="relative max-w-md">
-      <div className={`relative flex items-center transition-all duration-200 ${
-        isFocused
-          ? 'ring-2 ring-oOrange-500 border-oOrange-500'
-          : 'border-sSlate-200 hover:border-sSlate-300'
-      } rounded-lg border bg-white`}>
+      <div
+        className={`relative flex items-center transition-all duration-200 ${
+          isFocused
+            ? 'ring-oOrange-500 border-oOrange-500 ring-2'
+            : 'border-sSlate-200 hover:border-sSlate-300'
+        } rounded-lg border bg-white`}
+      >
         <div className="absolute left-3 flex items-center">
           <MagnifyingGlass className="text-gGray-400 text-sm" />
         </div>
@@ -36,13 +38,13 @@ export default function SourcesSearch({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
-          className="w-full py-3 pl-10 pr-10 text-sm text-sSlate-800 placeholder-gGray-400 bg-transparent border-0 rounded-lg focus:outline-none"
+          className="text-sSlate-800 placeholder-gGray-400 w-full rounded-lg border-0 bg-transparent py-3 pr-10 pl-10 text-sm focus:outline-none"
         />
 
         {value && (
           <button
             onClick={handleClear}
-            className="absolute right-3 flex items-center justify-center h-5 w-5 rounded-full bg-gGray-200 text-gGray-500 hover:bg-gGray-300 hover:text-gGray-700 transition-colors"
+            className="bg-gGray-200 text-gGray-500 hover:bg-gGray-300 hover:text-gGray-700 absolute right-3 flex h-5 w-5 items-center justify-center rounded-full transition-colors"
             aria-label="Clear search"
           >
             <X className="text-xs" />

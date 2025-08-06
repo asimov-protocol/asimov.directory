@@ -32,7 +32,9 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
       const existing = groups.find((g: GroupedSource) => g.dataset === source.dataset);
 
       if (existing) {
-        const existingEndpoint = existing.endpoints.find((e: any) => e.url_prefix === source.url_prefix);
+        const existingEndpoint = existing.endpoints.find(
+          (e: any) => e.url_prefix === source.url_prefix
+        );
         if (existingEndpoint) {
           existingEndpoint.sources.push(source);
         } else {
@@ -47,10 +49,12 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
       } else {
         groups.push({
           dataset: source.dataset,
-          endpoints: [{
-            url_prefix: source.url_prefix,
-            sources: [source]
-          }],
+          endpoints: [
+            {
+              url_prefix: source.url_prefix,
+              sources: [source]
+            }
+          ],
           totalSources: 1,
           hasJson: !!source.json,
           hasRdf: !!source.rdf
@@ -63,19 +67,21 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
 
   // Memoize filtering and sorting
   const sortedGroups = useMemo(() => {
-    const filteredGroups = groupedSources.filter(group => {
+    const filteredGroups = groupedSources.filter((group) => {
       if (!searchQuery) return true;
 
       const searchLower = searchQuery.toLowerCase();
       return (
         group.dataset.toLowerCase().includes(searchLower) ||
         generateDisplayName(group.dataset).toLowerCase().includes(searchLower) ||
-        group.endpoints.some(endpoint =>
-          endpoint.url_prefix.toLowerCase().includes(searchLower) ||
-          endpoint.sources.some(source =>
-            source.module_label.toLowerCase().includes(searchLower) ||
-            source.module_name.toLowerCase().includes(searchLower)
-          )
+        group.endpoints.some(
+          (endpoint) =>
+            endpoint.url_prefix.toLowerCase().includes(searchLower) ||
+            endpoint.sources.some(
+              (source) =>
+                source.module_label.toLowerCase().includes(searchLower) ||
+                source.module_name.toLowerCase().includes(searchLower)
+            )
         )
       );
     });
@@ -93,7 +99,7 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="flex items-center space-x-3 text-gray-600">
-          <div className="animate-spin h-5 w-5 border-2 border-orange-500 border-t-transparent rounded-full"></div>
+          <div className="h-5 w-5 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"></div>
           <span>Loading data sources...</span>
         </div>
       </div>
@@ -102,11 +108,11 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
 
   if (error) {
     return (
-      <div className="text-center py-12">
-        <div className="text-red-600 mb-2">
+      <div className="py-12 text-center">
+        <div className="mb-2 text-red-600">
           <WarningCircle className="text-2xl" />
         </div>
-        <h3 className="text-lg font-medium text-sSlate-900 mb-1">Failed to load data sources</h3>
+        <h3 className="text-sSlate-900 mb-1 text-lg font-medium">Failed to load data sources</h3>
         <p className="text-gGray-600">{error?.message || 'An error occurred'}</p>
       </div>
     );
@@ -115,18 +121,21 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
   if (sortedGroups.length === 0) {
     const isSearching = searchQuery.length > 0;
     return (
-      <div className="text-center py-12">
+      <div className="py-12 text-center">
         <div className="text-gGray-400 mb-4">
-          {isSearching ? <MagnifyingGlass className="text-4xl" /> : <Database className="text-4xl" />}
+          {isSearching ? (
+            <MagnifyingGlass className="text-4xl" />
+          ) : (
+            <Database className="text-4xl" />
+          )}
         </div>
-        <h3 className="text-lg font-medium text-sSlate-900 mb-1">
+        <h3 className="text-sSlate-900 mb-1 text-lg font-medium">
           {isSearching ? 'No matching data sources' : 'No data sources found'}
         </h3>
         <p className="text-gGray-600">
           {isSearching
             ? `No data sources match "${searchQuery}". Try a different search term.`
-            : 'No data sources are currently available.'
-          }
+            : 'No data sources are currently available.'}
         </p>
       </div>
     );
@@ -135,26 +144,27 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
   return (
     <div className="space-y-4">
       {/* Results Summary & View Toggle */}
-      <div className="flex items-center justify-between text-sm text-gGray-600">
+      <div className="text-gGray-600 flex items-center justify-between text-sm">
         <span>
-          {sortedGroups.length} data source{sortedGroups.length !== 1 ? 's' : ''} • {' '}
+          {sortedGroups.length} data source{sortedGroups.length !== 1 ? 's' : ''} •{' '}
           {sortedGroups.reduce((total, group) => total + group.totalSources, 0)} total modules
         </span>
 
         <div className="flex items-center space-x-4">
           {searchQuery && (
             <span>
-              Search results for "<span className="font-medium text-sSlate-700">{searchQuery}</span>"
+              Search results for &quot;<span className="text-sSlate-700 font-medium">{searchQuery}</span>
+              &quot;
             </span>
           )}
 
           {/* View Mode Toggle */}
-          <div className="flex items-center bg-gGray-100 rounded-lg p-1">
+          <div className="bg-gGray-100 flex items-center rounded-lg p-1">
             <button
               onClick={() => setViewMode('table')}
-              className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
+              className={`rounded px-3 py-1.5 text-xs font-medium transition-colors ${
                 viewMode === 'table'
-                  ? 'bg-white text-sSlate-700 shadow-sm'
+                  ? 'text-sSlate-700 bg-white shadow-sm'
                   : 'text-gGray-600 hover:text-sSlate-700'
               }`}
             >
@@ -163,9 +173,9 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
             </button>
             <button
               onClick={() => setViewMode('cards')}
-              className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
+              className={`rounded px-3 py-1.5 text-xs font-medium transition-colors ${
                 viewMode === 'cards'
-                  ? 'bg-white text-sSlate-700 shadow-sm'
+                  ? 'text-sSlate-700 bg-white shadow-sm'
                   : 'text-gGray-600 hover:text-sSlate-700'
               }`}
             >

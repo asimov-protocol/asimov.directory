@@ -48,7 +48,7 @@ export default function ModulesApp({ initialSort }: ModulesAppProps) {
               onChange={handleSortChange}
               className="border-sSlate-200 focus:ring-oOrange-500 focus:border-oOrange-500 text-sSlate-800 appearance-none rounded-lg border bg-white px-4 py-2 pr-10 text-sm transition-colors focus:ring-2"
             >
-              {sortOptions.map(option => (
+              {sortOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -69,11 +69,7 @@ export default function ModulesApp({ initialSort }: ModulesAppProps) {
       </div>
 
       {/* Modules Grid Component */}
-      <ModulesGrid
-        modules={modules}
-        loading={loading}
-        error={error?.message || null}
-      />
+      <ModulesGrid modules={modules} loading={loading} error={error?.message || null} />
     </div>
   );
 }

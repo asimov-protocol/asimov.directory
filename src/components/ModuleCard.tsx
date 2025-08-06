@@ -61,7 +61,7 @@ export default function ModuleCard({ module }: ModuleCardProps) {
   };
 
   const getProviderInfo = (url: string) => {
-    return PROVIDER_INFO.find(provider => url.includes(provider.pattern));
+    return PROVIDER_INFO.find((provider) => url.includes(provider.pattern));
   };
 
   const providerInfo = getProviderInfo(module.html_url);
@@ -90,7 +90,7 @@ export default function ModuleCard({ module }: ModuleCardProps) {
       </div>
 
       {/* Description */}
-      <p className="text-gGray-500 mb-4 text-sm leading-relaxed line-clamp-2">
+      <p className="text-gGray-500 mb-4 line-clamp-2 text-sm leading-relaxed">
         {module.metadata?.summary || module.description || 'No description available'}
       </p>
 

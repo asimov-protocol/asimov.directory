@@ -77,10 +77,10 @@ The project uses a custom color palette defined in `src/app.css`:
 
 ```css
 @theme {
-	--color-gGray-100: #f6f6f6;
-	--color-sSlate-800: #04163c;
-	--color-oOrange-500: #f37021;
-	/* ... more colors */
+  --color-gGray-100: #f6f6f6;
+  --color-sSlate-800: #04163c;
+  --color-oOrange-500: #f37021;
+  /* ... more colors */
 }
 ```
 

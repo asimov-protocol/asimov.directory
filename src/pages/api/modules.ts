@@ -9,32 +9,38 @@ export const GET: APIRoute = async ({ url }) => {
 
     const modules = await githubApi.fetchOrganizationRepos(sortOption);
 
-    return new Response(JSON.stringify({
-      success: true,
-      data: {
-        modules,
-        count: modules.length,
-        sort: sortOption
+    return new Response(
+      JSON.stringify({
+        success: true,
+        data: {
+          modules,
+          count: modules.length,
+          sort: sortOption
+        }
+      }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'public, max-age=300' // Cache for 5 minutes
+        }
       }
-    }), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=300' // Cache for 5 minutes
-      }
-    });
+    );
   } catch (error) {
     console.error('API Error:', error);
 
-    return new Response(JSON.stringify({
-      success: false,
-      error: error instanceof Error ? error.message : 'Failed to fetch modules',
-      data: null
-    }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json'
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to fetch modules',
+        data: null
+      }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json'
+        }
       }
-    });
+    );
   }
 };

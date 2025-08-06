@@ -1,163 +1,170 @@
 ---
-// Import components
 import Logo from './Logo.astro';
 import NavbarIcons from './NavbarIcons.tsx';
 // import GitHubStats from './GitHubStats.astro';
 
-// Get current path for active navigation state
-const currentPath = Astro.url.pathname;
-
 const navItems = [
-	{ text: 'Sources', href: '/' },
-	{ text: 'Modules', href: '/modules' }
+  { text: 'Sources', href: '/' },
+  { text: 'Modules', href: '/modules' }
 ];
 ---
 
-<header class="sticky top-0 z-50 border-b border-slate-200 bg-white transition-all duration-300" transition:persist>
-	<div class="container mx-auto flex h-20 items-center justify-between px-4">
-		<a href="/" class="flex items-center gap-2">
-			<Logo class="h-8 w-auto" />
-		</a>
+<header
+  class="sticky top-0 z-50 border-b border-slate-200 bg-white transition-all duration-300"
+  transition:persist
+>
+  <div class="container mx-auto flex h-20 items-center justify-between px-4">
+    <a href="/" class="flex items-center gap-2">
+      <Logo class="h-8 w-auto" />
+    </a>
 
-		<nav class="hidden items-center space-x-8 md:flex">
-			{navItems.map((item) => (
-				<a
-					href={item.href}
-					class="nav-link group relative text-gray-600 transition-colors hover:text-orange-600"
-					data-path={item.href}
-				>
-					{item.text}
-					<div class="nav-underline absolute -bottom-1 left-0 h-px bg-orange-500 transition-all w-0 group-hover:w-full"></div>
-				</a>
-			))}
-		</nav>
+    <nav class="hidden items-center space-x-8 md:flex">
+      {
+        navItems.map((item) => (
+          <a
+            href={item.href}
+            class="nav-link group relative text-gray-600 transition-colors hover:text-orange-600"
+            data-path={item.href}
+          >
+            {item.text}
+            <div class="nav-underline absolute -bottom-1 left-0 h-px w-0 bg-orange-500 transition-all group-hover:w-full" />
+          </a>
+        ))
+      }
+    </nav>
 
-		<div class="hidden items-center gap-4 md:flex">
-			<!-- GitHubStats placeholder -->
-			<div>GitHub Stats (Desktop)</div>
-		</div>
+    <div class="hidden items-center gap-4 md:flex">
+      <!-- GitHubStats placeholder -->
+      <div>GitHub Stats (Desktop)</div>
+    </div>
 
-		<button
-			id="mobile-menu-toggle"
-			class="text-gray-600 hover:text-gray-900 focus:outline-none md:hidden"
-			type="button"
-			aria-label="Toggle menu"
-			aria-expanded="false"
-		>
-			<!-- Menu icon (will be toggled via JavaScript) -->
-			<NavbarIcons client:load />
-		</button>
-	</div>
+    <button
+      id="mobile-menu-toggle"
+      class="text-gray-600 hover:text-gray-900 focus:outline-none md:hidden"
+      type="button"
+      aria-label="Toggle menu"
+      aria-expanded="false"
+    >
+      <!-- Menu icon (will be toggled via JavaScript) -->
+      <NavbarIcons client:load />
+    </button>
+  </div>
 
-	<!-- Mobile menu -->
-	<div id="mobile-menu" class="hidden border-t border-gray-200 bg-white/95 backdrop-blur-md md:hidden">
-		<div class="container mx-auto px-4 py-6">
-			<nav class="flex flex-col space-y-4">
-				{navItems.map((item) => (
-					<a
-						href={item.href}
-						class="mobile-nav-link border-b border-gray-200 py-2 text-gray-600 transition-colors last:border-b-0 hover:text-orange-600"
-						data-path={item.href}
-					>
-						{item.text}
-					</a>
-				))}
+  <!-- Mobile menu -->
+  <div
+    id="mobile-menu"
+    class="hidden border-t border-gray-200 bg-white/95 backdrop-blur-md md:hidden"
+  >
+    <div class="container mx-auto px-4 py-6">
+      <nav class="flex flex-col space-y-4">
+        {
+          navItems.map((item) => (
+            <a
+              href={item.href}
+              class="mobile-nav-link border-b border-gray-200 py-2 text-gray-600 transition-colors last:border-b-0 hover:text-orange-600"
+              data-path={item.href}
+            >
+              {item.text}
+            </a>
+          ))
+        }
 
-				<!-- GitHubStats placeholder -->
-				<div class="pt-4">GitHub Stats (Mobile)</div>
-			</nav>
-		</div>
-	</div>
+        <!-- GitHubStats placeholder -->
+        <div class="pt-4">GitHub Stats (Mobile)</div>
+      </nav>
+    </div>
+  </div>
 </header>
 
 <!-- Mobile menu backdrop -->
-<div id="mobile-backdrop" class="fixed inset-0 z-40 bg-white/30 backdrop-blur-sm md:hidden hidden"></div>
+<div id="mobile-backdrop" class="fixed inset-0 z-40 hidden bg-white/30 backdrop-blur-sm md:hidden">
+</div>
 
 <script>
-	// Update active navigation state
-	function updateActiveNav() {
-		const currentPath = window.location.pathname;
+  // Update active navigation state
+  function updateActiveNav() {
+    const currentPath = window.location.pathname;
 
-		// Update desktop nav
-		document.querySelectorAll('.nav-link').forEach(link => {
-			const linkPath = link.getAttribute('data-path');
-			const underline = link.querySelector('.nav-underline');
+    // Update desktop nav
+    document.querySelectorAll('.nav-link').forEach((link) => {
+      const linkPath = link.getAttribute('data-path');
+      const underline = link.querySelector('.nav-underline');
 
-			if (linkPath === currentPath) {
-				link.classList.add('text-orange-600');
-				link.classList.remove('text-gray-600');
-				underline?.classList.add('w-full');
-				underline?.classList.remove('w-0');
-			} else {
-				link.classList.remove('text-orange-600');
-				link.classList.add('text-gray-600');
-				underline?.classList.remove('w-full');
-				underline?.classList.add('w-0');
-			}
-		});
+      if (linkPath === currentPath) {
+        link.classList.add('text-orange-600');
+        link.classList.remove('text-gray-600');
+        underline?.classList.add('w-full');
+        underline?.classList.remove('w-0');
+      } else {
+        link.classList.remove('text-orange-600');
+        link.classList.add('text-gray-600');
+        underline?.classList.remove('w-full');
+        underline?.classList.add('w-0');
+      }
+    });
 
-		// Update mobile nav
-		document.querySelectorAll('.mobile-nav-link').forEach(link => {
-			const linkPath = link.getAttribute('data-path');
+    // Update mobile nav
+    document.querySelectorAll('.mobile-nav-link').forEach((link) => {
+      const linkPath = link.getAttribute('data-path');
 
-			if (linkPath === currentPath) {
-				link.classList.add('text-orange-600');
-				link.classList.remove('text-gray-600');
-			} else {
-				link.classList.remove('text-orange-600');
-				link.classList.add('text-gray-600');
-			}
-		});
-	}
+      if (linkPath === currentPath) {
+        link.classList.add('text-orange-600');
+        link.classList.remove('text-gray-600');
+      } else {
+        link.classList.remove('text-orange-600');
+        link.classList.add('text-gray-600');
+      }
+    });
+  }
 
-	// Mobile menu functionality
-	const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-	const mobileMenu = document.getElementById('mobile-menu');
-	const mobileBackdrop = document.getElementById('mobile-backdrop');
-	const menuIcon = document.getElementById('menu-icon');
-	const closeIcon = document.getElementById('close-icon');
-	const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+  // Mobile menu functionality
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileBackdrop = document.getElementById('mobile-backdrop');
+  const menuIcon = document.getElementById('menu-icon');
+  const closeIcon = document.getElementById('close-icon');
+  const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 
-	let isOpen = false;
+  let isOpen = false;
 
-	function toggleMenu() {
-		isOpen = !isOpen;
-		if (isOpen) {
-			mobileMenu?.classList.remove('hidden');
-			mobileBackdrop?.classList.remove('hidden');
-			menuIcon?.classList.add('hidden');
-			closeIcon?.classList.remove('hidden');
-			mobileMenuToggle?.setAttribute('aria-expanded', 'true');
-			document.body.style.overflow = 'hidden';
-		} else {
-			mobileMenu?.classList.add('hidden');
-			mobileBackdrop?.classList.add('hidden');
-			menuIcon?.classList.remove('hidden');
-			closeIcon?.classList.add('hidden');
-			mobileMenuToggle?.setAttribute('aria-expanded', 'false');
-			document.body.style.overflow = '';
-		}
-	}
+  function toggleMenu() {
+    isOpen = !isOpen;
+    if (isOpen) {
+      mobileMenu?.classList.remove('hidden');
+      mobileBackdrop?.classList.remove('hidden');
+      menuIcon?.classList.add('hidden');
+      closeIcon?.classList.remove('hidden');
+      mobileMenuToggle?.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    } else {
+      mobileMenu?.classList.add('hidden');
+      mobileBackdrop?.classList.add('hidden');
+      menuIcon?.classList.remove('hidden');
+      closeIcon?.classList.add('hidden');
+      mobileMenuToggle?.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+  }
 
-	function closeMenu() {
-		if (isOpen) {
-			isOpen = false;
-			mobileMenu?.classList.add('hidden');
-			mobileBackdrop?.classList.add('hidden');
-			menuIcon?.classList.remove('hidden');
-			closeIcon?.classList.add('hidden');
-			mobileMenuToggle?.setAttribute('aria-expanded', 'false');
-			document.body.style.overflow = '';
-		}
-	}
+  function closeMenu() {
+    if (isOpen) {
+      isOpen = false;
+      mobileMenu?.classList.add('hidden');
+      mobileBackdrop?.classList.add('hidden');
+      menuIcon?.classList.remove('hidden');
+      closeIcon?.classList.add('hidden');
+      mobileMenuToggle?.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+  }
 
-	// Initialize and listen for navigation
-	updateActiveNav();
-	document.addEventListener('astro:page-load', updateActiveNav);
+  // Initialize and listen for navigation
+  updateActiveNav();
+  document.addEventListener('astro:page-load', updateActiveNav);
 
-	// Event listeners
-	mobileMenuToggle?.addEventListener('click', toggleMenu);
-	mobileBackdrop?.addEventListener('click', closeMenu);
-	mobileNavLinks.forEach(link => link.addEventListener('click', closeMenu));
-	document.addEventListener('keydown', (e) => e.key === 'Escape' && closeMenu());
+  // Event listeners
+  mobileMenuToggle?.addEventListener('click', toggleMenu);
+  mobileBackdrop?.addEventListener('click', closeMenu);
+  mobileNavLinks.forEach((link) => link.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', (e) => e.key === 'Escape' && closeMenu());
 </script>
