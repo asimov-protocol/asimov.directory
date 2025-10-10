@@ -1,0 +1,24 @@
+name: Collect Metrics
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # Every 15 minutes
+  workflow_dispatch:  # Allows manual trigger from GitHub UI
+
+jobs:
+  collect-metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Zuplo metrics collection
+        run: |
+          curl -f -X GET \
+            -H "Authorization: Bearer ${{ secrets.ZUPLO_COLLECTOR_API_KEY }}" \
+            ${{ secrets.ZUPLO_API_BASE_URL }}/metrics/experimental/asimov-modules
+        
+      - name: Check if succeeded
+        if: success()
+        run: echo "✅ Metrics collected successfully"
+        
+      - name: Alert on failure
+        if: failure()
+        run: echo "❌ Failed to collect metrics"
