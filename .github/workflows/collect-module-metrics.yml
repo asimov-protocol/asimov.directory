@@ -13,7 +13,7 @@ jobs:
         env:
           ZUPLO_API_BASE_URL: ${{ vars.ZUPLO_API_BASE_URL }}
         run: |
-          curl -f -X GET \
+          curl --silent --show-error -f -X GET \
             -H "Authorization: Bearer ${{ secrets.ZUPLO_COLLECTOR_API_KEY }}" \
             $ZUPLO_API_BASE_URL/metrics/experimental/asimov-modules
         
