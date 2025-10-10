@@ -15,7 +15,7 @@ jobs:
         run: |
           curl --silent --show-error -f -X GET \
             -H "Authorization: Bearer ${{ secrets.ZUPLO_COLLECTOR_API_KEY }}" \
-            $ZUPLO_API_BASE_URL/metrics/experimental/asimov-modules
+            $ZUPLO_API_BASE_URL/internal/metrics/asimov-modulues
         
       - name: Check if succeeded
         if: success()
