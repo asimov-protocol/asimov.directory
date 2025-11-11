@@ -1,16 +1,21 @@
-import { parse } from 'yaml';
 import { Star, Calendar } from '@phosphor-icons/react';
 
-import type { Repository, Manifest } from '../types';
+import type { Repository } from '../types';
 
-import { getLanguageColor, getProviderInfo, formatDate, formatNumber } from '../lib/utils';
+import {
+  getLanguageColor,
+  getProviderInfo,
+  formatDate,
+  formatNumber,
+  parseManifest
+} from '../lib/utils';
 
 interface ModuleCardProps {
   module: Repository;
 }
 
 export default function ModuleCard({ module }: ModuleCardProps) {
-  const manifest = parse(module.manifest.text) as Manifest | undefined;
+  const manifest = parseManifest(module.manifest.text);
 
   const moduleName = manifest?.title || module.name;
   const moduleDescription = manifest?.summary || module.description || 'No description available';

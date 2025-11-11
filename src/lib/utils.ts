@@ -1,3 +1,5 @@
+import { parse } from 'yaml';
+
 import type { ComponentType } from 'react';
 import {
   House,
@@ -18,6 +20,7 @@ import {
 import { Crates, Github, Npm, PyPi, RubyGems } from '../components/icons';
 
 import { ZUPLO_API_BASE } from './config';
+import type { Repository, Manifest } from '../types';
 
 export const DOMAIN_ICONS: Record<string, ComponentType<any>> = {
   'airbnb.com': House,
@@ -158,6 +161,19 @@ export const formatNumber = (num: number) => {
     return `${(num / 1000).toFixed(1)}K`;
   }
   return num.toString();
+};
+
+export const parseManifest = (
+  manifestText: Repository['manifest']['text'] | undefined
+): Manifest | undefined => {
+  if (!manifestText) return undefined;
+
+  try {
+    return parse(manifestText) as Manifest;
+  } catch (error) {
+    console.warn('Failed to parse manifest:', error);
+    return undefined;
+  }
 };
 
 export const fetchWithFallback = async <T>(endpoint: string, fallbackData: T): Promise<T> => {

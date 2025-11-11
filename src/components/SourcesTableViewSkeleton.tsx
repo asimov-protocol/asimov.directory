@@ -1,5 +1,4 @@
 export default function SourcesTableViewSkeleton() {
-  // Generate 5 skeleton items
   const skeletonItems = Array.from({ length: 12 }, (_, i) => i);
 
   return (
