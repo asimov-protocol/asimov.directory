@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ComponentType } from 'react';
 import {
   House,
   Storefront,
@@ -15,7 +15,9 @@ import {
   Globe
 } from '@phosphor-icons/react';
 
-export const DOMAIN_ICONS: Record<string, React.ComponentType<any>> = {
+import { ZUPLO_API_BASE } from './config';
+
+export const DOMAIN_ICONS: Record<string, ComponentType<any>> = {
   'airbnb.com': House,
   'amazon.com': Storefront,
   'facebook.com': FacebookLogo,
@@ -63,26 +65,25 @@ export function generateDisplayName(domain: string): string {
     .join(' ');
 }
 
-/**
- * Removes wildcard prefix from dataset names for consistent grouping.
- * @param dataset - The dataset string that may contain wildcard prefixes
- * @returns The normalized dataset string without wildcard prefixes
- */
-export function normalizeDataset(dataset: string): string {
-  // Remove wildcard prefix if present
-  if (dataset.startsWith('*.')) {
-    return dataset.substring(2);
+export function formatStars(count: number): string {
+  if (count >= 1000) {
+    const thousands = count / 1000;
+    return Number.isInteger(thousands) ? `${thousands}k` : `${thousands.toFixed(1)}k`;
   }
-  return dataset;
+  return count.toString();
 }
 
-export interface GroupedSource {
-  dataset: string;
-  endpoints: {
-    url_prefix: string;
-    sources: import('../types').DataSource[];
-  }[];
-  totalSources: number;
-  hasJson: boolean;
-  hasRdf: boolean;
-}
+export const fetchWithFallback = async <T>(endpoint: string, fallbackData: T): Promise<T> => {
+	try {
+		const apiUrl = `${ZUPLO_API_BASE}/${endpoint}`;
+
+		const response = await fetch(apiUrl);
+		if (!response.ok) {
+			throw new Error(`API error: ${response.status}`);
+		}
+		return await response.json();
+	} catch (err) {
+		console.error(`Failed to fetch from ${endpoint}:`, err);
+		return fallbackData;
+	}
+};

@@ -1,2 +1,11 @@
-export type { ModuleMetadata, GitHubModule, GitHubContributor } from './github';
-export type { DataSource, SortOption } from './data';
+export type {
+  Repository,
+  GraphQLPagination
+} from './github';
+
+export type {
+  DataSource,
+  SortOption,
+  AsimovModule,
+  AsimovModulesIndex
+} from './data';
