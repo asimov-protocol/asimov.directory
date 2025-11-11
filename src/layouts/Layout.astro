@@ -34,7 +34,11 @@ const { title = 'ASIMOV.Directory', description = 'ASIMOV Data Sources Directory
     <ClientRouter />
     <slot name="head" />
 
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="fdbc7ec3-ff92-4e77-948a-2cdeeeb4f630"></script>
+    <script
+      is:inline
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id="fdbc7ec3-ff92-4e77-948a-2cdeeeb4f630"></script>
   </head>
   <body>
     <slot />

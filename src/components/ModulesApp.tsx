@@ -1,21 +1,37 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { CaretDown } from '@phosphor-icons/react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+
 import type { SortOption } from '../types';
 import ModulesGrid from './ModulesGrid';
 import { createModulesQuery } from '../lib/queries/modules';
 import { queryClient } from '../store';
-import { CaretDown } from '@phosphor-icons/react';
+import { WHITELISTED_MODULES } from '../lib/config';
 
 interface ModulesAppProps {
   initialSort: SortOption;
 }
 
 export default function ModulesApp({ initialSort }: ModulesAppProps) {
+  const rxModule = /^asimov-.+-module$/i;
   const [sortOption, setSortOption] = useState<SortOption>(initialSort);
 
-  const { data, isLoading: loading, error } = useQuery(createModulesQuery(sortOption), queryClient);
+  const {
+    data,
+    isLoading: loading,
+    error,
+    fetchNextPage,
+    hasNextPage
+  } = useInfiniteQuery(createModulesQuery(sortOption), queryClient);
 
-  const modules = data?.modules || [];
+  const modules =
+    data?.pages.flatMap(
+      (page) =>
+        page.repositories.filter(
+          ({ name }) => rxModule.test(name) && !WHITELISTED_MODULES.includes(name)
+        ) || []
+    ) || [];
 
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newSort = event.target.value as SortOption;
@@ -27,10 +43,8 @@ export default function ModulesApp({ initialSort }: ModulesAppProps) {
   };
 
   const sortOptions = [
-    { value: 'relevant' as const, label: 'Most Relevant' },
-    { value: 'popular' as const, label: 'Most Popular' },
-    { value: 'newest' as const, label: 'Newest' },
-    { value: 'updated' as const, label: 'Recently Updated' }
+    { value: 'created_at' as const, label: 'Newest' },
+    { value: 'updated_at' as const, label: 'Recently Updated' }
   ];
 
   return (
@@ -63,7 +77,14 @@ export default function ModulesApp({ initialSort }: ModulesAppProps) {
         </div>
       </div>
 
-      <ModulesGrid modules={modules} loading={loading} error={error?.message || null} />
+      <InfiniteScroll
+        dataLength={modules.length}
+        next={fetchNextPage}
+        hasMore={hasNextPage || false}
+        loader={<h4>Loading...</h4>}
+      >
+        <ModulesGrid modules={modules} loading={loading} error={error?.message || null} />
+      </InfiniteScroll>
     </div>
   );
 }

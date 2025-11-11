@@ -1,11 +1,13 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { DataSource } from '../types';
+import { WarningCircle, List, GridFour, MagnifyingGlass, Database } from '@phosphor-icons/react';
+
 import SourcesTableView from './SourcesTableView';
 import SourcesCardsView from './SourcesCardsView';
-import { generateDisplayName, normalizeDataset, type GroupedSource } from '../lib/utils';
+import SourcesTableViewSkeleton from './SourcesTableViewSkeleton';
+import SourcesCardsViewSkeleton from './SourcesCardsViewSkeleton';
+import { generateDisplayName } from '../lib/utils';
 import { createSourcesQuery } from '../lib/queries/sources';
-import { WarningCircle, List, GridFour, MagnifyingGlass, Database } from '@phosphor-icons/react';
 import { queryClient } from '../store';
 
 interface SourcesTableProps {
@@ -17,85 +19,52 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
 
   const { data, isLoading: loading, error } = useQuery(createSourcesQuery(), queryClient);
 
-  const sources = useMemo(() => data?.sources || [], [data?.sources]);
+  const dataSources = useMemo(() => {
+    const filteredGroups =
+      data?.filter((dataSource) => {
+        if (!searchQuery) return true;
 
-  const groupedSources: GroupedSource[] = useMemo(() => {
-    if (!Array.isArray(sources)) return [];
-
-    return sources.reduce((groups: GroupedSource[], source: DataSource) => {
-      const normalizedDataset = normalizeDataset(source.dataset);
-      const existing = groups.find((g: GroupedSource) => g.dataset === normalizedDataset);
-
-      if (existing) {
-        const existingEndpoint = existing.endpoints.find(
-          (e: any) => e.url_prefix === source.url_prefix
+        const searchLower = searchQuery.toLowerCase();
+        return (
+          dataSource.dataset.toLowerCase().includes(searchLower) ||
+          generateDisplayName(dataSource.dataset).toLowerCase().includes(searchLower) ||
+          dataSource.endpoints.some(
+            (endpoint) =>
+              endpoint.url.toLowerCase().includes(searchLower) ||
+              endpoint.modules.some(
+                (module) =>
+                  module.name.toLowerCase().includes(searchLower) ||
+                  module.label.toLowerCase().includes(searchLower)
+              )
+          )
         );
-        if (existingEndpoint) {
-          existingEndpoint.sources.push(source);
-        } else {
-          existing.endpoints.push({
-            url_prefix: source.url_prefix, // Keep original URL prefix (may contain wildcards)
-            sources: [source]
-          });
-        }
-        existing.totalSources++;
-        if (source.json) existing.hasJson = true;
-        if (source.rdf) existing.hasRdf = true;
-      } else {
-        groups.push({
-          dataset: normalizedDataset, // Use normalized dataset for grouping and display
-          endpoints: [
-            {
-              url_prefix: source.url_prefix, // Keep original URL prefix (may contain wildcards)
-              sources: [source]
-            }
-          ],
-          totalSources: 1,
-          hasJson: !!source.json,
-          hasRdf: !!source.rdf
-        });
-      }
-
-      return groups;
-    }, [] as GroupedSource[]);
-  }, [sources]);
-
-  const sortedGroups = useMemo(() => {
-    const filteredGroups = groupedSources.filter((group) => {
-      if (!searchQuery) return true;
-
-      const searchLower = searchQuery.toLowerCase();
-      return (
-        group.dataset.toLowerCase().includes(searchLower) ||
-        generateDisplayName(group.dataset).toLowerCase().includes(searchLower) ||
-        group.endpoints.some(
-          (endpoint) =>
-            endpoint.url_prefix.toLowerCase().includes(searchLower) ||
-            endpoint.sources.some(
-              (source) =>
-                source.module_label.toLowerCase().includes(searchLower) ||
-                source.module_name.toLowerCase().includes(searchLower)
-            )
-        )
-      );
-    });
+      }) ?? [];
 
     return filteredGroups.sort((a, b) => {
-      if (b.totalSources !== a.totalSources) {
-        return b.totalSources - a.totalSources;
+      if (b.endpoints.length !== a.endpoints.length) {
+        return b.endpoints.length - a.endpoints.length;
       }
       return a.dataset.localeCompare(b.dataset);
     });
-  }, [groupedSources, searchQuery]);
+  }, [data, searchQuery]);
+
+  const totalModules = useMemo(() => {
+    const uniqueModules = new Set<string>();
+    for (const source of dataSources) {
+      source.endpoints.forEach((endpoint) => {
+        endpoint.modules.forEach((module) => uniqueModules.add(module.name));
+      });
+    }
+    return uniqueModules.size;
+  }, [dataSources]);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="flex items-center space-x-3 text-gray-600">
-          <div className="h-5 w-5 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"></div>
-          <span>Loading data sources...</span>
-        </div>
-      </div>
+      <>
+        {viewMode === 'table' && <SourcesTableViewSkeleton />}
+
+        {viewMode === 'cards' && <SourcesCardsViewSkeleton />}
+      </>
     );
   }
 
@@ -111,7 +80,7 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
     );
   }
 
-  if (sortedGroups.length === 0) {
+  if (dataSources.length === 0) {
     const isSearching = searchQuery.length > 0;
     return (
       <div className="py-12 text-center">
@@ -138,8 +107,8 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
     <div className="space-y-4">
       <div className="text-gGray-600 flex items-center justify-between text-sm">
         <span>
-          {sortedGroups.length} data source{sortedGroups.length !== 1 ? 's' : ''} •{' '}
-          {sortedGroups.reduce((total, group) => total + group.totalSources, 0)} total modules
+          {dataSources.length} data source{dataSources.length !== 1 ? 's' : ''} • {totalModules}{' '}
+          unique modules
         </span>
 
         <div className="flex items-center space-x-4">
@@ -178,9 +147,9 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
         </div>
       </div>
 
-      {viewMode === 'table' && <SourcesTableView groups={sortedGroups} />}
+      {viewMode === 'table' && <SourcesTableView sources={dataSources} />}
 
-      {viewMode === 'cards' && <SourcesCardsView groups={sortedGroups} />}
+      {viewMode === 'cards' && <SourcesCardsView sources={dataSources} />}
     </div>
   );
 }

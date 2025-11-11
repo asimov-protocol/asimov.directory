@@ -16,7 +16,6 @@
   "devDependencies": {
     "@astrojs/sitemap": "^3.2.1",
     "@eslint/compat": "^1.2.3",
-    "@types/js-yaml": "^4.0.9",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^9.32.0",
@@ -41,6 +40,8 @@
     "astro": "^5.12.8",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "tailwindcss": "^4.1.11"
+    "react-infinite-scroll-component": "^6.1.0",
+    "tailwindcss": "^4.1.11",
+    "yaml": "^2.8.1"
   }
 }

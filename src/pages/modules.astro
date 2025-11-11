@@ -6,7 +6,7 @@ import type { SortOption } from '../types';
 
 const url = Astro.url;
 const sortParam = url.searchParams.get('sort') as SortOption;
-const initialSort: SortOption = sortParam || 'relevant';
+const initialSort: SortOption = sortParam || 'created_at';
 
 // SEO metadata
 const title = 'ASIMOV Modules - Browse Open Source Modules | ASIMOV.Directory';

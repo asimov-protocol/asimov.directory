@@ -4,7 +4,6 @@ A modern, responsive web application for discovering and exploring modules and d
 
 <img width="1277" height="773" alt="Знімок екрана 2025-08-06 о 17 01 00" src="https://github.com/user-attachments/assets/8be09316-6d87-47ca-8b70-15619d3d5f1f" />
 
-
 ## 🚀 Features
 
 - **Dual Interface**: Browse both modules and data sources with dedicated views
@@ -69,6 +68,7 @@ A modern, responsive web application for discovering and exploring modules and d
 The application fetches data from multiple sources:
 
 ### Modules Data
+
 - **ASIMOV Platform API**: Module metadata, stars, and GitHub information
 - **GitHub API**: Live repository data and statistics
 - **YAML Manifests**: Module configuration and metadata
@@ -91,6 +91,7 @@ The project uses a custom color palette defined in `src/styles/global.css`:
 ### Navigation Structure
 
 Two main sections:
+
 - **Sources** (`/`): Browse data sources with endpoints and formats
 - **Modules** (`/modules`): Explore GitHub modules with metadata
 
@@ -165,6 +166,7 @@ npm run format:check # Check code formatting
 ## 📊 Performance & Caching
 
 ### Query Caching
+
 - **TanStack Query**: Intelligent data caching with stale-while-revalidate
 - **Optimistic Updates**: Smooth user experience with background refetching
 - **Error Recovery**: Automatic retry logic for failed requests

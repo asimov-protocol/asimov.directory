@@ -1,9 +1,9 @@
-import type { GitHubModule } from '../types';
+import type { Repository } from '../types';
 import ModuleCard from './ModuleCard';
 import ModuleCardSkeleton from './ModuleCardSkeleton';
 
 interface ModulesGridProps {
-  modules?: GitHubModule[];
+  modules?: Repository[];
   loading?: boolean;
   error?: string | null;
 }
@@ -54,7 +54,7 @@ export default function ModulesGrid({
     <div className="w-full">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {modules.map((module) => (
-          <ModuleCard key={module.id} module={module} />
+          <ModuleCard key={module.name} module={module} />
         ))}
       </div>
     </div>
