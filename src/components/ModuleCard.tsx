@@ -22,8 +22,6 @@ export default function ModuleCard({ module }: ModuleCardProps) {
     : null;
   const updatedDate = formatDate(module.updatedAt);
 
-  console.log(manifest);
-
   return (
     <div className="group border-sSlate-200 hover:border-sSlate-300 relative overflow-hidden rounded-lg border bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-lg">
       <div className="mb-4 flex items-start justify-between">
