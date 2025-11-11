@@ -1,6 +1,8 @@
 export type {
   Repository,
-  GraphQLPagination
+  Repositories,
+  GraphQLPagination,
+  Manifest
 } from './github';
 
 export type {

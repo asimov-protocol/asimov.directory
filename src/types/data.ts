@@ -1,4 +1,4 @@
-export type SortOption = 'relevant' | 'popular' | 'newest' | 'updated';
+export type SortOption = 'created_at' | 'updated_at';
 
 interface AsimovModuleConfig {
   variables: Array<{

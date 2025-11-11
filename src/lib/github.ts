@@ -1,16 +1,14 @@
 import type {
   Repository,
+  Repositories,
   GraphQLPagination,
   AsimovModulesIndex,
-  DataSource
+  DataSource,
+  SortOption
 } from '../types';
 import { ASIMOV_MODULES_ORG_NAME, ASIMOV_PLATFORM_ORG_NAME } from './config';
 import { fetchWithFallback } from './utils';
 
-interface APIResponse {
-  repositories: Repository[];
-  meta: GraphQLPagination;
-}
 
 export const fetchTotalModuleStars = async (): Promise<number> => {
   try {
@@ -43,10 +41,14 @@ export const fetchOrgFollowers = async (): Promise<number> => {
   }
 };
 
-export const fetchGithubRepositories = async (after: string | null = null, limit: number = 10): Promise<APIResponse> => {
+export const fetchGithubRepositories = async (
+  after: string | null = null,
+  orderBy: SortOption = 'created_at',
+  limit: number = 10
+): Promise<Repositories> => {
   try {
     const response = await fetchWithFallback(
-      `metrics/github/repositories?org=asimov-modules&limit=${limit}${after && `&after=${after}`}`, {
+      `metrics/github/repositories?org=asimov-modules&manifest=true&limit=${limit}${after && `&after=${after}`}${orderBy && `&order=${orderBy}`}`, {
       repositories: [],
       meta: { endCursor: null, hasNextPage: false }
     }) as { repositories: Repository[]; meta: GraphQLPagination };
