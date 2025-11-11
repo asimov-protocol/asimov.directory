@@ -58,7 +58,7 @@ export default function SourcesTableView({ sources }: SourcesTableViewProps) {
             className="border-sSlate-200 overflow-hidden rounded-lg border bg-white"
           >
             <div
-              className="cursor-pointer p-3 transition-colors hover:bg-gGray-50/50 sm:p-4"
+              className="hover:bg-gGray-50/50 cursor-pointer p-3 transition-colors sm:p-4"
               onClick={() => toggleExpanded(dataset)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -192,10 +192,7 @@ export default function SourcesTableView({ sources }: SourcesTableViewProps) {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                copyToClipboard(
-                                  endpoint.url,
-                                  `${dataset}-${endpointIndex}`
-                                );
+                                copyToClipboard(endpoint.url, `${dataset}-${endpointIndex}`);
                               }}
                               className="border-sSlate-200 text-gGray-500 hover:bg-gGray-50 hover:text-sSlate-700 hover:border-sSlate-300 rounded border bg-white p-1.5 transition-colors"
                               title="Copy endpoint URL"
@@ -218,10 +215,7 @@ export default function SourcesTableView({ sources }: SourcesTableViewProps) {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              copyToClipboard(
-                                endpoint.url,
-                                `${dataset}-${endpointIndex}`
-                              );
+                              copyToClipboard(endpoint.url, `${dataset}-${endpointIndex}`);
                             }}
                             className="border-sSlate-200 text-gGray-500 hover:bg-gGray-50 hover:text-sSlate-700 hover:border-sSlate-300 rounded border bg-white p-1.5 transition-colors"
                             title="Copy endpoint URL"
@@ -247,7 +241,9 @@ export default function SourcesTableView({ sources }: SourcesTableViewProps) {
                               rel="noopener noreferrer"
                             >
                               <GithubLogo className="h-3 w-3 sm:h-4 sm:w-4" />
-                              <span className="max-w-[100px] truncate sm:max-w-none">{module.label}</span>
+                              <span className="max-w-[100px] truncate sm:max-w-none">
+                                {module.label}
+                              </span>
                             </a>
                           ))}
                         </div>

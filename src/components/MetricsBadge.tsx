@@ -6,7 +6,13 @@ interface MetricsBadgeProps {
   loading?: boolean;
 }
 
-export default function MetricsBadge({ href, value, icon: Icon, variant, loading }: MetricsBadgeProps) {
+export default function MetricsBadge({
+  href,
+  value,
+  icon: Icon,
+  variant,
+  loading
+}: MetricsBadgeProps) {
   const linkClass =
     variant === 'desktop'
       ? 'group flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white/80 px-3 py-1.5 text-sm transition-all hover:border-orange-200 hover:bg-orange-50'
@@ -27,16 +33,11 @@ export default function MetricsBadge({ href, value, icon: Icon, variant, loading
           <div className="h-4 w-8 rounded bg-gray-300"></div>
         </div>
       ) : (
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={linkClass}
-        >
+        <a href={href} target="_blank" rel="noopener noreferrer" className={linkClass}>
           <Icon size={14} className={iconClass} />
           <span className={textClass}>{value}</span>
         </a>
       )}
     </>
-  )
-};
+  );
+}

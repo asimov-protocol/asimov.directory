@@ -43,7 +43,7 @@ const DOMAIN_NAMES: Record<string, string> = {
   'linkedin.com': 'LinkedIn',
   '*.linkedin.com': 'LinkedIn',
   'duckduckgo.com': 'DuckDuckGo',
-  'youtube.com': 'YouTube',
+  'youtube.com': 'YouTube'
 };
 
 const LANGUAGE_COLORS: Record<string, string> = {
@@ -112,12 +112,12 @@ export const getProviderInfo = (url: string) => {
 
 export const getLanguageColor = (language: string): string => {
   return LANGUAGE_COLORS[language] || '#6B7280';
-}
+};
 
 export const getDomainIcon = (domain: string): React.ComponentType<any> => {
   const IconComponent = DOMAIN_ICONS[domain.toLowerCase()] || Globe;
   return IconComponent;
-}
+};
 
 export const generateDisplayName = (domain: string): string => {
   const lowerDomain = domain.toLowerCase();
@@ -133,7 +133,7 @@ export const generateDisplayName = (domain: string): string => {
     .split('-')
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ');
-}
+};
 
 export const formatStars = (count: number): string => {
   if (count >= 1000) {
@@ -141,7 +141,7 @@ export const formatStars = (count: number): string => {
     return Number.isInteger(thousands) ? `${thousands}k` : `${thousands.toFixed(1)}k`;
   }
   return count.toString();
-}
+};
 
 export const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -161,16 +161,16 @@ export const formatNumber = (num: number) => {
 };
 
 export const fetchWithFallback = async <T>(endpoint: string, fallbackData: T): Promise<T> => {
-	try {
-		const apiUrl = `${ZUPLO_API_BASE}/${endpoint}`;
+  try {
+    const apiUrl = `${ZUPLO_API_BASE}/${endpoint}`;
 
-		const response = await fetch(apiUrl);
-		if (!response.ok) {
-			throw new Error(`API error: ${response.status}`);
-		}
-		return await response.json();
-	} catch (err) {
-		console.error(`Failed to fetch from ${endpoint}:`, err);
-		return fallbackData;
-	}
+    const response = await fetch(apiUrl);
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    return await response.json();
+  } catch (err) {
+    console.error(`Failed to fetch from ${endpoint}:`, err);
+    return fallbackData;
+  }
 };

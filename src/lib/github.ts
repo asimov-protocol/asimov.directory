@@ -9,16 +9,15 @@ import type {
 import { ASIMOV_MODULES_ORG_NAME, ASIMOV_PLATFORM_ORG_NAME } from './config';
 import { fetchWithFallback } from './utils';
 
-
 export const fetchTotalModuleStars = async (): Promise<number> => {
   try {
-    const response = await fetchWithFallback(
+    const response = (await fetchWithFallback(
       `metrics/github/repositories?org=${ASIMOV_MODULES_ORG_NAME}&limit=100`,
       {
         repositories: [],
         meta: { endCursor: null, hasNextPage: false }
       }
-    ) as { repositories: Repository[]; meta: GraphQLPagination };
+    )) as { repositories: Repository[]; meta: GraphQLPagination };
     return response.repositories.reduce((sum, repo) => sum + repo.stargazerCount, 0);
   } catch (error) {
     console.error('Error fetching total module stars:', error);
@@ -47,11 +46,13 @@ export const fetchGithubRepositories = async (
   limit: number = 10
 ): Promise<Repositories> => {
   try {
-    const response = await fetchWithFallback(
-      `metrics/github/repositories?org=asimov-modules&manifest=true&limit=${limit}${after && `&after=${after}`}${orderBy && `&order=${orderBy}`}`, {
-      repositories: [],
-      meta: { endCursor: null, hasNextPage: false }
-    }) as { repositories: Repository[]; meta: GraphQLPagination };
+    const response = (await fetchWithFallback(
+      `metrics/github/repositories?org=asimov-modules&manifest=true&limit=${limit}${after && `&after=${after}`}${orderBy && `&order=${orderBy}`}`,
+      {
+        repositories: [],
+        meta: { endCursor: null, hasNextPage: false }
+      }
+    )) as { repositories: Repository[]; meta: GraphQLPagination };
 
     return response;
   } catch (error) {
@@ -62,10 +63,10 @@ export const fetchGithubRepositories = async (
 
 export const fetchDataSources = async (): Promise<DataSource[]> => {
   try {
-    const response = await fetchWithFallback(
+    const response = (await fetchWithFallback(
       'metrics/github/asimov-modules-list',
       {}
-    ) as AsimovModulesIndex;
+    )) as AsimovModulesIndex;
 
     const data = response ? Object.values(response) : [];
 
@@ -74,8 +75,8 @@ export const fetchDataSources = async (): Promise<DataSource[]> => {
     for (const module of data) {
       if (module.handles && (module.handles.url_prefixes || module.handles.url_patterns)) {
         const urlGroup = [
-          ...module.handles.url_prefixes ?? [],
-          ...module.handles.url_patterns ?? []
+          ...(module.handles.url_prefixes ?? []),
+          ...(module.handles.url_patterns ?? [])
         ];
 
         for (const urlPrefix of urlGroup) {
@@ -93,7 +94,7 @@ export const fetchDataSources = async (): Promise<DataSource[]> => {
                     url: urlPrefix,
                     modules: [{ name: module.name, label: module.label }]
                   }
-                ],
+                ]
               });
             } else {
               const existingDataSource = dataSourceMap.get(hostname)!;
@@ -102,9 +103,7 @@ export const fetchDataSources = async (): Promise<DataSource[]> => {
               );
 
               if (existingEndpoint) {
-                const moduleExists = existingEndpoint.modules.some(
-                  m => m.name === module.name
-                );
+                const moduleExists = existingEndpoint.modules.some((m) => m.name === module.name);
                 if (!moduleExists) {
                   existingEndpoint.modules.push({
                     name: module.name,

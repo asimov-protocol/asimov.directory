@@ -12,21 +12,27 @@ interface GitHubStatsProps {
 }
 
 export default function GitHubStats({ variant = 'desktop' }: GitHubStatsProps) {
-  const { data: stars, isLoading: isStarsLoading } = useQuery({
-    queryKey: ['asimov-modules-stars'],
-    queryFn: fetchTotalModuleStars,
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 20 * 60 * 1000, // 20 minutes
-    retry: 2
-  }, queryClient);
+  const { data: stars, isLoading: isStarsLoading } = useQuery(
+    {
+      queryKey: ['asimov-modules-stars'],
+      queryFn: fetchTotalModuleStars,
+      staleTime: 10 * 60 * 1000, // 10 minutes
+      gcTime: 20 * 60 * 1000, // 20 minutes
+      retry: 2
+    },
+    queryClient
+  );
 
-  const { data: followers, isLoading: isFollowersLoading } = useQuery({
-    queryKey: ['asimov-platform-followers'],
-    queryFn: fetchOrgFollowers,
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 20 * 60 * 1000, // 20 minutes
-    retry: 2
-  }, queryClient);
+  const { data: followers, isLoading: isFollowersLoading } = useQuery(
+    {
+      queryKey: ['asimov-platform-followers'],
+      queryFn: fetchOrgFollowers,
+      staleTime: 10 * 60 * 1000, // 10 minutes
+      gcTime: 20 * 60 * 1000, // 20 minutes
+      retry: 2
+    },
+    queryClient
+  );
 
   const containerClass =
     variant === 'desktop'

@@ -25,9 +25,13 @@ export default function ModulesApp({ initialSort }: ModulesAppProps) {
     hasNextPage
   } = useInfiniteQuery(createModulesQuery(sortOption), queryClient);
 
-  const modules = data?.pages.flatMap(
-    (page) => page.repositories.filter(({ name }) => rxModule.test(name) && !WHITELISTED_MODULES.includes(name)) || []
-  ) || [];
+  const modules =
+    data?.pages.flatMap(
+      (page) =>
+        page.repositories.filter(
+          ({ name }) => rxModule.test(name) && !WHITELISTED_MODULES.includes(name)
+        ) || []
+    ) || [];
 
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newSort = event.target.value as SortOption;
@@ -81,7 +85,6 @@ export default function ModulesApp({ initialSort }: ModulesAppProps) {
       >
         <ModulesGrid modules={modules} loading={loading} error={error?.message || null} />
       </InfiniteScroll>
-
     </div>
   );
 }

@@ -25,7 +25,7 @@ interface AsimovModuleUses {
 }
 
 export interface AsimovModule {
-  "@type": "AsimovModule";
+  '@type': 'AsimovModule';
   name: string;
   label: string;
   title?: string;

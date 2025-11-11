@@ -1,10 +1,10 @@
 type PrimaryLanguage = {
   name: string;
-}
+};
 
 type ManifestRaw = {
   text: string;
-}
+};
 
 export interface Manifest {
   name: string;
@@ -29,7 +29,7 @@ export interface Repository {
   url: string;
   createdAt: string;
   updatedAt: string;
-  primaryLanguage: PrimaryLanguage| null;
+  primaryLanguage: PrimaryLanguage | null;
   manifest: ManifestRaw;
 }
 

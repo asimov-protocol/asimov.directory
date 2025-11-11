@@ -82,10 +82,7 @@ export default function SourcesCardsView({ sources }: SourcesCardsViewProps) {
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={() =>
-                          copyToClipboard(
-                            endpoint.url,
-                            `card-${dataset}-${endpointIndex}`
-                          )
+                          copyToClipboard(endpoint.url, `card-${dataset}-${endpointIndex}`)
                         }
                         className="border-sSlate-200 text-gGray-500 hover:bg-gGray-50 hover:text-sSlate-700 hover:border-sSlate-300 rounded border bg-white p-1 transition-colors"
                         title="Copy endpoint URL"
@@ -118,7 +115,7 @@ export default function SourcesCardsView({ sources }: SourcesCardsViewProps) {
               ))}
             </div>
           </div>
-        )
+        );
       })}
     </div>
   );

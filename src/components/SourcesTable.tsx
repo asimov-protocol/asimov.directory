@@ -1,12 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import {
-  WarningCircle,
-  List,
-  GridFour,
-  MagnifyingGlass,
-  Database
-} from '@phosphor-icons/react';
+import { WarningCircle, List, GridFour, MagnifyingGlass, Database } from '@phosphor-icons/react';
 
 import SourcesTableView from './SourcesTableView';
 import SourcesCardsView from './SourcesCardsView';
@@ -23,33 +17,28 @@ interface SourcesTableProps {
 export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
 
-  const {
-    data,
-    isLoading: loading,
-    error
-  } = useQuery(
-    createSourcesQuery(),
-    queryClient
-  );
+  const { data, isLoading: loading, error } = useQuery(createSourcesQuery(), queryClient);
 
   const dataSources = useMemo(() => {
-    const filteredGroups = data?.filter((dataSource) => {
-      if (!searchQuery) return true;
+    const filteredGroups =
+      data?.filter((dataSource) => {
+        if (!searchQuery) return true;
 
-      const searchLower = searchQuery.toLowerCase();
-      return (
-        dataSource.dataset.toLowerCase().includes(searchLower) ||
-        generateDisplayName(dataSource.dataset).toLowerCase().includes(searchLower) ||
-        dataSource.endpoints.some(
-          (endpoint) =>
-            endpoint.url.toLowerCase().includes(searchLower) ||
-            endpoint.modules.some(module =>
-              module.name.toLowerCase().includes(searchLower) ||
-              module.label.toLowerCase().includes(searchLower)
-            )
-        )
-      );
-    }) ?? [];
+        const searchLower = searchQuery.toLowerCase();
+        return (
+          dataSource.dataset.toLowerCase().includes(searchLower) ||
+          generateDisplayName(dataSource.dataset).toLowerCase().includes(searchLower) ||
+          dataSource.endpoints.some(
+            (endpoint) =>
+              endpoint.url.toLowerCase().includes(searchLower) ||
+              endpoint.modules.some(
+                (module) =>
+                  module.name.toLowerCase().includes(searchLower) ||
+                  module.label.toLowerCase().includes(searchLower)
+              )
+          )
+        );
+      }) ?? [];
 
     return filteredGroups.sort((a, b) => {
       if (b.endpoints.length !== a.endpoints.length) {
@@ -118,8 +107,8 @@ export default function SourcesTable({ searchQuery = '' }: SourcesTableProps) {
     <div className="space-y-4">
       <div className="text-gGray-600 flex items-center justify-between text-sm">
         <span>
-          {dataSources.length} data source{dataSources.length !== 1 ? 's' : ''} •{' '}
-          {totalModules} unique modules
+          {dataSources.length} data source{dataSources.length !== 1 ? 's' : ''} • {totalModules}{' '}
+          unique modules
         </span>
 
         <div className="flex items-center space-x-4">
