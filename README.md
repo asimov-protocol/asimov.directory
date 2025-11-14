@@ -2,16 +2,15 @@
 
 A modern, responsive web application for discovering and exploring modules and data sources from the ASIMOV ecosystem. Built with Astro, React, and TypeScript, it provides an intuitive interface to browse GitHub repositories from the `asimov-modules` organization and explore data sources with their endpoints.
 
-<img width="1277" height="773" alt="Знімок екрана 2025-08-06 о 17 01 00" src="https://github.com/user-attachments/assets/8be09316-6d87-47ca-8b70-15619d3d5f1f" />
+![sources-page](https://github.com/user-attachments/assets/ab010942-965e-433a-b8d7-79f4c98518bd)
+![modules-page](https://github.com/user-attachments/assets/f209d7e4-824d-4143-ab8b-f56f99373822)
 
 ## 🚀 Features
 
 - **Dual Interface**: Browse both modules and data sources with dedicated views
 - **Real-time GitHub Integration**: Fetches live data from ASIMOV organizations with GitHub stats
-- **Smart Sorting**: Multiple sorting options including relevance, popularity, newest, and recently updated
 - **Mobile-First Design**: Fully responsive with optimized mobile layouts and interactions
-- **Interactive Module Cards**: Display stars, contributors, languages, topics, and last update
-- **Data Sources Explorer**: Browse datasets with endpoints, formats (JSON/RDF), and module connections
+- **Data Sources Explorer**: Browse datasets with endpoints and module connections
 - **Advanced Search**: Real-time filtering across modules and data sources
 - **Query Caching**: Efficient data management with TanStack Query
 - **Automated Sitemap**: SEO-optimized with automatic sitemap generation
@@ -95,15 +94,6 @@ Two main sections:
 - **Sources** (`/`): Browse data sources with endpoints and formats
 - **Modules** (`/modules`): Explore GitHub modules with metadata
 
-### Sorting Options
-
-Four sorting methods available for modules:
-
-- **Most Relevant**: Custom algorithm combining stars, activity, description, and topics
-- **Most Popular**: Sorted by GitHub stars
-- **Newest**: Recently created repositories
-- **Recently Updated**: Latest activity
-
 ### Mobile Optimizations
 
 - **Compact Layouts**: Streamlined mobile interfaces for all components
@@ -124,16 +114,6 @@ npm run build
 ```bash
 npm run preview
 ```
-
-### Deploy Options
-
-The project is configured as a static site and can be deployed to:
-
-- **Vercel**: Zero-config deployment with automatic builds
-- **Netlify**: Connect GitHub repository for continuous deployment
-- **GitHub Pages**: Static hosting with GitHub Actions
-- **Cloudflare Pages**: Fast global CDN deployment
-- **Any Static Host**: Use the generated `dist` directory
 
 ### SEO Features
 
