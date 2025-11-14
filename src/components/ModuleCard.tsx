@@ -17,7 +17,8 @@ interface ModuleCardProps {
 export default function ModuleCard({ module }: ModuleCardProps) {
   const manifest = parseManifest(module.manifest.text);
 
-  const moduleName = manifest?.title || module.name;
+  // Prefer manifest label over module name as looks nicer for humans
+  const moduleName = manifest?.label || module.name;
   const moduleDescription = manifest?.summary || module.description || 'No description available';
   const moduleLinks = manifest?.links || [];
 
@@ -40,7 +41,7 @@ export default function ModuleCard({ module }: ModuleCardProps) {
             <h3 className="text-sSlate-800 group-hover:text-oOrange-500 font-medium transition-colors">
               {moduleName}
             </h3>
-            <p className="text-gGray-400 text-sm">asimov-modules</p>
+            <p className="text-gGray-400 text-sm">{module.name}</p>
           </div>
         </div>
         <div className="text-gGray-400 flex items-center space-x-1">
