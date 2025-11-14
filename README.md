@@ -8,10 +8,8 @@ A modern, responsive web application for discovering and exploring modules and d
 
 - **Dual Interface**: Browse both modules and data sources with dedicated views
 - **Real-time GitHub Integration**: Fetches live data from ASIMOV organizations with GitHub stats
-- **Smart Sorting**: Multiple sorting options including relevance, popularity, newest, and recently updated
 - **Mobile-First Design**: Fully responsive with optimized mobile layouts and interactions
-- **Interactive Module Cards**: Display stars, contributors, languages, topics, and last update
-- **Data Sources Explorer**: Browse datasets with endpoints, formats (JSON/RDF), and module connections
+- **Data Sources Explorer**: Browse datasets with endpoints and module connections
 - **Advanced Search**: Real-time filtering across modules and data sources
 - **Query Caching**: Efficient data management with TanStack Query
 - **Automated Sitemap**: SEO-optimized with automatic sitemap generation
@@ -95,15 +93,6 @@ Two main sections:
 - **Sources** (`/`): Browse data sources with endpoints and formats
 - **Modules** (`/modules`): Explore GitHub modules with metadata
 
-### Sorting Options
-
-Four sorting methods available for modules:
-
-- **Most Relevant**: Custom algorithm combining stars, activity, description, and topics
-- **Most Popular**: Sorted by GitHub stars
-- **Newest**: Recently created repositories
-- **Recently Updated**: Latest activity
-
 ### Mobile Optimizations
 
 - **Compact Layouts**: Streamlined mobile interfaces for all components
@@ -124,16 +113,6 @@ npm run build
 ```bash
 npm run preview
 ```
-
-### Deploy Options
-
-The project is configured as a static site and can be deployed to:
-
-- **Vercel**: Zero-config deployment with automatic builds
-- **Netlify**: Connect GitHub repository for continuous deployment
-- **GitHub Pages**: Static hosting with GitHub Actions
-- **Cloudflare Pages**: Fast global CDN deployment
-- **Any Static Host**: Use the generated `dist` directory
 
 ### SEO Features
 
