@@ -164,7 +164,7 @@ export const formatNumber = (num: number) => {
 };
 
 export const parseManifest = (
-  manifestText: Repository['manifest']['text'] | undefined
+  manifestText: NonNullable<Repository['manifest']>['text'] | undefined
 ): Manifest | undefined => {
   if (!manifestText) return undefined;
 

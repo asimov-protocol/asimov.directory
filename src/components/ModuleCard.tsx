@@ -15,7 +15,7 @@ interface ModuleCardProps {
 }
 
 export default function ModuleCard({ module }: ModuleCardProps) {
-  const manifest = parseManifest(module.manifest.text);
+  const manifest = module.manifest ? parseManifest(module.manifest.text) : null;
 
   // Prefer manifest label over module name as looks nicer for humans
   const moduleName = manifest?.label || module.name;
