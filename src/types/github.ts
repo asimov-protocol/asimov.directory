@@ -30,7 +30,7 @@ export interface Repository {
   createdAt: string;
   updatedAt: string;
   primaryLanguage: PrimaryLanguage | null;
-  manifest: ManifestRaw;
+  manifest: ManifestRaw | null;
 }
 
 export interface GraphQLPagination {
